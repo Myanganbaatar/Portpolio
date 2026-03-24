@@ -1,0 +1,304 @@
+.latice-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.latice-header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.latice-header h2 {
+  margin: 0 0 10px 0;
+  font-size: 2.5em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.latice-header p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95em;
+}
+
+.latice-scores {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+  gap: 20px;
+}
+
+.latice-score {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.3s ease;
+}
+
+.latice-score.active {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.latice-score span:first-child {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.latice-score span:last-child {
+  font-size: 0.9em;
+  opacity: 0.95;
+}
+
+.latice-message {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 12px 20px;
+  border-radius: 8px;
+  border-left: 4px solid rgba(255, 255, 255, 0.6);
+  margin-bottom: 20px;
+  font-size: 0.95em;
+  text-align: center;
+  font-weight: 500;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Game Board */
+.latice-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+  aspect-ratio: 1 / 1;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.latice-cell {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.latice-cell:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.latice-cell.first-move {
+  background: rgba(255, 200, 100, 0.2);
+  border: 2px solid rgba(255, 200, 100, 0.6);
+  animation: pulse 1s infinite;
+}
+
+.latice-cell.occupied {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.latice-tile {
+  width: 85%;
+  height: 85%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.latice-cell.occupied .latice-tile {
+  width: 80%;
+  height: 80%;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: inset 0 0 5px rgba(255, 200, 100, 0.3);
+  }
+  50% {
+    box-shadow: inset 0 0 15px rgba(255, 200, 100, 0.6);
+  }
+}
+
+/* Player Rack */
+.latice-rack {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.latice-rack h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.latice-rack-tiles {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.latice-rack-tile {
+  width: 60px;
+  height: 60px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em;
+  transition: all 0.2s ease;
+  background-color: var(--tile-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
+}
+
+.latice-rack-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.latice-rack-tile.selected {
+  transform: scale(1.15) translateY(-5px);
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  filter: brightness(1.2);
+}
+
+/* Controls */
+.latice-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.latice-btn-start,
+.latice-btn-reset {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.latice-btn-start:hover,
+.latice-btn-reset:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.latice-btn-start:active,
+.latice-btn-reset:active {
+  transform: translateY(0);
+}
+
+.latice-btn-start {
+  padding: 15px 40px;
+  font-size: 1.1em;
+}
+
+/* Instructions */
+.latice-instructions {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px 20px;
+  border-radius: 10px;
+  border-left: 4px solid rgba(255, 255, 255, 0.6);
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.latice-instructions p {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.latice-instructions ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.latice-instructions li {
+  margin-bottom: 6px;
+  opacity: 0.95;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .latice-container {
+    margin: 20px 10px;
+    padding: 15px;
+  }
+
+  .latice-header h2 {
+    font-size: 1.8em;
+  }
+
+  .latice-scores {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .latice-board {
+    max-width: 90vw;
+    max-height: 90vw;
+  }
+
+  .latice-rack-tiles {
+    gap: 8px;
+  }
+
+  .latice-rack-tile {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5em;
+  }
+}

@@ -2,14 +2,16 @@ import './Skills.css';
 
 export default function Skills() {
   const skills = {
-    Frontend: ['React', 'JavaScript', 'HTML/CSS', 'Tailwind', 'Responsive Design'],
-    Backend: ['Node.js', 'Express', 'MongoDB', 'SQL', 'REST APIs'],
-    Other: ['Git', 'Docker', 'AWS', 'Figma', 'Problem Solving']
+    'Langages de programmation': ['Java', 'JavaScript', 'Python', 'Rust', 'PHP', 'C/C++', 'Kotlin', 'C#'],
+    'Web & Mobile': ['HTML/CSS', 'React', '.NET MAUI', 'Node.js', 'JavaFX'],
+    'DevOps & Outils': ['GitLab', 'Docker', 'Virtualisation', 'Git', 'VS Code'],
+    'Bases de Données': ['MySQL', 'PostgreSQL', 'SQL', 'MongoDB', 'WAMP'],
+    'Systèmes & Domaines': ['Systèmes d\'Information (SI)', 'Réseaux', 'Cryptographie', 'UML']
   };
 
   return (
-    <section className="skills">
-      <h2>Skills & Technologies</h2>
+    <section className="skills" id="skills">
+      <h2>Compétences & Technologies</h2>
       <div className="skills-container">
         {Object.keys(skills).map(category => (
           <div key={category} className="skill-category">
@@ -18,7 +20,7 @@ export default function Skills() {
               {skills[category].map((skill, idx) => (
                 <div key={idx} className="skill-item">
                   <strong>{skill}</strong>
-                  <span className="level">Proficient</span>
+                  <span className="level">Maîtrisé</span>
                 </div>
               ))}
             </div>

@@ -2,17 +2,29 @@ import './Contact.css';
 
 export default function Contact() {
   return (
-    <section className="contact">
-      <h2>Let's Work Together</h2>
-      <p>I'm always interested in hearing about new projects and opportunities.</p>
+    <section className="contact" id="contact">
+      <h2>Travaillons ensemble!</h2>
+      <p>Je suis à la recherche d'un stage en informatique. N'hésitez pas à me contacter!</p>
+      
+      <div className="contact-details">
+        <a href="mailto:1000barsaa@gmail.com" className="detail-item">
+          📧 1000barsaa@gmail.com
+        </a>
+        <a href="tel:+33652193415" className="detail-item">
+          📱 06 52 19 34 15
+        </a>
+      </div>
+
       <div className="contact-links">
-        <a href="mailto:your.email@example.com" className="contact-link">Email Me</a>
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="contact-link">GitHub</a>
-        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="contact-link">LinkedIn</a>
-        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="contact-link">Twitter</a>
+        <a href="https://github.com/Myanganbaatar" target="_blank" rel="noopener noreferrer" className="contact-link">
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/barsboldmyanganbaatar-a79557386" target="_blank" rel="noopener noreferrer" className="contact-link">
+          LinkedIn
+        </a>
       </div>
       <div className="footer">
-        <p>&copy; 2026 Your Name. All rights reserved.</p>
+        <p>&copy; 2026 Barsbold Myanganbaatar. Tous droits réservés.</p>
       </div>
     </section>
   );

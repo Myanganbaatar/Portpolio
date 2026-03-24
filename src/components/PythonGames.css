@@ -1,0 +1,418 @@
+.python-games-container {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 15px;
+  color: white;
+}
+
+.python-games-container h3 {
+  text-align: center;
+  font-size: 1.8em;
+  margin: 20px 0 10px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.games-intro {
+  text-align: center;
+  opacity: 0.95;
+  margin-bottom: 25px;
+  font-size: 0.95em;
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.game-card-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.game-card-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  transform: scale(1.05);
+}
+
+.game-player {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Individual Game Styles */
+.game-container {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 25px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.game-container h3 {
+  margin: 0 0 15px 0;
+  font-size: 1.5em;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.game-status {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 0.95em;
+  min-height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Morpion Board */
+.morpion-board {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: 5px;
+  margin: 0 auto 20px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.morpion-cell {
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  font-size: 2em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: white;
+  font-weight: bold;
+}
+
+.morpion-cell:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.morpion-cell:disabled {
+  cursor: not-allowed;
+}
+
+/* Puissance 4 Board */
+.puissance4-board {
+  display: grid;
+  grid-template-columns: repeat(7, 50px);
+  gap: 4px;
+  margin: 0 auto 20px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 10px;
+  justify-content: center;
+}
+
+.p4-cell {
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(100, 150, 255, 0.3);
+  border-radius: 50%;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.p4-cell:hover {
+  background: rgba(100, 150, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.p4-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.drop-btn {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.85em;
+  transition: all 0.2s ease;
+}
+
+.drop-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.drop-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Allumettes Display */
+.matches-display {
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.matches-count {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.matches-visual {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.match {
+  font-size: 1.2em;
+  animation: flicker 0.3s ease-in-out;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.matches-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.matches-buttons button {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.matches-buttons button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.matches-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Devinette Setup */
+.devinette-setup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 300px;
+  margin: 20px auto;
+}
+
+.devinette-setup input {
+  padding: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 1em;
+  text-align: center;
+}
+
+.devinette-setup input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.start-btn {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.start-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  transform: scale(1.05);
+}
+
+/* Devinette Buttons */
+.devinette-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 300px;
+  margin: 20px auto;
+}
+
+.guess-btn {
+  padding: 12px 20px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.guess-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.guess-btn.correct {
+  border-color: #4ade80;
+}
+
+.guess-btn.correct:hover {
+  background: rgba(74, 222, 128, 0.2);
+}
+
+.guess-btn.higher {
+  border-color: #60a5fa;
+}
+
+.guess-btn.higher:hover {
+  background: rgba(96, 165, 250, 0.2);
+}
+
+.guess-btn.lower {
+  border-color: #f87171;
+}
+
+.guess-btn.lower:hover {
+  background: rgba(248, 113, 113, 0.2);
+}
+
+/* Reset Button */
+.reset-btn {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 12px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.95em;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 15px;
+}
+
+.reset-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.reset-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .morpion-board {
+    grid-template-columns: repeat(3, 70px);
+  }
+
+  .morpion-cell {
+    width: 70px;
+    height: 70px;
+    font-size: 1.6em;
+  }
+
+  .puissance4-board {
+    grid-template-columns: repeat(7, 45px);
+  }
+
+  .p4-cell {
+    width: 45px;
+    height: 45px;
+    font-size: 1.2em;
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
