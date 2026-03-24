@@ -13,7 +13,7 @@ export default function Projects() {
       id: 1,
       title: 'Jeu Latice - SAE Java',
       description: 'Jeu de plateau complet développé en Java/JavaFX. Role de développeur principal et coordinateur d\'équipe (4 personnes).',
-      details: 'Ce projet a consisté en la réalisation du jeu de plateau "Latice" en Java. Nous avons utilisé JavaFX pour l\'interface graphique et suivi une architecture MVC. Mes missions principales incluaient la conception du moteur de jeu (gestion des tuiles, règles de placement, calcul des points), la coordination de l\'équipe via Git/GitLab, et l\'implémentation d\'une IA simple pour le mode solo.',
+      details: 'Ce projet a consisté en la réalisation du jeu de plateau "Latice" en Java. Nous avons utilisé JavaFX pour l\'interface graphique et suivi une architecture MVC. Mes missions principales incluaient la conception du moteur de jeu (gestion des tuiles, règles de placement, calcul des points), la coordination de l\'équipe via Git/GitLab, et l\'implémentation d\'un adversaire virtuel simple pour le mode solo.',
       tags: ['Java', 'JavaFX', 'CSS', 'Scene Builder', 'Git'],
       icon: '🎮',
       link: 'https://github.com/Myanganbaatar'
@@ -22,7 +22,7 @@ export default function Projects() {
       id: 2,
       title: 'Mini-Jeux - SAE Python',
       description: 'Suite complète de 4 jeux développée en Python: Devinette, Allumettes, Morpion (3x3), et Puissance 4 (6x7).',
-      details: 'Développement d\'une suite de mini-jeux classiques en Python. L\'objectif était de concevoir une architecture modulaire permettant d\'ajouter facilement de nouveaux jeux. Chaque jeu propose un mode Joueur contre Joueur et un mode Joueur contre Intelligence Artificielle (algorithmes Minimax pour les jeux à information parfaite).',
+      details: 'Développement d\'une suite de mini-jeux classiques en Python. L\'objectif était de concevoir une architecture modulaire permettant d\'ajouter facilement de nouveaux jeux. Chaque jeu propose un mode Joueur contre Joueur et un mode Joueur contre Ordinateur (algorithmes Minimax pour les jeux à information parfaite).',
       tags: ['Python', 'Algorithmique', 'Jeux'],
       icon: '🎮',
       link: 'https://github.com/Myanganbaatar/SAE-PYTHON'
@@ -31,7 +31,7 @@ export default function Projects() {
       id: 3,
       title: 'Questionary - Plateforme de Questionnaires',
       description: 'Plateforme web complète pour créer et analyser des questionnaires. Architecture MVC avec PHP/MariaDB et Vue.js.',
-      details: 'Développement d\'une application Web dynamique permettant aux enseignants de créer des questionnaires et aux étudiants d\'y répondre. Le backend en PHP (MVC sans framework) interagit avec une base de données MariaDB. Le frontend utilise Vue.js pour la réactivité. J\'ai travaillé sur la gestion des sessions, la sécurité (injections SQL, XSS) et la visualisation des résultats avec Chart.js.',
+      details: 'Développement d\'une application Web dynamique permettant aux enseignants de créer des questionnaires et aux étudiants d\'y répondre. Le backend en PHP (MVC sans framework) interagit avec une base de données MariaDB. Le frontend utilise Vue.js pour la réactivité. Travail focalisé sur la gestion des sessions, la sécurité (injections SQL, XSS) et la visualisation des résultats avec Chart.js.',
       tags: ['PHP', 'MariaDB', 'Vue.js', 'Chart.js', 'REST API'],
       icon: '📋',
       link: 'https://github.com/Mdeterne/php-mariadb-Questionary'
@@ -65,7 +65,7 @@ export default function Projects() {
     },
     {
       id: 7,
-      title: 'Conception Base de Données (SAE 1.04) 🆕',
+      title: 'Conception Base de Données (SAE 1.04) ',
       description: 'Conception intégrale d\'une base de données relationnelle. Du Dictionnaire de Données au SQL.',
       details: `Projet de conception et d'implémentation d'une base de données pour la gestion d'événements culturels (concerts, théâtres).
       
@@ -81,7 +81,7 @@ export default function Projects() {
     },
     {
       id: 8,
-      title: 'Algorithmique & Structures (SAE 1.03) 🆕',
+      title: 'Algorithmique & Structures (SAE 1.03) ',
       description: 'Introduction approfondie aux structures de données. Optimisation et analyse de complexité.',
       details: `Étude comparative et implémentation d'algorithmes de tri et de recherche.
       
@@ -96,7 +96,7 @@ export default function Projects() {
     },
     {
       id: 9,
-      title: 'Gestion de Projet (SAE 2.05) 🆕',
+      title: 'Gestion de Projet (SAE 2.05) ',
       description: 'Pilotage d\'équipe et planification de projet. Gestion des délais et de la communication.',
       details: `Gestion complète d'un projet informatique en équipe, axé sur l'organisation et la méthodologie.
       
