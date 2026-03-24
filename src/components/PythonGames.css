@@ -416,3 +416,16 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+
+.game-controls .reset-btn {
+  margin-top: 0;
+}

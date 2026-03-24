@@ -101,6 +101,13 @@ function Morpion() {
     setTurn('X');
     setGameStarted(false);
   };
+
+  const restartMatch = () => {
+    setBoard(Array(9).fill(null));
+    setGameOver(false);
+    setWinner(null);
+    setTurn('X');
+  }
   
   const startGame = (robot) => {
     setVsRobot(robot);
@@ -158,7 +165,10 @@ function Morpion() {
           </button>
         ))}
       </div>
-      <button className="reset-btn" onClick={resetGame}>Menu Principal</button>
+      <div className="game-controls">
+        {gameOver && <button className="reset-btn" onClick={restartMatch}>🔄 Rejouer</button>}
+        <button className="reset-btn" onClick={resetGame}>Menu Principal</button>
+      </div>
     </div>
   );
 }
@@ -295,6 +305,17 @@ function Puissance4() {
     setTurn('X');
   };
   
+  const restartMatch = () => {
+    setBoard(Array(ROWS).fill(null).map(() => Array(COLS).fill(null)));
+    setGameOver(false);
+    setTurn('X');
+    if (vsRobot) {
+        setMessage('À vous de jouer (🔴)');
+    } else {
+        setMessage(`Au tour de ${p1Name} (🔴)`);
+    }
+  };
+
   const startGame = (robot) => {
       setVsRobot(robot);
       setGameStarted(true);
@@ -356,7 +377,10 @@ function Puissance4() {
           </button>
         ))}
       </div>
-      {gameOver && <button className="reset-btn" onClick={resetGame}>Menu Principal</button>}
+      <div className="game-controls">
+        {gameOver && <button className="reset-btn" onClick={restartMatch}>🔄 Rejouer</button>}
+        {gameOver && <button className="reset-btn" onClick={resetGame}>Menu Principal</button>}
+      </div>
     </div>
   );
 }
@@ -438,6 +462,8 @@ function Devinette() {
   const [currentGuess, setCurrentGuess] = useState(null);
   const [message, setMessage] = useState('Pensez à un nombre et laissez le Robot le deviner!');
   const [gameOver, setGameOver] = useState(false);
+  const [initialMin, setInitialMin] = useState(null);
+  const [initialMax, setInitialMax] = useState(null);
 
   const startGame = () => {
     const min = parseInt(minNum);
@@ -448,11 +474,25 @@ function Devinette() {
       return;
     }
 
+    setInitialMin(min);
+    setInitialMax(max);
+
     setGuesses([]);
     setCurrentGuess(Math.floor((min + max) / 2));
     setMessage(`Je pense que c'est ${Math.floor((min + max) / 2)}. Est-ce correct?`);
     setGameStarted(true);
     setGameOver(false);
+  };
+
+  const restartMatch = () => {
+      // Restore initial bounds for the algorithm
+      setMinNum(initialMin);
+      setMaxNum(initialMax);
+      setGuesses([]);
+      setCurrentGuess(Math.floor((initialMin + initialMax) / 2));
+      setMessage(`Je pense que c'est ${Math.floor((initialMin + initialMax) / 2)}. Est-ce correct?`);
+      setGameStarted(true);
+      setGameOver(false);
   };
 
   const respond = (response) => {
@@ -473,6 +513,7 @@ function Devinette() {
     }
 
     const nextGuess = Math.floor((parseInt(newMin) + parseInt(newMax)) / 2);
+    // Note: updating minNum/maxNum here affects the algorithm bounds
     setMinNum(newMin);
     setMaxNum(newMax);
     setGuesses(newGuesses);
@@ -482,8 +523,11 @@ function Devinette() {
 
   const resetGame = () => {
     setGameStarted(false);
+    // Clear inputs or keep them? Usually resetting means clearing everything.
     setMinNum('');
     setMaxNum('');
+    setInitialMin(null);
+    setInitialMax(null);
     setGuesses([]);
     setCurrentGuess(null);
     setMessage('Pensez à un nombre et laissez le Robot le deviner!');
@@ -526,7 +570,10 @@ function Devinette() {
       )}
 
       {gameOver && (
-        <button className="reset-btn" onClick={resetGame}>Nouvelle partie</button>
+          <div className="game-controls">
+            <button className="reset-btn" onClick={restartMatch}>🔄 Rejouer (Même intervalle)</button>
+            <button className="reset-btn" onClick={resetGame}>Menu Principal</button>
+          </div>
       )}
     </div>
   );
