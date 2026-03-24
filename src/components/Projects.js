@@ -57,7 +57,7 @@ export default function Projects() {
     },
     {
       id: 7,
-      title: 'Conception Base de Données (SAE 1.04)',
+      title: 'Conception Base de Données (SAE 1.04) 🆕',
       description: 'Conception intégrale d\'une base de données relationnelle. Réalisation du Dictionnaire de Données, du Schéma Entité-Association (MCD) et implémentation des scripts SQL (Création, Peuplement, Requêtes complexes).',
       tags: ['SQL', 'Merise', 'Modélisation', 'SGBD'],
       icon: '🗄️',
@@ -65,7 +65,7 @@ export default function Projects() {
     },
     {
       id: 8,
-      title: 'Algorithmique & Structures (SAE 1.03)',
+      title: 'Algorithmique & Structures (SAE 1.03) 🆕',
       description: 'Introduction approfondie aux structures de données et à l\'algorithmique. Résolution de problèmes complexes, optimisation de code et analyse de complexité. Documentations et rapports d\'analyse.',
       tags: ['Algorithmique', 'Logique', 'Optimisation', 'Structures de données'],
       icon: '🧠',
@@ -73,7 +73,7 @@ export default function Projects() {
     },
     {
       id: 9,
-      title: 'Gestion de Projet - Latice (SAE 2.05)',
+      title: 'Gestion de Projet - Latice (SAE 2.05) 🆕',
       description: 'Pilotage d\'équipe sur le projet Latice. Planification (Gantt), répartition des tâches, suivi de l\'avancement et rédaction de la documentation technique et fonctionnelle. Gestion des délais et de la communication.',
       tags: ['Gestion de Projet', 'Agile', 'Communication', 'Documentation'],
       icon: '📈',
