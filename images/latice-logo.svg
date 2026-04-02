@@ -1,0 +1,30 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="laticeBg" x1="16" y1="16" x2="144" y2="144" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E2A4E"/>
+      <stop offset="1" stop-color="#1F6DBA"/>
+    </linearGradient>
+    <linearGradient id="laticeTile" x1="46" y1="46" x2="114" y2="114" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#84D35E"/>
+      <stop offset="1" stop-color="#44B848"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="16" y="16" width="128" height="128" rx="24" fill="url(#laticeBg)"/>
+  <rect x="30" y="30" width="100" height="100" rx="18" fill="#F7FAFF"/>
+
+  <g opacity="0.9" stroke="#0E3A6D" stroke-width="6" stroke-linecap="round">
+    <path d="M34 60L60 34"/>
+    <path d="M100 126L126 100"/>
+    <path d="M34 100L100 34"/>
+    <path d="M60 126L126 60"/>
+  </g>
+
+  <rect x="56" y="56" width="48" height="48" rx="12" transform="rotate(-12 56 56)" fill="url(#laticeTile)"/>
+
+  <g transform="translate(80 82)">
+    <circle r="14" fill="#2E9E59"/>
+    <path d="M-10 0C-10 -6 -6 -10 0 -10C6 -10 10 -6 10 0C10 6 6 10 0 10C-6 10 -10 6 -10 0Z" fill="#DFF7D5"/>
+    <path d="M0 -10V10M-10 0H10M-7 -7L7 7M7 -7L-7 7" stroke="#2E9E59" stroke-width="2"/>
+  </g>
+</svg>
