@@ -5,7 +5,7 @@ import { ArrowIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon } from '../
 import { CtaBanner, ProjectCard, SectionTitle } from '../components/ui';
 import './pages.css';
 
-const FEATURED = ['cms', 'aupair', 'latice'];
+const FEATURED = ['cms', 'python', 'latice'];
 
 function CodeCard({ lang }) {
   const fr = lang === 'fr';
@@ -15,15 +15,15 @@ function CodeCard({ lang }) {
         <span />
         <span />
         <span />
-        <em>barsbold.ts</em>
+        <em>barsbold.js</em>
       </div>
       <pre className="code-card__body">
         <code>
           <span className="c-kw">const</span> <span className="c-var">barsbold</span> = {'{'}
           {'\n'}  <span className="c-key">role</span>: <span className="c-str">"{fr ? 'Développeur full-stack' : 'Full-stack developer'}"</span>,
           {'\n'}  <span className="c-key">based</span>: <span className="c-str">"Limoges, France"</span>,
-          {'\n'}  <span className="c-key">stack</span>: [<span className="c-str">"TypeScript"</span>, <span className="c-str">"Next.js"</span>,
-          {'\n'}          <span className="c-str">"Node.js"</span>, <span className="c-str">"PostgreSQL"</span>, <span className="c-str">"Docker"</span>],
+          {'\n'}  <span className="c-key">stack</span>: [<span className="c-str">"JavaScript"</span>, <span className="c-str">"React"</span>,
+          {'\n'}          <span className="c-str">"Next.js"</span>, <span className="c-str">"Node.js"</span>, <span className="c-str">"PostgreSQL"</span>],
           {'\n'}  <span className="c-key">shippedToProd</span>: <span className="c-num">3</span>,
           {'\n'}  <span className="c-key">speaks</span>: [<span className="c-str">"mn"</span>, <span className="c-str">"fr"</span>, <span className="c-str">"en"</span>],
           {'\n'}  <span className="c-key">availableFrom</span>: <span className="c-str">"2027-03"</span>,

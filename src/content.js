@@ -10,9 +10,9 @@ export const links = {
 };
 
 const techInternship = {
-  cms: ['TypeScript', 'Node.js', 'Express', 'Prisma', 'PostgreSQL', 'Next.js', 'Docker', 'Nginx'],
+  cms: ['Node.js', 'Express', 'PostgreSQL', 'Next.js', 'Docker', 'Nginx'],
   aupair: ['Next.js 16', 'React 19', 'Tailwind CSS', 'PHP'],
-  correct: ['Next.js 14', 'TypeScript', 'PostgreSQL', 'Docker', 'Nginx', 'Cloudflare'],
+  correct: ['Next.js 14', 'PostgreSQL', 'Docker', 'Nginx'],
 };
 
 export const content = {
@@ -35,7 +35,7 @@ export const content = {
     about: {
       title: 'À propos',
       paragraphs: [
-        "Étudiant en 3ᵉ année de BUT Informatique à l'IUT du Limousin (Limoges), j'aime transformer une idée en produit utilisable. Je travaille surtout avec TypeScript, React/Next.js, Node.js et PostgreSQL, et je prends plaisir à m'occuper aussi de la partie déploiement (Docker, Nginx, serveurs Linux).",
+        "Étudiant en 3ᵉ année de BUT Informatique à l'IUT du Limousin (Limoges), j'aime transformer une idée en produit utilisable. Je travaille surtout avec JavaScript, React/Next.js, Node.js et PostgreSQL, et je prends plaisir à m'occuper aussi de la partie déploiement (Docker, Nginx, serveurs Linux).",
         "D'origine mongole, je vis et étudie en France. Autonome, rigoureux et rapide à prendre en main de nouveaux outils, j'apprécie autant travailler en équipe que mener un projet de A à Z.",
       ],
       facts: [
@@ -57,7 +57,6 @@ export const content = {
           name: 'CMS headless inspiré de Strapi',
           points: [
             'Content-Type Builder générant automatiquement une API REST (14 types de champs, pagination, filtres, brouillon/publication).',
-            'Authentification JWT, rôles et permissions (RBAC), jetons d’API ; sécurité avec Helmet, rate limiting et validation Zod.',
             'Panneau d’administration Next.js : éditeur de contenu en glisser-déposer, médiathèque avec miniatures automatiques, SDK PHP.',
           ],
           tech: techInternship.cms,
@@ -75,7 +74,7 @@ export const content = {
           name: 'correctURL — raccourcisseur d’URL',
           points: [
             'Liens courts avec slugs personnalisés, statistiques de clics et gestion du percent-encoding.',
-            'Sécurisation en production : rate limiting et filtrage des bots avec Nginx, Cloudflare, Fail2ban avec pot de miel anti-spam.',
+            'Mise en production avec Docker et Nginx sur un serveur Linux.',
           ],
           tech: techInternship.correct,
         },
@@ -93,10 +92,10 @@ export const content = {
     skills: {
       title: 'Compétences',
       groups: [
-        { name: 'Langages', items: ['TypeScript', 'JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'C#', 'Kotlin', 'C / C++'] },
+        { name: 'Langages', items: ['JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'C#', 'Kotlin', 'C / C++'] },
         { name: 'Front-end', items: ['React', 'Next.js', 'Tailwind CSS', 'HTML / CSS', 'JavaFX'] },
-        { name: 'Back-end', items: ['Node.js', 'Express', 'Prisma', 'API REST', 'JWT / RBAC'] },
-        { name: 'Données & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'Docker', 'Nginx', 'Linux', 'Cloudflare', 'Git / GitHub'] },
+        { name: 'Back-end', items: ['Node.js', 'Express', 'API REST'] },
+        { name: 'Données & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'Docker', 'Nginx', 'Linux', 'Git / GitHub'] },
         { name: 'Qualités', items: ['Autonomie', 'Travail en équipe', 'Résolution de problèmes', 'Apprentissage rapide', 'Communication'] },
       ],
     },
@@ -132,7 +131,7 @@ export const content = {
     about: {
       title: 'About',
       paragraphs: [
-        "I'm a third-year Computer Science student (BUT Informatique) at IUT du Limousin in Limoges, France, and I love turning an idea into a usable product. I mostly work with TypeScript, React/Next.js, Node.js and PostgreSQL, and I also enjoy handling deployment (Docker, Nginx, Linux servers).",
+        "I'm a third-year Computer Science student (BUT Informatique) at IUT du Limousin in Limoges, France, and I love turning an idea into a usable product. I mostly work with JavaScript, React/Next.js, Node.js and PostgreSQL, and I also enjoy handling deployment (Docker, Nginx, Linux servers).",
         "Originally from Mongolia, I live and study in France. I'm independent, thorough and quick to pick up new tools, and I enjoy both teamwork and owning a project end to end.",
       ],
       facts: [
@@ -154,7 +153,6 @@ export const content = {
           name: 'Headless CMS inspired by Strapi',
           points: [
             'Content-Type Builder that generates REST APIs automatically (14 field types, pagination, filtering, draft/publish).',
-            'JWT authentication, role-based permissions (RBAC), API tokens; hardened with Helmet, rate limiting and Zod validation.',
             'Next.js admin panel: drag-and-drop content editor, media library with automatic thumbnails, PHP client SDK.',
           ],
           tech: techInternship.cms,
@@ -172,7 +170,7 @@ export const content = {
           name: 'correctURL — URL shortener',
           points: [
             'Short links with custom slugs, click statistics and correct percent-encoding handling.',
-            'Production hardening: Nginx rate limiting and bot filtering, Cloudflare, Fail2ban with an anti-spam honeypot.',
+            'Deployed with Docker and Nginx on a Linux server.',
           ],
           tech: techInternship.correct,
         },
@@ -190,10 +188,10 @@ export const content = {
     skills: {
       title: 'Skills',
       groups: [
-        { name: 'Languages', items: ['TypeScript', 'JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'C#', 'Kotlin', 'C / C++'] },
+        { name: 'Languages', items: ['JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'C#', 'Kotlin', 'C / C++'] },
         { name: 'Front-end', items: ['React', 'Next.js', 'Tailwind CSS', 'HTML / CSS', 'JavaFX'] },
-        { name: 'Back-end', items: ['Node.js', 'Express', 'Prisma', 'REST APIs', 'JWT / RBAC'] },
-        { name: 'Data & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'Docker', 'Nginx', 'Linux', 'Cloudflare', 'Git / GitHub'] },
+        { name: 'Back-end', items: ['Node.js', 'Express', 'REST APIs'] },
+        { name: 'Data & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'Docker', 'Nginx', 'Linux', 'Git / GitHub'] },
         { name: 'Strengths', items: ['Autonomy', 'Teamwork', 'Problem solving', 'Fast learner', 'Communication'] },
       ],
     },
@@ -217,10 +215,10 @@ export const projects = [
     id: 'cms', category: 'internship', icon: '🧩',
     title: { fr: 'CMS headless', en: 'Headless CMS' },
     desc: {
-      fr: 'CMS inspiré de Strapi : API REST générée automatiquement, rôles et permissions, éditeur en glisser-déposer, médiathèque.',
-      en: 'Strapi-inspired CMS: auto-generated REST API, roles and permissions, drag-and-drop editor, media library.',
+      fr: 'CMS inspiré de Strapi : API REST générée automatiquement, éditeur en glisser-déposer, médiathèque.',
+      en: 'Strapi-inspired CMS: auto-generated REST API, drag-and-drop editor, media library.',
     },
-    tags: ['TypeScript', 'Node.js', 'PostgreSQL', 'Next.js', 'Docker'],
+    tags: ['Node.js', 'PostgreSQL', 'Next.js', 'Docker'],
     private: true,
   },
   {
@@ -237,10 +235,10 @@ export const projects = [
     id: 'correcturl', category: 'internship', icon: '🔗',
     title: { fr: 'correctURL', en: 'correctURL' },
     desc: {
-      fr: 'Raccourcisseur d’URL avec statistiques, sécurisé en production (Nginx, Cloudflare, Fail2ban).',
-      en: 'URL shortener with analytics, hardened in production (Nginx, Cloudflare, Fail2ban).',
+      fr: 'Raccourcisseur d’URL avec statistiques de clics, mis en production avec Docker et Nginx.',
+      en: 'URL shortener with click statistics, deployed with Docker and Nginx.',
     },
-    tags: ['Next.js', 'TypeScript', 'PostgreSQL', 'Docker'],
+    tags: ['Next.js', 'PostgreSQL', 'Docker'],
     private: true,
   },
   {
@@ -316,21 +314,17 @@ export const projectDetails = {
       fr: [
         'Content-Type Builder : création dynamique de collections avec 14 types de champs (texte, richtext, média, relation, enum, JSON…).',
         'API REST générée automatiquement pour chaque collection : pagination, tri, filtres, brouillon/publication.',
-        'Authentification JWT (admin et utilisateurs), rôles Public / Authenticated / Editor / Author / Super Admin, jetons d’API.',
-        'Sécurité : Helmet, CORS, rate limiting, validation des entrées avec Zod.',
         'Panneau d’administration Next.js : éditeur en glisser-déposer (dnd-kit), médiathèque avec miniatures générées par sharp.',
         'SDK PHP pour consommer l’API ; déploiement Docker Compose (PostgreSQL, API, admin, Nginx) sur un serveur Linux.',
       ],
       en: [
         'Content-Type Builder: dynamic collections with 14 field types (text, rich text, media, relation, enum, JSON…).',
         'Auto-generated REST API for every collection: pagination, sorting, filtering, draft/publish.',
-        'JWT authentication (admins and end users), Public / Authenticated / Editor / Author / Super Admin roles, API tokens.',
-        'Security: Helmet, CORS, rate limiting, input validation with Zod.',
         'Next.js admin panel: drag-and-drop editor (dnd-kit), media library with thumbnails generated by sharp.',
         'PHP SDK to consume the API; Docker Compose deployment (PostgreSQL, API, admin, Nginx) on a Linux server.',
       ],
     },
-    stack: ['TypeScript', 'Node.js', 'Express', 'Prisma', 'PostgreSQL', 'Next.js', 'React Query', 'Zustand', 'Tailwind CSS', 'Zod', 'Docker', 'Nginx', 'PHP'],
+    stack: ['Node.js', 'Express', 'PostgreSQL', 'Next.js', 'Tailwind CSS', 'Docker', 'Nginx', 'PHP'],
   },
   aupair: {
     context: {
@@ -351,7 +345,7 @@ export const projectDetails = {
         'Alternative PHP version consuming the same API, for shared hosting.',
       ],
     },
-    stack: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'PHP'],
+    stack: ['Next.js 16', 'React 19', 'Tailwind CSS 4', 'PHP'],
   },
   correcturl: {
     context: {
@@ -363,16 +357,14 @@ export const projectDetails = {
         'Création de liens courts avec slugs personnalisés et gestion correcte du percent-encoding.',
         'Page de statistiques par lien et historique des liens de chaque visiteur (cookie anonyme).',
         'Image Docker multi-étapes (Next.js standalone) et base PostgreSQL.',
-        'Protection en production : limitation de débit Nginx, filtrage des user-agents, blocage des accès par IP directe, Cloudflare, Fail2ban avec routes « pot de miel ».',
       ],
       en: [
         'Short links with custom slugs and correct percent-encoding handling.',
         'Per-link statistics page and per-visitor link history (anonymous cookie).',
         'Multi-stage Docker image (Next.js standalone) and PostgreSQL database.',
-        'Production protection: Nginx rate limiting, user-agent filtering, blocking direct-IP access, Cloudflare, Fail2ban with honeypot routes.',
       ],
     },
-    stack: ['Next.js 14', 'TypeScript', 'PostgreSQL', 'Docker', 'Nginx', 'Cloudflare', 'Fail2ban'],
+    stack: ['Next.js 14', 'PostgreSQL', 'Docker', 'Nginx'],
   },
   latice: {
     context: {
@@ -498,9 +490,9 @@ export const ui = {
     copied: 'Copié !',
     whatIDo: 'Ce que je fais',
     services: [
-      { icon: '⚙️', title: 'Back-end & API', text: 'API REST en Node.js/TypeScript, authentification, rôles, bases PostgreSQL.' },
+      { icon: '⚙️', title: 'Back-end & API', text: 'API REST en Node.js et Express, bases de données PostgreSQL et MySQL.' },
       { icon: '🖥️', title: 'Front-end', text: 'Interfaces React / Next.js rapides, accessibles et responsives.' },
-      { icon: '🚀', title: 'Déploiement', text: 'Docker, Nginx, serveurs Linux, Cloudflare : du code à la production.' },
+      { icon: '🚀', title: 'Déploiement', text: 'Docker, Nginx et serveurs Linux : du code à la production.' },
     ],
     ctaTitle: 'Un stage de 16 semaines à partir de mars 2027 ?',
     ctaText: 'Je serais ravi d’échanger avec votre équipe.',
@@ -526,9 +518,9 @@ export const ui = {
     copied: 'Copied!',
     whatIDo: 'What I do',
     services: [
-      { icon: '⚙️', title: 'Back end & APIs', text: 'REST APIs in Node.js/TypeScript, authentication, roles, PostgreSQL databases.' },
+      { icon: '⚙️', title: 'Back end & APIs', text: 'REST APIs with Node.js and Express, PostgreSQL and MySQL databases.' },
       { icon: '🖥️', title: 'Front end', text: 'Fast, accessible and responsive React / Next.js interfaces.' },
-      { icon: '🚀', title: 'Deployment', text: 'Docker, Nginx, Linux servers, Cloudflare: from code to production.' },
+      { icon: '🚀', title: 'Deployment', text: 'Docker, Nginx and Linux servers: from code to production.' },
     ],
     ctaTitle: 'A 16-week internship from March 2027?',
     ctaText: 'I would be glad to talk with your team.',
