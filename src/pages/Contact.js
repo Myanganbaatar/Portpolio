@@ -30,7 +30,7 @@ export default function Contact() {
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.contact} title={c.title} lead={c.text} />
+      <PageHeader eyebrow={t.nav.contact} title={c.title} lead={c.text} robot="mail" />
       <section className="container contact reveal reveal-2">
         <div className="card contact-main">
           <span className="contact-main__icon" aria-hidden="true">

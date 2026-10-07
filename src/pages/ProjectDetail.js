@@ -2,7 +2,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { projectDetails, projects } from '../content';
 import { ArrowIcon, ExternalIcon, GitHubIcon, LockIcon, PlayIcon } from '../components/Icons';
-import { CtaBanner, TagList } from '../components/ui';
+import { CtaBanner, RobotSlot, TagList } from '../components/ui';
 import './pages.css';
 
 export default function ProjectDetail() {
@@ -21,6 +21,7 @@ export default function ProjectDetail() {
   return (
     <>
       <header className="container detail-header reveal">
+        <RobotSlot mode="present" className="robot-slot--side" />
         <Link to="/projects" className="text-link text-link--muted">
           {u.backToProjects}
         </Link>

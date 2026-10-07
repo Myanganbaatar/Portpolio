@@ -10,7 +10,7 @@ export default function Experience() {
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.experience} title={x.title} lead={x.intro} />
+      <PageHeader eyebrow={t.nav.experience} title={x.title} lead={x.intro} robot="type" />
       <section className="container timeline">
         <article className="timeline__item reveal reveal-2">
           <div className="timeline__dot" aria-hidden="true" />

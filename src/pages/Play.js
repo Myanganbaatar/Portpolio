@@ -3,6 +3,7 @@ import { useSite, usePageTitle } from '../context';
 import { projects } from '../content';
 import LaticeGame from '../components/LaticeGame';
 import PythonGames from '../components/PythonGames';
+import { RobotSlot } from '../components/ui';
 import './pages.css';
 
 const GAMES = { latice: LaticeGame, python: PythonGames };
@@ -23,6 +24,7 @@ export default function Play() {
           ← {project.title[lang]}
         </Link>
         <p className="eyebrow">{u.playTitle}</p>
+        <RobotSlot mode="play" className="robot-slot--mini" />
       </div>
       <div className="play__stage reveal reveal-2">
         <Game />

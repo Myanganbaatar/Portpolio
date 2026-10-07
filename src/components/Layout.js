@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { useSite } from '../context';
+import { ScrollProgress } from './motion';
 import { links } from '../content';
 import { CloseIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, MenuIcon, MoonIcon, SunIcon } from './Icons';
 import './Layout.css';
@@ -106,6 +108,7 @@ function Footer() {
 
 export default function Layout() {
   const { pathname } = useLocation();
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -116,10 +119,18 @@ export default function Layout() {
       <a href="#main" className="skip-link">
         Skip to content
       </a>
+      <ScrollProgress />
       <Navbar />
-      <main id="main" className="site__main" key={pathname}>
+      <motion.main
+        id="main"
+        className="site__main"
+        key={pathname}
+        initial={reduce ? false : { opacity: 0, y: 18 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}
+      >
         <Outlet />
-      </main>
+      </motion.main>
       <Footer />
     </div>
   );

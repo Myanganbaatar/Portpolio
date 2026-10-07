@@ -11,7 +11,7 @@ export default function About() {
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.about} title={a.title} lead={t.hero.role} />
+      <PageHeader eyebrow={t.nav.about} title={a.title} lead={t.hero.role} robot="globe" />
       <section className="container about">
         <div className="about__text reveal reveal-2">
           {a.paragraphs.map((p) => (

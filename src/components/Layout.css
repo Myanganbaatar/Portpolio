@@ -434,6 +434,30 @@ a.link-chip:hover {
   padding: 72px 24px 40px;
 }
 
+.page-header--robot {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  align-items: center;
+  gap: 24px;
+  padding-top: 40px;
+  padding-bottom: 16px;
+}
+
+.page-header--robot .robot-slot {
+  height: 360px;
+}
+
+@media (max-width: 920px) {
+  .page-header--robot {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .page-header--robot .robot-slot {
+    height: 280px;
+    margin-top: 8px;
+  }
+}
+
 .page-title {
   font-size: clamp(2.4rem, 6vw, 4rem);
   font-weight: 700;
@@ -539,4 +563,37 @@ a.link-chip:hover {
   .cta-banner {
     padding: 28px 22px;
   }
+}
+
+/* ---------- Motion ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 200;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.tilt {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  background: radial-gradient(360px circle at var(--gx, 50%) var(--gy, 50%), color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%);
+}
+
+.tilt:hover::after {
+  opacity: 1;
 }

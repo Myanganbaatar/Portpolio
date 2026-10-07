@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { projects } from '../content';
 import { PageHeader, ProjectCard } from '../components/ui';
+import { Stagger } from '../components/motion';
 import './pages.css';
 
 const FILTERS = ['all', 'internship', 'university', 'demo'];
@@ -25,7 +26,7 @@ export default function Projects() {
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.projects} title={t.projects.title} lead={lead} />
+      <PageHeader eyebrow={t.nav.projects} title={t.projects.title} lead={lead} robot="present" />
       <section className="container">
         <div className="filters reveal reveal-2" role="tablist" aria-label="Filter">
           {FILTERS.map((f) => {
@@ -43,11 +44,11 @@ export default function Projects() {
             );
           })}
         </div>
-        <div className="grid grid--3 reveal reveal-3">
+        <Stagger key={active} className="grid grid--3">
           {visible.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}
-        </div>
+        </Stagger>
       </section>
     </>
   );

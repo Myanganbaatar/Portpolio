@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { links, projects } from '../content';
 import { ArrowIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon } from '../components/Icons';
-import { CtaBanner, ProjectCard, SectionTitle } from '../components/ui';
+import { CtaBanner, ProjectCard, RobotSlot, SectionTitle } from '../components/ui';
+import { CountUp, Reveal, Stagger, TiltCard } from '../components/motion';
 import './pages.css';
 
 const FEATURED = ['cms', 'python', 'latice'];
@@ -74,14 +75,19 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <CodeCard lang={lang} />
+          <div className="hero-3d">
+            <RobotSlot mode="hello" className="robot-slot--hero" />
+            <CodeCard lang={lang} />
+          </div>
         </div>
 
         <div className="container">
           <dl className="stats reveal reveal-3">
             {h.stats.map((s) => (
               <div key={s.label} className="stat">
-                <dt>{s.value}</dt>
+                <dt>
+                  <CountUp value={s.value} />
+                </dt>
                 <dd>{s.label}</dd>
               </div>
             ))}
@@ -90,63 +96,73 @@ export default function Home() {
       </section>
 
       <section className="section container">
-        <SectionTitle eyebrow="01" title={u.whatIDo} />
-        <div className="grid grid--3">
+        <Reveal>
+          <SectionTitle eyebrow="01" title={u.whatIDo} />
+        </Reveal>
+        <Stagger className="grid grid--3">
           {u.services.map((s) => (
-            <div key={s.title} className="card service-card">
+            <TiltCard key={s.title} className="card service-card">
               <span className="service-card__icon" aria-hidden="true">
                 {s.icon}
               </span>
               <h3>{s.title}</h3>
               <p>{s.text}</p>
-            </div>
+            </TiltCard>
           ))}
-        </div>
+        </Stagger>
       </section>
 
       <section className="section container">
-        <SectionTitle
-          eyebrow="02"
-          title={u.featured}
-          action={
-            <Link to="/projects" className="text-link">
-              {u.allProjects} <ArrowIcon width={16} height={16} />
-            </Link>
-          }
-        />
-        <div className="grid grid--3">
+        <Reveal>
+          <SectionTitle
+            eyebrow="02"
+            title={u.featured}
+            action={
+              <Link to="/projects" className="text-link">
+                {u.allProjects} <ArrowIcon width={16} height={16} />
+              </Link>
+            }
+          />
+        </Reveal>
+        <Stagger className="grid grid--3">
           {FEATURED.map((id) => (
             <ProjectCard key={id} project={projects.find((p) => p.id === id)} />
           ))}
-        </div>
+        </Stagger>
       </section>
 
       <section className="section container">
-        <SectionTitle
-          eyebrow="03"
-          title={t.experience.title}
-          action={
-            <Link to="/experience" className="text-link">
-              {u.seeExperience} <ArrowIcon width={16} height={16} />
-            </Link>
-          }
-        />
-        <Link to="/experience" className="card xp-teaser">
-          <div className="xp-teaser__logo" aria-hidden="true">
-            IT
-          </div>
-          <div>
-            <h3>{t.experience.role}</h3>
-            <p className="xp-teaser__meta">
-              {t.experience.company} · {t.experience.place} · {t.experience.date}
-            </p>
-            <p className="xp-teaser__text">{t.experience.intro}</p>
-          </div>
-          <ArrowIcon className="xp-teaser__arrow" />
-        </Link>
+        <Reveal>
+          <SectionTitle
+            eyebrow="03"
+            title={t.experience.title}
+            action={
+              <Link to="/experience" className="text-link">
+                {u.seeExperience} <ArrowIcon width={16} height={16} />
+              </Link>
+            }
+          />
+        </Reveal>
+        <Reveal delay={0.1}>
+          <Link to="/experience" className="card xp-teaser">
+            <div className="xp-teaser__logo" aria-hidden="true">
+              IT
+            </div>
+            <div>
+              <h3>{t.experience.role}</h3>
+              <p className="xp-teaser__meta">
+                {t.experience.company} · {t.experience.place} · {t.experience.date}
+              </p>
+              <p className="xp-teaser__text">{t.experience.intro}</p>
+            </div>
+            <ArrowIcon className="xp-teaser__arrow" />
+          </Link>
+        </Reveal>
       </section>
 
-      <CtaBanner />
+      <Reveal>
+        <CtaBanner />
+      </Reveal>
     </>
   );
 }

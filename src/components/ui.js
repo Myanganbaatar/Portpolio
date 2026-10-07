@@ -1,5 +1,8 @@
+import { lazy, Suspense, useRef } from 'react';
+import { useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useSite } from '../context';
+import { TiltCard } from './motion';
 import { ArrowIcon, ExternalIcon, GitHubIcon, LockIcon, PlayIcon } from './Icons';
 
 export function Tag({ children }) {
@@ -16,12 +19,32 @@ export function TagList({ items }) {
   );
 }
 
-export function PageHeader({ eyebrow, title, lead }) {
+// three.js is heavy: the robot scene lives in its own chunk, loaded after the page.
+const RobotStage = lazy(() => import('./Robot3D'));
+
+// 3D robot doing something different on each page; it only animates while visible.
+export function RobotSlot({ mode, className = '' }) {
+  const { theme } = useSite();
+  const ref = useRef(null);
+  const visible = useInView(ref, { margin: '120px' });
   return (
-    <header className="page-header container reveal">
-      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-      <h1 className="page-title">{title}</h1>
-      {lead && <p className="page-lead">{lead}</p>}
+    <div ref={ref} className={`robot-slot robot-slot--${mode} ${className}`}>
+      <Suspense fallback={null}>
+        <RobotStage mode={mode} theme={theme} active={visible} />
+      </Suspense>
+    </div>
+  );
+}
+
+export function PageHeader({ eyebrow, title, lead, robot }) {
+  return (
+    <header className={`page-header container reveal ${robot ? 'page-header--robot' : ''}`}>
+      <div>
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+        <h1 className="page-title">{title}</h1>
+        {lead && <p className="page-lead">{lead}</p>}
+      </div>
+      {robot && <RobotSlot mode={robot} />}
     </header>
   );
 }
@@ -42,7 +65,7 @@ export function ProjectCard({ project }) {
   const { lang, t } = useSite();
   const p = t.projects;
   return (
-    <article className="card project-card">
+    <TiltCard as="article" className="card project-card">
       <Link to={`/projects/${project.id}`} className="project-card__main">
         <div className="project-card__top">
           <span className="project-card__icon" aria-hidden="true">
@@ -79,7 +102,7 @@ export function ProjectCard({ project }) {
           </span>
         )}
       </div>
-    </article>
+    </TiltCard>
   );
 }
 
