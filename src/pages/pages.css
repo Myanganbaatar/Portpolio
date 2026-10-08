@@ -1387,12 +1387,8 @@ a.contact-item:hover {
 }
 
 .bento--projects {
+  grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: auto;
-}
-
-.bento--projects > :first-child {
-  grid-column: span 2;
-  grid-row: span 2;
 }
 
 .bento--projects > .project-card {
@@ -1400,18 +1396,15 @@ a.contact-item:hover {
   border-radius: 20px;
 }
 
-.bento--projects > :first-child .project-card__title {
-  font-size: 1.6rem;
-}
-
-.bento--projects > :first-child .project-card__desc {
-  font-size: 1.05rem;
+@media (max-width: 920px) {
+  .bento--projects {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 560px) {
-  .bento--projects > :first-child {
-    grid-column: span 1;
-    grid-row: span 1;
+  .bento--projects {
+    grid-template-columns: 1fr;
   }
 }
 
