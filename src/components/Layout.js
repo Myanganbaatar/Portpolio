@@ -4,7 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useSite } from '../context';
 import { ScrollProgress } from './motion';
 import { links } from '../content';
-import { CloseIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, MenuIcon, MoonIcon, PhoneIcon, PinIcon, SunIcon } from './Icons';
+import { CloseIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, MenuIcon, MoonIcon, SunIcon } from './Icons';
 import './Layout.css';
 
 const NAV = ['about', 'experience', 'projects', 'skills', 'contact'];
@@ -106,63 +106,6 @@ function Footer() {
   );
 }
 
-// Name + contact details pinned to the side of every page (bottom bar on small screens).
-function ProfileRail() {
-  const { t, lang } = useSite();
-  const fr = lang === 'fr';
-  const items = [
-    { icon: <MailIcon />, label: 'Email', value: links.email, href: `mailto:${links.email}` },
-    { icon: <PhoneIcon />, label: fr ? 'Téléphone' : 'Phone', value: links.phone, href: links.phoneHref },
-    { icon: <LinkedInIcon />, label: 'LinkedIn', value: 'barsbold-myanganbaatar', href: links.linkedin, external: true },
-    { icon: <GitHubIcon />, label: 'GitHub', value: 'Myanganbaatar', href: links.github, external: true },
-    { icon: <PinIcon />, label: fr ? 'Localisation' : 'Location', value: 'Limoges, France' },
-  ];
-
-  return (
-    <aside className="rail" aria-label={fr ? 'Coordonnées' : 'Contact details'}>
-      <div className="rail__id">
-        <span className="nav__mark rail__mark">BM</span>
-        <div>
-          <p className="rail__name">Barsbold Myanganbaatar</p>
-          <p className="rail__role">{fr ? 'Développeur web full-stack' : 'Full-stack web developer'}</p>
-        </div>
-      </div>
-      <p className="rail__status">
-        <span className="status-dot" /> {fr ? 'Stage dès mars 2027' : 'Internship from March 2027'}
-      </p>
-      <ul className="rail__list">
-        {items.map((it) => {
-          const inner = (
-            <>
-              <span className="rail__icon" aria-hidden="true">
-                {it.icon}
-              </span>
-              <span className="rail__text">
-                <span className="rail__label">{it.label}</span>
-                <span className="rail__value">{it.value}</span>
-              </span>
-            </>
-          );
-          return (
-            <li key={it.label} className={it.href ? '' : 'rail__item--static'}>
-              {it.href ? (
-                <a href={it.href} className="rail__item" title={it.value} {...(it.external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                  {inner}
-                </a>
-              ) : (
-                <span className="rail__item">{inner}</span>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      <a className="btn btn--primary btn--sm rail__cv" href={t.hero.cvHref} download>
-        <DownloadIcon width={16} height={16} /> {t.nav.cv}
-      </a>
-    </aside>
-  );
-}
-
 export default function Layout() {
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
@@ -172,13 +115,12 @@ export default function Layout() {
   }, [pathname]);
 
   return (
-    <div className="site site--rail">
+    <div className="site">
       <a href="#main" className="skip-link">
         Skip to content
       </a>
       <ScrollProgress />
       <Navbar />
-      <ProfileRail />
       <motion.main
         id="main"
         className="site__main"
