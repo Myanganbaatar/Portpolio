@@ -28,6 +28,20 @@ export default function About() {
               {u.allProjects} <ArrowIcon width={16} height={16} />
             </Link>
           </div>
+          <div className="about__services">
+            <span className="tile__label">{u.whatIDo}</span>
+            <ul className="about__services-list">
+              {u.services.map((s) => (
+                <li key={s.title} className="about__service">
+                  <span className="about__service-icon" aria-hidden="true">
+                    {s.icon}
+                  </span>
+                  <h3 className="about__service-title">{s.title}</h3>
+                  <p className="about__service-text">{s.text}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
         </motion.div>
         <motion.aside className="tile b-r2 facts" variants={staggerItem}>
           <div className="facts__avatar" aria-hidden="true">

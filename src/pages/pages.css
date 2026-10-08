@@ -1358,6 +1358,62 @@ a.contact-item:hover {
   margin-bottom: 0;
 }
 
+/* "What I do" fills the lower half of the About tile, next to the facts column. */
+.about__services {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.about__services-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bento--page .about__text .about__service-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.about__service {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.about__service:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
+  transform: translateY(-2px);
+}
+
+.about__service-icon {
+  font-size: 1.3rem;
+}
+
+.about__service-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .about__services-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .contact-tile {
   flex-direction: row;
   align-items: center;
