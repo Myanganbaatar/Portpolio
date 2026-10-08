@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { ArrowIcon } from '../components/Icons';
 import { CtaBanner, PageHeader } from '../components/ui';
+import { Stagger, staggerItem } from '../components/motion';
+import { motion } from 'framer-motion';
 import './pages.css';
 
 export default function About() {
@@ -12,8 +14,9 @@ export default function About() {
   return (
     <>
       <PageHeader eyebrow={t.nav.about} title={a.title} lead={t.hero.role} robot="globe" />
-      <section className="container about">
-        <div className="about__text reveal reveal-2">
+      <Stagger className="container bento bento--page">
+        <motion.div className="tile b-c3 b-r2 about__text" variants={staggerItem}>
+          <span className="tile__label">{a.title}</span>
           {a.paragraphs.map((p) => (
             <p key={p.slice(0, 20)}>{p}</p>
           ))}
@@ -25,8 +28,8 @@ export default function About() {
               {u.allProjects} <ArrowIcon width={16} height={16} />
             </Link>
           </div>
-        </div>
-        <aside className="card facts reveal reveal-3">
+        </motion.div>
+        <motion.aside className="tile b-r2 facts" variants={staggerItem}>
           <div className="facts__avatar" aria-hidden="true">
             BM
           </div>
@@ -38,25 +41,19 @@ export default function About() {
               </div>
             ))}
           </dl>
-        </aside>
-      </section>
-
-      <section className="section container">
-        <h2 className="sub-title">{t.education.title}</h2>
+        </motion.aside>
         {t.education.items.map((e) => (
-          <div key={e.name} className="card edu-card">
-            <div className="edu-card__icon" aria-hidden="true">
-              🎓
-            </div>
-            <div className="edu-card__body">
-              <h3>{e.name}</h3>
-              <p>{e.school}</p>
+          <motion.div key={e.name} className="tile b-c4 edu-tile" variants={staggerItem}>
+            <span className="tile__label">🎓 {t.education.title}</span>
+            <div>
+              <h3 className="tile__title tile__title--sm">{e.name}</h3>
+              <p className="tile__muted">{e.school}</p>
               <p className="edu-card__note">{e.note}</p>
             </div>
             <span className="date-chip">{e.date}</span>
-          </div>
+          </motion.div>
         ))}
-      </section>
+      </Stagger>
 
       <CtaBanner />
     </>

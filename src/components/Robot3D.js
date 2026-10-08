@@ -2,21 +2,22 @@ import { Component, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { RoundedBox, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
+import { Atmosphere, usePlanetTexture, useRingGeometry, useRingTexture } from './spaceMaterials';
 
 /*
  * A small hovering robot built from primitives (no external model to download).
  * `mode` picks what it does on each page; its head always follows the pointer.
  */
 
-const PALETTE = {
-  dark: { shell: '#e6eaf2', joint: '#2b303c', visor: '#0b0d12', eye: '#7cf0c5', accent: '#7cf0c5', accent2: '#8ea2ff', warm: '#f5c46b', screen: '#0e1117' },
-  light: { shell: '#ffffff', joint: '#3a4050', visor: '#151821', eye: '#22e3a6', accent: '#0f9d74', accent2: '#4b5fd6', warm: '#d98b1e', screen: '#11141b' },
+export const PALETTE = {
+  dark: { shell: '#e6eaf2', joint: '#2b303c', visor: '#0b0d12', eye: '#22d3ee', accent: '#a78bfa', accent2: '#22d3ee', warm: '#f5c46b', screen: '#0e1117' },
+  light: { shell: '#ffffff', joint: '#3a4050', visor: '#151821', eye: '#06b6d4', accent: '#7c3aed', accent2: '#0891b2', warm: '#d98b1e', screen: '#11141b' },
 };
 
 // Pointer and scroll are tracked on the whole window, not only over the canvas.
-const input = { x: 0, y: 0, scrollVel: 0 };
+export const input = { x: 0, y: 0, scrollVel: 0 };
 let listeners = 0;
-function useWindowInput() {
+export function useWindowInput() {
   useEffect(() => {
     if (listeners++ > 0) return () => listeners--;
     let lastY = window.scrollY;
@@ -108,7 +109,7 @@ function Monitor({ colors, ...props }) {
   );
 }
 
-function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot }) {
+export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot }) {
   const head = useRef();
   const eyes = useRef();
   const antenna = useRef();
@@ -522,6 +523,62 @@ function Shadow({ x = 0 }) {
   );
 }
 
+// The planet each page's robot stands on: the one it flew to from the home page.
+const PAGE_PLANET = {
+  globe: { kind: 'terra', seed: 65, glow: '#6fb6ff', clouds: true },
+  type: { kind: 'gas', seed: 130, glow: '#ffc27a' },
+  present: { kind: 'ringed', seed: 104, glow: '#67e8f9', ring: true },
+  juggle: { kind: 'lava', seed: 78, glow: '#ff7a9a', lava: true },
+  mail: { kind: 'ice', seed: 91, glow: '#c4b5fd' },
+  play: { kind: 'gas', seed: 130, glow: '#ffc27a' },
+  lost: { kind: 'moon', seed: 3, glow: '#9aa1b3' },
+};
+const PLANET_R = 2.6;
+
+function PlanetFloor({ cfg }) {
+  const spin = useRef();
+  const clouds = useRef();
+  const map = usePlanetTexture(cfg.kind, cfg.seed);
+  const cloudMap = usePlanetTexture('clouds', 5);
+  const ringMap = useRingTexture();
+  const ringGeo = useRingGeometry(PLANET_R * 1.25, PLANET_R * 1.75);
+  useFrame((_, dt) => {
+    if (spin.current) spin.current.rotation.y += dt * 0.05;
+    if (clouds.current) clouds.current.rotation.y += dt * 0.07;
+  });
+  return (
+    <group position={[0, -PLANET_R, 0]}>
+      {/* poles point sideways so the equator rolls under the robot */}
+      <group rotation={[0, 0, Math.PI / 2]}>
+      <group ref={spin}>
+        <mesh>
+          <sphereGeometry args={[PLANET_R, 96, 96]} />
+          <meshStandardMaterial
+            map={map}
+            roughness={cfg.kind === 'ice' ? 0.35 : 0.85}
+            emissive={cfg.lava ? '#ff4d2e' : '#000000'}
+            emissiveMap={cfg.lava ? map : null}
+            emissiveIntensity={cfg.lava ? 0.35 : 0}
+          />
+        </mesh>
+      </group>
+      {cfg.clouds && (
+        <mesh ref={clouds} scale={1.012}>
+          <sphereGeometry args={[PLANET_R, 96, 96]} />
+          <meshStandardMaterial map={cloudMap} transparent depthWrite={false} roughness={1} />
+        </mesh>
+      )}
+      </group>
+      <Atmosphere radius={PLANET_R} color={cfg.glow} scale={1.07} power={1.4} intensity={0.9} />
+      {cfg.ring && (
+        <mesh geometry={ringGeo} rotation={[Math.PI / 2 - 0.18, 0, 0.12]}>
+          <meshStandardMaterial map={ringMap} transparent side={THREE.DoubleSide} depthWrite={false} emissive="#67e8f9" emissiveMap={ringMap} emissiveIntensity={0.35} />
+        </mesh>
+      )}
+    </group>
+  );
+}
+
 const LAYOUT = {
   hello: { robot: [0.55, 0, 0], rot: -0.15, cam: [0, 1.9, 6.6] },
   type: { robot: [0.75, 0, 0], rot: -0.75, cam: [0.2, 2.2, 6.4] },
@@ -540,10 +597,11 @@ function Scene({ mode, theme }) {
   const robot = useRef();
   const { camera } = useThree();
 
+  const planet = PAGE_PLANET[mode];
   useEffect(() => {
-    camera.position.set(...L.cam);
-    camera.lookAt(L.cam[0] * 0.5, 1.55, 0);
-  }, [camera, L]);
+    camera.position.set(L.cam[0], L.cam[1] + (planet ? 0.4 : 0), L.cam[2] + (planet ? 0.6 : 0));
+    camera.lookAt(L.cam[0] * 0.5, planet ? 1.15 : 1.55, 0);
+  }, [camera, L, planet]);
 
   useFrame((_, dt) => {
     if (!robot.current) return;
@@ -566,6 +624,7 @@ function Scene({ mode, theme }) {
           bothHandsSlot={mode === 'play' ? <Controller colors={colors} /> : null}
         />
         <Shadow />
+        {planet && <PlanetFloor cfg={planet} />}
         {mode === 'juggle' && <JuggleOrbs colors={colors} />}
         {mode === 'lost' && <QuestionMark colors={colors} />}
       </group>

@@ -44,7 +44,7 @@ export default function Projects() {
             );
           })}
         </div>
-        <Stagger key={active} className="grid grid--3">
+        <Stagger key={active} className="bento bento--projects">
           {visible.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}
