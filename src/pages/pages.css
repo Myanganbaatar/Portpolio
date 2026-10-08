@@ -1472,3 +1472,69 @@ a.contact-item:hover {
   mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
   -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
 }
+
+/* ---------- Home bento (lean) ---------- */
+.bento--home {
+  grid-auto-rows: minmax(170px, auto);
+}
+
+.tile--stats {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  gap: 16px;
+}
+
+.tile__stat {
+  display: grid;
+  gap: 6px;
+  text-align: center;
+}
+
+.tile--stack {
+  justify-content: center;
+}
+
+.tile__games {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.tile__game {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: inherit;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.tile__game:hover,
+.tile__game:focus-visible {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.tile__game > span:last-child {
+  display: grid;
+  gap: 6px;
+}
+
+.tile--cta {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 560px) {
+  .tile--stats {
+    flex-direction: column;
+  }
+  .tile__games {
+    grid-template-columns: 1fr;
+  }
+}

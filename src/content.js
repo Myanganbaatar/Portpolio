@@ -28,7 +28,7 @@ export const content = {
       cvHref: cv('fr'),
       stats: [
         { value: '3', label: 'applications mises en production' },
-        { value: '10+', label: 'projets réalisés' },
+        { value: '9', label: 'projets réalisés' },
         { value: '3', label: 'langues parlées' },
       ],
     },
@@ -124,7 +124,7 @@ export const content = {
       cvHref: cv('en'),
       stats: [
         { value: '3', label: 'apps shipped to production' },
-        { value: '10+', label: 'projects built' },
+        { value: '9', label: 'projects built' },
         { value: '3', label: 'languages spoken' },
       ],
     },
