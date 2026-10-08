@@ -166,19 +166,21 @@ function ProfileRail() {
 export default function Layout() {
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
+  // The home hero already shows the name, so the rail only appears on inner pages.
+  const showRail = pathname !== '/';
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
 
   return (
-    <div className="site site--rail">
+    <div className={`site ${showRail ? 'site--rail' : ''}`}>
       <a href="#main" className="skip-link">
         Skip to content
       </a>
       <ScrollProgress />
       <Navbar />
-      <ProfileRail />
+      {showRail && <ProfileRail />}
       <motion.main
         id="main"
         className="site__main"
