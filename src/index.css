@@ -14,7 +14,9 @@
   --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
   --radius: 16px;
   --radius-sm: 10px;
-  --maxw: 1120px;
+  --maxw: 100%;
+  /* Side spacing grows with the screen: 16px on phones, up to 80px on wide screens. */
+  --gutter: clamp(16px, 4vw, 80px);
   --font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
   --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
@@ -58,6 +60,66 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* ---------- Page background: space theme (nebula glow + stars) ---------- */
+:root {
+  --bg-nebula: rgba(167, 139, 250, 0.3);
+  --bg-nebula-2: rgba(34, 211, 238, 0.1);
+  --bg-star: rgba(255, 255, 255, 0.8);
+}
+
+:root[data-theme='light'] {
+  --bg-nebula: rgba(124, 58, 237, 0.16);
+  --bg-nebula-2: rgba(8, 145, 178, 0.08);
+  --bg-star: rgba(80, 70, 140, 0.35);
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Nebula glow in the top corner and a fixed layer of small stars. */
+body::before {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, var(--bg-star), transparent 60%),
+    radial-gradient(1px 1px at 140px 80px, var(--bg-star), transparent 60%),
+    radial-gradient(1.5px 1.5px at 90px 150px, var(--bg-star), transparent 60%),
+    radial-gradient(1px 1px at 200px 190px, var(--bg-star), transparent 60%),
+    radial-gradient(1px 1px at 60px 220px, var(--bg-star), transparent 60%),
+    radial-gradient(60% 50% at 85% 0%, var(--bg-nebula), transparent 70%),
+    radial-gradient(45% 40% at 0% 100%, var(--bg-nebula-2), transparent 70%);
+  background-size: 240px 240px, 240px 240px, 240px 240px, 240px 240px, 240px 240px, 100% 100%, 100% 100%;
+}
+
+/* Fewer, brighter stars that twinkle. */
+body::after {
+  background-image:
+    radial-gradient(1.5px 1.5px at 50px 60px, var(--bg-star), transparent 60%),
+    radial-gradient(1px 1px at 170px 140px, var(--bg-star), transparent 60%),
+    radial-gradient(2px 2px at 110px 20px, var(--bg-star), transparent 60%);
+  background-size: 320px 320px;
+  animation: bg-twinkle 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes bg-twinkle {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    animation: none;
+  }
 }
 
 h1,

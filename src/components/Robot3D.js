@@ -14,6 +14,16 @@ export const PALETTE = {
   light: { shell: '#ffffff', joint: '#3a4050', visor: '#151821', eye: '#06b6d4', accent: '#7c3aed', accent2: '#0891b2', warm: '#d98b1e', screen: '#11141b' },
 };
 
+// Each page dresses the robot to match its backdrop (see PageWorld.js): colour
+// overrides plus a few extra pieces. Original designs, no character likenesses.
+const OUTFITS = {
+  globe: { kind: 'city', eyeScale: 1.45, colors: { shell: '#dc2626', joint: '#1e3a8a', visor: '#991b1b', eye: '#f8fafc', accent: '#1d4ed8', accent2: '#60a5fa', warm: '#f87171' } },
+  type: { kind: 'lab', colors: { shell: '#b91c1c', joint: '#ca8a04', visor: '#eab308', eye: '#e0f2fe', accent: '#38bdf8', accent2: '#f59e0b', warm: '#f59e0b' } },
+  present: { kind: 'future', colors: { shell: '#1c1a24', joint: '#3f3f46', visor: '#09090b', eye: '#e9d5ff', accent: '#a855f7', accent2: '#c084fc', warm: '#c084fc' } },
+  juggle: { kind: 'realm', colors: { shell: '#cbd5e1', joint: '#334155', visor: '#1e293b', eye: '#7dd3fc', accent: '#facc15', accent2: '#7dd3fc', warm: '#facc15' } },
+  mail: { kind: 'mystic', colors: { shell: '#1e3a8a', joint: '#78350f', visor: '#0b0d12', eye: '#fdba74', accent: '#f97316', accent2: '#fb923c', warm: '#f59e0b' } },
+};
+
 // Pointer and scroll are tracked on the whole window, not only over the canvas.
 export const input = { x: 0, y: 0, scrollVel: 0 };
 let listeners = 0;
@@ -109,7 +119,7 @@ function Monitor({ colors, ...props }) {
   );
 }
 
-export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot }) {
+export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, outfit }) {
   const head = useRef();
   const eyes = useRef();
   const antenna = useRef();
@@ -285,7 +295,7 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot }) 
           <RoundedBox args={[0.8, 0.46, 0.06]} radius={0.12} smoothness={4} position={[0, 0.36, 0.38]}>
             <meshStandardMaterial color={colors.visor} roughness={0.15} metalness={0.6} />
           </RoundedBox>
-          <group ref={eyes} position={[0, 0.38, 0.42]}>
+          <group ref={eyes} position={[0, 0.38, 0.42]} scale={outfit?.eyeScale || 1}>
             {[-0.18, 0.18].map((x) => (
               <mesh key={x} position={[x, 0, 0]}>
                 <capsuleGeometry args={[0.055, 0.08, 4, 12]} />
@@ -308,13 +318,149 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot }) 
             <sphereGeometry args={[0.065, 16, 16]} />
             <meshStandardMaterial color={colors.warm} emissive={colors.warm} emissiveIntensity={1.5} toneMapped={false} />
           </mesh>
+          {outfit?.kind === 'realm' && <HelmetWings colors={colors} />}
         </group>
+        <OutfitExtras kind={outfit?.kind} colors={colors} />
         {arm(-1, lS, lE, null)}
         {arm(1, rS, rE, rightHandSlot)}
         {bothHandsSlot}
       </group>
     </group>
   );
+}
+
+/* ---------- outfits ---------- */
+
+// Cape hanging behind the torso; it sways a little.
+function Cape({ color, collar }) {
+  const ref = useRef();
+  useFrame(({ clock }) => {
+    if (ref.current) ref.current.rotation.x = 0.12 + Math.sin(clock.elapsedTime * 1.6) * 0.05;
+  });
+  return (
+    <group>
+      <mesh ref={ref} position={[0, 1.12, -0.12]}>
+        <cylinderGeometry args={[0.5, 0.8, 1.35, 32, 1, true, Math.PI / 2, Math.PI]} />
+        <meshStandardMaterial color={color} roughness={0.7} side={THREE.DoubleSide} />
+      </mesh>
+      {collar && (
+        <mesh position={[0, 1.78, -0.08]} rotation={[-0.25, 0, 0]}>
+          <cylinderGeometry args={[0.56, 0.42, 0.42, 32, 1, true, Math.PI / 2 + 0.3, Math.PI - 0.6]} />
+          <meshStandardMaterial color={color} roughness={0.7} side={THREE.DoubleSide} />
+        </mesh>
+      )}
+    </group>
+  );
+}
+
+function HelmetWings({ colors }) {
+  return (
+    <>
+      {[-1, 1].map((s) => (
+        <mesh key={s} position={[s * 0.56, 0.62, 0]} rotation={[0, 0, -s * 0.55]}>
+          <coneGeometry args={[0.1, 0.46, 4]} />
+          <meshStandardMaterial color={colors.accent} metalness={0.7} roughness={0.25} />
+        </mesh>
+      ))}
+    </>
+  );
+}
+
+// Magic circle turning slowly behind the robot.
+function SpinningRing({ color }) {
+  const ref = useRef();
+  useFrame((_, dt) => {
+    if (ref.current) ref.current.rotation.z += dt * 0.8;
+  });
+  return (
+    <group ref={ref} position={[0, 1.6, -0.6]}>
+      <mesh>
+        <torusGeometry args={[1.25, 0.025, 8, 80]} />
+        <meshBasicMaterial color={color} toneMapped={false} />
+      </mesh>
+      {[0, Math.PI / 4].map((a) => (
+        <mesh key={a} rotation={[0, 0, a]}>
+          <torusGeometry args={[1.05, 0.015, 4, 4]} />
+          <meshBasicMaterial color={color} toneMapped={false} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+// Pieces worn on the body for each page's outfit.
+function OutfitExtras({ kind, colors }) {
+  if (kind === 'city') {
+    // Web pattern over the chest light.
+    return (
+      <group position={[0, 1.3, 0.372]}>
+        <mesh>
+          <circleGeometry args={[0.15, 32]} />
+          <meshBasicMaterial color="#0b0b0f" />
+        </mesh>
+        {[0, Math.PI / 4, Math.PI / 2, (3 * Math.PI) / 4].map((a) => (
+          <mesh key={a} rotation={[0, 0, a]} position={[0, 0, 0.002]}>
+            <planeGeometry args={[0.3, 0.012]} />
+            <meshBasicMaterial color="#e5e7eb" />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+  if (kind === 'lab') {
+    // Glowing chest core with a metal ring around it.
+    return (
+      <group position={[0, 1.3, 0.37]}>
+        <mesh>
+          <torusGeometry args={[0.17, 0.035, 12, 40]} />
+          <meshStandardMaterial color="#94a3b8" metalness={0.8} roughness={0.25} />
+        </mesh>
+        <mesh position={[0, 0, 0.01]}>
+          <circleGeometry args={[0.14, 32]} />
+          <meshBasicMaterial color="#e0f2fe" toneMapped={false} />
+        </mesh>
+        <pointLight color="#7dd3fc" intensity={3} distance={2} />
+      </group>
+    );
+  }
+  if (kind === 'future') {
+    // Silver necklace and glowing lines on the suit.
+    return (
+      <group>
+        <mesh position={[0, 1.72, 0.04]} rotation={[Math.PI / 2 - 0.25, 0, 0]}>
+          <torusGeometry args={[0.3, 0.035, 10, 40]} />
+          <meshStandardMaterial color="#e5e7eb" metalness={0.9} roughness={0.2} />
+        </mesh>
+        {[-0.3, 0.3].map((x) => (
+          <mesh key={x} position={[x, 1.22, 0.37]}>
+            <planeGeometry args={[0.03, 0.62]} />
+            <meshBasicMaterial color={colors.accent2} toneMapped={false} />
+          </mesh>
+        ))}
+      </group>
+    );
+  }
+  if (kind === 'realm') return <Cape color="#b91c1c" />;
+  if (kind === 'mystic') {
+    // High-collared cape, a gold amulet and a magic circle behind.
+    return (
+      <group>
+        <Cape color="#b91c1c" collar />
+        <group position={[0, 1.5, 0.38]}>
+          <mesh>
+            <torusGeometry args={[0.1, 0.025, 10, 30]} />
+            <meshStandardMaterial color="#facc15" metalness={0.8} roughness={0.25} />
+          </mesh>
+          <mesh>
+            <circleGeometry args={[0.07, 24]} />
+            <meshStandardMaterial color="#22c55e" emissive="#22c55e" emissiveIntensity={1.2} toneMapped={false} />
+          </mesh>
+        </group>
+        <SpinningRing color={colors.accent2} />
+      </group>
+    );
+  }
+  return null;
 }
 
 /* ---------- page props ---------- */
@@ -592,7 +738,9 @@ const LAYOUT = {
 
 function Scene({ mode, theme }) {
   useWindowInput();
-  const colors = PALETTE[theme] || PALETTE.dark;
+  const outfit = OUTFITS[mode];
+  const base = PALETTE[theme] || PALETTE.dark;
+  const colors = useMemo(() => (outfit ? { ...base, ...outfit.colors } : base), [base, outfit]);
   const L = LAYOUT[mode] || LAYOUT.hello;
   const robot = useRef();
   const { camera } = useThree();
@@ -620,6 +768,7 @@ function Scene({ mode, theme }) {
           mode={mode}
           colors={colors}
           robotRef={robot}
+          outfit={outfit}
           rightHandSlot={mode === 'mail' ? <Envelope colors={colors} /> : null}
           bothHandsSlot={mode === 'play' ? <Controller colors={colors} /> : null}
         />

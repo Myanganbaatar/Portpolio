@@ -70,7 +70,7 @@ export default function Home() {
       <section className={`space-hero ${flying ? 'is-flying' : ''}`}>
         <div className="space-hero__stage" aria-hidden={!wide}>
           <Suspense fallback={null}>
-            <SpaceHero theme={theme} labels={t.nav} shift={wide ? 0.3 : 0} onFly={() => setFlying(true)} onNavigate={(key) => navigate(`/${key}`)} />
+            <SpaceHero theme={theme} labels={t.nav} shift={wide ? 0.22 : 0} onFly={() => setFlying(true)} onNavigate={(key) => navigate(`/${key}`)} />
           </Suspense>
         </div>
         <div className="container space-hero__content">

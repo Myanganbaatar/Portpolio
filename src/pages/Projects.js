@@ -1,54 +1,121 @@
-import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { projects } from '../content';
-import { PageHeader, ProjectCard } from '../components/ui';
+import { ArrowIcon, ExternalIcon, GitHubIcon, PlayIcon } from '../components/Icons';
+import { PageHeader, ProjectCard, TagList } from '../components/ui';
 import { Stagger } from '../components/motion';
+import LaticeGame from '../components/LaticeGame';
+import PythonGames from '../components/PythonGames';
+import NetflixDemo from '../components/NetflixDemo';
+import { MauiDemo, TaskAppDemo } from '../components/ProjectDemos';
 import './pages.css';
 
-const FILTERS = ['all', 'internship', 'university', 'demo'];
+// Projects with something to try in the browser. `recreated` marks web
+// re-creations of apps whose original code (Kotlin, C#) cannot run here.
+const DEMOS = [
+  { id: 'netflix', Demo: NetflixDemo, recreated: true },
+  { id: 'kotlin', Demo: TaskAppDemo, recreated: true },
+  { id: 'maui', Demo: MauiDemo, recreated: true },
+  { id: 'latice', Demo: LaticeGame },
+  { id: 'python', Demo: PythonGames },
+];
+
+function DemoRow({ project, Demo, recreated }) {
+  const { t, lang } = useSite();
+  const p = t.projects;
+  const fr = lang === 'fr';
+
+  return (
+    <article className="card demo-row reveal">
+      <div className="demo-row__info">
+        <div className="demo-row__head">
+          <span className="project-card__icon" aria-hidden="true">
+            {project.icon}
+          </span>
+          <div>
+            <span className="project-card__cat">{p.filters[project.category]}</span>
+            <h3 className="project-card__title">
+              <Link to={`/projects/${project.id}`}>{project.title[lang]}</Link>
+            </h3>
+          </div>
+        </div>
+        <p className="project-card__desc">{project.desc[lang]}</p>
+        <TagList items={project.tags} />
+        <div className="demo-row__links">
+          <Link to={`/projects/${project.id}`} className="link-chip">
+            <ArrowIcon width={15} height={15} /> {fr ? 'Détails' : 'Details'}
+          </Link>
+          {project.demo && (
+            <Link to={`/play/${project.demo}`} className="link-chip link-chip--accent">
+              <PlayIcon width={15} height={15} /> {fr ? 'Plein écran' : 'Full screen'}
+            </Link>
+          )}
+          {project.code && (
+            <a href={project.code} target="_blank" rel="noreferrer" className="link-chip">
+              <GitHubIcon width={15} height={15} /> {p.code}
+            </a>
+          )}
+          {project.live && (
+            <a href={project.live} target="_blank" rel="noreferrer" className="link-chip">
+              <ExternalIcon width={15} height={15} /> {p.live}
+            </a>
+          )}
+        </div>
+      </div>
+
+      <div className="demo-row__stage">
+        <p className="demo-row__label">
+          <span className="status-dot" />{' '}
+          {recreated
+            ? fr
+              ? 'Démo interactive · recréation web simplifiée de l’application'
+              : 'Interactive demo · simplified web re-creation of the app'
+            : fr
+              ? 'Démo jouable'
+              : 'Playable demo'}
+        </p>
+        <Demo />
+      </div>
+    </article>
+  );
+}
 
 export default function Projects() {
   const { t, lang } = useSite();
-  const [params, setParams] = useSearchParams();
-  const active = FILTERS.includes(params.get('filter')) ? params.get('filter') : 'all';
   usePageTitle(t.projects.title);
+  const fr = lang === 'fr';
 
-  const visible = projects.filter((p) => {
-    if (active === 'all') return true;
-    if (active === 'demo') return Boolean(p.demo);
-    return p.category === active;
-  });
+  const demoIds = DEMOS.map((d) => d.id);
+  const others = projects.filter((p) => !demoIds.includes(p.id));
 
-  const lead =
-    lang === 'fr'
-      ? 'Des applications en production réalisées pendant mon stage, et des projets universitaires — dont deux jeux jouables directement ici.'
-      : 'Production apps built during my internship, and university projects — including two games you can play right here.';
+  const lead = fr
+    ? 'Des applications en production réalisées pendant mon stage, et des projets universitaires — dont cinq que vous pouvez essayer directement ici.'
+    : 'Production apps built during my internship, and university projects — five of which you can try right here.';
 
   return (
     <>
       <PageHeader eyebrow={t.nav.projects} title={t.projects.title} lead={lead} robot="present" />
-      <section className="container">
-        <div className="filters reveal reveal-2" role="tablist" aria-label="Filter">
-          {FILTERS.map((f) => {
-            const count = f === 'all' ? projects.length : projects.filter((p) => (f === 'demo' ? p.demo : p.category === f)).length;
-            return (
-              <button
-                key={f}
-                role="tab"
-                aria-selected={active === f}
-                className={`filter ${active === f ? 'is-active' : ''}`}
-                onClick={() => setParams(f === 'all' ? {} : { filter: f }, { replace: true })}
-              >
-                {t.projects.filters[f]} <span className="filter__count">{count}</span>
-              </button>
-            );
-          })}
+
+      <section className="container projects-section">
+        <div className="section-title">
+          <h2>{fr ? 'Applications réalisées' : 'Apps I built'}</h2>
         </div>
-        <Stagger key={active} className="bento bento--projects">
-          {visible.map((p) => (
+        <Stagger className="bento bento--projects">
+          {others.map((p) => (
             <ProjectCard key={p.id} project={p} />
           ))}
         </Stagger>
+      </section>
+
+      <section className="container projects-section">
+        <div className="section-title">
+          <h2>{fr ? 'À essayer ici' : 'Try them here'}</h2>
+        </div>
+        <div className="demo-list">
+          {DEMOS.map(({ id, Demo, recreated }) => (
+            <DemoRow key={id} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} />
+          ))}
+        </div>
       </section>
     </>
   );

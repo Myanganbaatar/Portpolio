@@ -78,6 +78,12 @@ export function ProjectCard({ project }) {
           <ArrowIcon className="project-card__arrow" width={18} height={18} />
         </h3>
         <p className="project-card__desc">{project.desc[lang]}</p>
+        {project.result && (
+          <p className="project-card__result">
+            <span className="project-card__result-label">✓ {p.result}</span>
+            {project.result[lang]}
+          </p>
+        )}
         <TagList items={project.tags} />
       </Link>
       <div className="project-card__links">

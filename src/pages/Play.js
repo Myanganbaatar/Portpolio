@@ -15,7 +15,7 @@ export default function Play() {
   usePageTitle(project ? `${u.playTitle} — ${project.title[lang]}` : null);
 
   const Game = GAMES[game];
-  if (!Game || !project) return <Navigate to="/projects?filter=demo" replace />;
+  if (!Game || !project) return <Navigate to="/projects" replace />;
 
   return (
     <section className="container play">

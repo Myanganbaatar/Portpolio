@@ -20,9 +20,9 @@ export const content = {
     nav: { about: 'À propos', experience: 'Expérience', projects: 'Projets', skills: 'Compétences', contact: 'Contact', cv: 'CV' },
     hero: {
       hello: 'Bonjour, je suis',
-      role: 'Développeur web full-stack · Étudiant en 3ᵉ année de BUT Informatique',
-      status: 'Disponible pour un stage de 16 semaines dès mars 2027',
-      pitch: "Je conçois des applications web de bout en bout — de la base de données jusqu'au déploiement en production. Pendant mon stage, j'ai livré trois applications utilisées en conditions réelles.",
+      role: 'Développeur web full-stack · Interfaces React / Next.js et API Node.js',
+      status: 'Je cherche un stage de 16 semaines en développement web, dès mars 2027',
+      pitch: "Étudiant en 3ᵉ année de BUT Informatique, je développe des applications web complètes : l'interface en React / Next.js, l'API en Node.js et la base PostgreSQL. En stage chez IT Partner, j'ai mis en production 3 applications, dont le site mongolian-aupair.com.",
       cta: 'Voir mes projets',
       cv: 'Télécharger mon CV',
       cvHref: cv('fr'),
@@ -35,14 +35,15 @@ export const content = {
     about: {
       title: 'À propos',
       paragraphs: [
-        "Étudiant en 3ᵉ année de BUT Informatique à l'IUT du Limousin (Limoges), j'aime transformer une idée en produit utilisable. Je travaille surtout avec JavaScript, React/Next.js, Node.js et PostgreSQL, et je prends plaisir à m'occuper aussi de la partie déploiement (Docker, Nginx, serveurs Linux).",
-        "D'origine mongole, je vis et étudie en France. Autonome, rigoureux et rapide à prendre en main de nouveaux outils, j'apprécie autant travailler en équipe que mener un projet de A à Z.",
+        "Je suis étudiant en 3ᵉ année de BUT Informatique à l'IUT du Limousin (Limoges). Je développe des applications web, de l'interface jusqu'à la mise en ligne : React / Next.js pour le front-end, Node.js et Express pour l'API, PostgreSQL pour les données, Docker et Nginx pour le déploiement.",
+        "Ce qui m'intéresse le plus : relier une interface à une API et la mettre en production. Pendant mon stage, j'ai construit un CMS headless avec son API REST, puis un site en ligne qui utilise cette API (mongolian-aupair.com).",
+        "Mon objectif : devenir développeur web full-stack dans une équipe qui crée des produits utilisés par de vrais clients. Pour commencer, je cherche un stage de 16 semaines dès mars 2027, puis une alternance.",
       ],
       facts: [
         { label: 'Localisation', value: 'Limoges, France' },
         { label: 'Formation', value: 'BUT Informatique · 2024 – 2027' },
         { label: 'Langues', value: 'Mongol (natif) · Français · Anglais' },
-        { label: 'Recherche', value: 'Stage 16 semaines dès mars 2027 · alternance' },
+        { label: 'Objectif', value: 'Développeur web full-stack · stage 16 semaines dès mars 2027, puis alternance' },
       ],
     },
     experience: {
@@ -88,6 +89,7 @@ export const content = {
       play: 'Jouer',
       close: 'Fermer',
       private: 'Code privé (entreprise)',
+      result: 'Résultat',
     },
     skills: {
       title: 'Compétences',
@@ -116,9 +118,9 @@ export const content = {
     nav: { about: 'About', experience: 'Experience', projects: 'Projects', skills: 'Skills', contact: 'Contact', cv: 'Resume' },
     hero: {
       hello: "Hi, I'm",
-      role: 'Full-stack web developer · Third-year Computer Science student',
-      status: 'Available for a 16-week internship from March 2027',
-      pitch: 'I build web applications end to end — from the database to production deployment. During my internship I shipped three applications that are used in real conditions.',
+      role: 'Full-stack web developer · React / Next.js front ends and Node.js APIs',
+      status: 'Looking for a 16-week web development internship from March 2027',
+      pitch: 'Third-year Computer Science student. I build complete web applications: the front end in React / Next.js, the API in Node.js and the PostgreSQL database. During my internship at IT Partner I shipped 3 applications to production, including the mongolian-aupair.com website.',
       cta: 'See my projects',
       cv: 'Download my resume',
       cvHref: cv('en'),
@@ -131,14 +133,15 @@ export const content = {
     about: {
       title: 'About',
       paragraphs: [
-        "I'm a third-year Computer Science student (BUT Informatique) at IUT du Limousin in Limoges, France, and I love turning an idea into a usable product. I mostly work with JavaScript, React/Next.js, Node.js and PostgreSQL, and I also enjoy handling deployment (Docker, Nginx, Linux servers).",
-        "Originally from Mongolia, I live and study in France. I'm independent, thorough and quick to pick up new tools, and I enjoy both teamwork and owning a project end to end.",
+        "I'm a third-year Computer Science student (BUT Informatique) at IUT du Limousin in Limoges, France. I build web applications from the interface to production: React / Next.js for the front end, Node.js and Express for the API, PostgreSQL for data, Docker and Nginx for deployment.",
+        "What interests me most: connecting a front end to an API and shipping it to production. During my internship I built a headless CMS with its REST API, then a live website that uses this API (mongolian-aupair.com).",
+        "My goal: become a full-stack web developer in a team that builds products used by real customers. To start, I'm looking for a 16-week internship from March 2027, then a work-study contract.",
       ],
       facts: [
         { label: 'Location', value: 'Limoges, France' },
         { label: 'Education', value: 'BUT Informatique · 2024 – 2027' },
         { label: 'Languages', value: 'Mongolian (native) · French · English' },
-        { label: 'Looking for', value: '16-week internship from March 2027 · work-study' },
+        { label: 'Goal', value: 'Full-stack web developer · 16-week internship from March 2027, then work-study' },
       ],
     },
     experience: {
@@ -184,6 +187,7 @@ export const content = {
       play: 'Play',
       close: 'Close',
       private: 'Private code (company)',
+      result: 'Result',
     },
     skills: {
       title: 'Skills',
@@ -218,6 +222,10 @@ export const projects = [
       fr: 'CMS inspiré de Strapi : API REST générée automatiquement, éditeur en glisser-déposer, médiathèque.',
       en: 'Strapi-inspired CMS: auto-generated REST API, drag-and-drop editor, media library.',
     },
+    result: {
+      fr: 'En production : back-office de sites clients, API générée pour 14 types de champs.',
+      en: 'In production as the back office of client websites, with APIs generated for 14 field types.',
+    },
     tags: ['Node.js', 'PostgreSQL', 'Next.js', 'Docker'],
     private: true,
   },
@@ -227,6 +235,10 @@ export const projects = [
     desc: {
       fr: 'Site vitrine en production alimenté par le CMS headless, avec une version Next.js et une version PHP.',
       en: 'Live company website powered by the headless CMS, with a Next.js version and a PHP version.',
+    },
+    result: {
+      fr: 'Site en ligne sur mongolian-aupair.com, tout le contenu géré depuis le CMS.',
+      en: 'Live at mongolian-aupair.com, with all content managed from the CMS.',
     },
     tags: ['Next.js 16', 'React 19', 'Tailwind CSS', 'PHP'],
     live: 'https://mongolian-aupair.com',
@@ -238,6 +250,10 @@ export const projects = [
       fr: 'Raccourcisseur d’URL avec statistiques de clics, mis en production avec Docker et Nginx.',
       en: 'URL shortener with click statistics, deployed with Docker and Nginx.',
     },
+    result: {
+      fr: 'Déployé en production sur un serveur Linux avec Docker et Nginx.',
+      en: 'Deployed to production on a Linux server with Docker and Nginx.',
+    },
     tags: ['Next.js', 'PostgreSQL', 'Docker'],
     private: true,
   },
@@ -247,6 +263,10 @@ export const projects = [
     desc: {
       fr: 'Jeu de plateau en Java/JavaFX (équipe de 4) : moteur de jeu, règles de placement, calcul des points. Version web jouable ici.',
       en: 'Board game in Java/JavaFX (team of 4): game engine, placement rules, scoring. A web version is playable here.',
+    },
+    result: {
+      fr: 'Jeu complet livré en équipe de 4, avec une version web jouable ici.',
+      en: 'Complete game delivered by a team of 4, with a web version playable here.',
     },
     tags: ['Java', 'JavaFX', 'MVC', 'Git'],
     code: 'https://github.com/Myanganbaatar/Jeu-Latice',
@@ -258,6 +278,10 @@ export const projects = [
       fr: 'Morpion, Puissance 4, Allumettes et Devinette, en mode joueur contre joueur ou contre l’ordinateur. Portés sur le web.',
       en: 'Tic-tac-toe, Connect Four, Matches and Guessing game, player vs player or vs computer. Ported to the web.',
     },
+    result: {
+      fr: '4 jeux livrés, contre un joueur ou l’ordinateur, jouables ici.',
+      en: '4 games delivered, against a player or the computer, playable here.',
+    },
     tags: ['Python', 'Algorithmique', 'React'],
     code: 'https://github.com/Myanganbaatar/SAE-PYTHON',
   },
@@ -268,6 +292,10 @@ export const projects = [
       fr: 'Plateforme de questionnaires accessibles par code ou QR code (équipe de 5) : back-end PHP en MVC, base MariaDB, résultats en graphiques.',
       en: 'Survey platform reachable by code or QR code (team of 5): PHP MVC back end, MariaDB database, charts for results.',
     },
+    result: {
+      fr: 'Plateforme livrée en équipe de 5 : accès par code ou QR code, résultats en graphiques.',
+      en: 'Platform delivered by a team of 5: access by code or QR code, results shown as charts.',
+    },
     tags: ['PHP', 'JavaScript', 'MariaDB', 'Chart.js'],
     code: 'https://github.com/Mdeterne/php-mariadb-Questionary',
   },
@@ -275,10 +303,14 @@ export const projects = [
     id: 'netflix', category: 'university', icon: '🎬',
     title: { fr: 'Étude Netflix', en: 'Netflix study' },
     desc: {
-      fr: 'Architecture d’une plateforme de streaming : back-end, front-end utilisateur et front-end administrateur.',
-      en: 'Streaming-platform architecture: back end, user front end and admin front end.',
+      fr: 'Plateforme de location de films inspirée de Netflix : catalogue filtrable, panier, locations de 7 jours, API REST Express + MongoDB.',
+      en: 'Netflix-inspired movie rental platform: filterable catalogue, cart, 7-day rentals, Express + MongoDB REST API.',
     },
-    tags: ['JavaScript', 'Node.js', 'CSS'],
+    result: {
+      fr: 'Parcours complet de location : recherche, panier, connexion, suivi des locations avec compte à rebours.',
+      en: 'Complete rental flow: search, cart, sign-in, rental tracking with a countdown.',
+    },
+    tags: ['React', 'Express', 'MongoDB', 'Tailwind CSS'],
     code: 'https://github.com/Myanganbaatar/Netflix',
   },
   {
@@ -287,6 +319,10 @@ export const projects = [
     desc: {
       fr: 'Application Android native en Kotlin : ajout et modification de tâches, sélection de photos, recherche.',
       en: 'Native Android app in Kotlin: add and edit tasks, photo picker, search.',
+    },
+    result: {
+      fr: 'Application Android native : création de tâches, photos et recherche.',
+      en: 'Native Android app: task creation, photos and search.',
     },
     tags: ['Kotlin', 'Android', 'Gradle'],
     code: 'https://github.com/Myanganbaatar/Projet-Kotlin',
@@ -297,6 +333,10 @@ export const projects = [
     desc: {
       fr: 'Application multiplateforme en C# avec le pattern MVVM et des notifications locales.',
       en: 'Cross-platform C# app using the MVVM pattern, with local notifications.',
+    },
+    result: {
+      fr: 'Application multiplateforme en MVVM avec notifications locales.',
+      en: 'Cross-platform MVVM app with local notifications.',
     },
     tags: ['C#', '.NET MAUI', 'MVVM'],
     code: 'https://github.com/Myanganbaatar/ProjetMAUI',
@@ -429,20 +469,26 @@ export const projectDetails = {
   },
   netflix: {
     context: {
-      fr: 'Projet de cours sur les architectures web : concevoir une plateforme de streaming inspirée de Netflix.',
-      en: 'Web architecture course project: designing a Netflix-inspired streaming platform.',
+      fr: 'Projet de cours sur les architectures web : une plateforme de location de films inspirée de Netflix, avec un front-end utilisateur, un panneau d’administration et une API.',
+      en: 'Web architecture course project: a Netflix-inspired movie rental platform with a user front end, an admin panel and an API.',
     },
     highlights: {
       fr: [
-        'Séparation en back-end, front-end utilisateur et front-end administrateur.',
+        'Front-end React (Vite, Tailwind CSS) : catalogue avec recherche et filtre par genre, panier, page « Mes locations » avec compte à rebours.',
+        'API REST Express + MongoDB (Mongoose) : films (CRUD, statistiques), locations, authentification.',
+        'Règles métier : location de 7 jours, refus d’une deuxième location active du même film, expiration automatique.',
+        'Panneau d’administration rendu côté serveur avec EJS.',
         'Réflexion sur les microservices, le CDN et la tolérance aux pannes (circuit breaker).',
       ],
       en: [
-        'Split into a back end, a user front end and an admin front end.',
+        'React front end (Vite, Tailwind CSS): catalogue with search and genre filter, cart, “My rentals” page with a countdown.',
+        'Express + MongoDB (Mongoose) REST API: movies (CRUD, statistics), rentals, authentication.',
+        'Business rules: 7-day rentals, a second active rental of the same movie is refused, automatic expiry.',
+        'Server-side rendered admin panel with EJS.',
         'Study of microservices, CDNs and fault tolerance (circuit breaker).',
       ],
     },
-    stack: ['JavaScript', 'Node.js', 'CSS'],
+    stack: ['React', 'Vite', 'Tailwind CSS', 'Express', 'MongoDB', 'Mongoose', 'EJS'],
   },
   kotlin: {
     context: {
@@ -488,11 +534,11 @@ export const ui = {
     menu: 'Menu',
     copy: 'Copier',
     copied: 'Copié !',
-    whatIDo: 'Ce que je fais',
+    whatIDo: 'Compétences clés',
     services: [
-      { icon: '⚙️', title: 'Back-end & API', text: 'API REST en Node.js et Express, bases de données PostgreSQL et MySQL.' },
-      { icon: '🖥️', title: 'Front-end', text: 'Interfaces React / Next.js rapides, accessibles et responsives.' },
-      { icon: '🚀', title: 'Déploiement', text: 'Docker, Nginx et serveurs Linux : du code à la production.' },
+      { icon: '⚙️', title: 'Back-end & API', text: 'Node.js, Express, PostgreSQL. Preuve : l’API REST du CMS headless, générée pour 14 types de champs.' },
+      { icon: '🖥️', title: 'Front-end', text: 'React, Next.js, Tailwind CSS. Preuve : le site mongolian-aupair.com, en ligne et relié à l’API du CMS.' },
+      { icon: '🚀', title: 'Déploiement', text: 'Docker, Nginx, Linux. Preuve : correctURL et le CMS mis en production sur un serveur Linux.' },
     ],
     ctaTitle: 'Un stage de 16 semaines à partir de mars 2027 ?',
     ctaText: 'Je serais ravi d’échanger avec votre équipe.',
@@ -516,11 +562,11 @@ export const ui = {
     menu: 'Menu',
     copy: 'Copy',
     copied: 'Copied!',
-    whatIDo: 'What I do',
+    whatIDo: 'Key skills',
     services: [
-      { icon: '⚙️', title: 'Back end & APIs', text: 'REST APIs with Node.js and Express, PostgreSQL and MySQL databases.' },
-      { icon: '🖥️', title: 'Front end', text: 'Fast, accessible and responsive React / Next.js interfaces.' },
-      { icon: '🚀', title: 'Deployment', text: 'Docker, Nginx and Linux servers: from code to production.' },
+      { icon: '⚙️', title: 'Back end & APIs', text: 'Node.js, Express, PostgreSQL. Proof: the headless CMS REST API, generated for 14 field types.' },
+      { icon: '🖥️', title: 'Front end', text: 'React, Next.js, Tailwind CSS. Proof: mongolian-aupair.com, live and connected to the CMS API.' },
+      { icon: '🚀', title: 'Deployment', text: 'Docker, Nginx, Linux. Proof: correctURL and the CMS shipped to production on a Linux server.' },
     ],
     ctaTitle: 'A 16-week internship from March 2027?',
     ctaText: 'I would be glad to talk with your team.',

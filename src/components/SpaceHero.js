@@ -162,6 +162,20 @@ function Astronaut({ colors, focus, posRef }) {
   );
 }
 
+// Outermost orbit plus the planet and a small margin, in world units.
+const SYSTEM_RADIUS = PLANETS[PLANETS.length - 1].radius + 0.8;
+
+// Camera distance that keeps every orbit on screen. The system is pushed
+// sideways by `shift`, which leaves less room on one side, and it looks
+// flatter vertically the lower the camera pitch.
+function fitDistance(fov, aspect, shift, pitch) {
+  const t = Math.tan(THREE.MathUtils.degToRad(fov / 2));
+  const sideRoom = Math.max(0.35, 1 - 2 * Math.abs(shift));
+  const horizontal = SYSTEM_RADIUS / (t * aspect * sideRoom);
+  const vertical = (SYSTEM_RADIUS * (0.25 + 0.75 * Math.sin(pitch))) / t;
+  return Math.max(9, horizontal, vertical) * 1.08;
+}
+
 function Rig({ focus, posRef, shift, drag }) {
   const { camera, size } = useThree();
   const look = useMemo(() => new THREE.Vector3(), []);
@@ -182,7 +196,7 @@ function Rig({ focus, posRef, shift, drag }) {
         d.yaw += dt * 0.04 + d.vel;
         d.vel *= Math.pow(0.04, dt);
       }
-      const dist = 14 * Math.max(1, 1.35 / (size.width / size.height));
+      const dist = fitDistance(camera.fov, size.width / size.height, offset.current, d.pitch);
       wantPos.set(Math.sin(d.yaw) * Math.cos(d.pitch) * dist, Math.sin(d.pitch) * dist, Math.cos(d.yaw) * Math.cos(d.pitch) * dist);
       wantLook.set(0, 0, 0);
     }

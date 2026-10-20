@@ -1,0 +1,475 @@
+/* ---------- Shared ---------- */
+.droid__search input,
+.droid__sheet input,
+.maui__view input,
+.maui__view select {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  min-width: 0;
+}
+
+/* ---------- Android phone ---------- */
+.phone {
+  width: 300px;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 36px;
+  background: #0b0c10;
+  box-shadow: 0 0 0 2px #2a2d36, 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.phone__screen {
+  position: relative;
+  height: 520px;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #f4f1fa;
+  color: #1c1b1f;
+  font-family: Roboto, var(--font-body);
+  display: flex;
+  flex-direction: column;
+}
+
+.phone__status {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.droid__bar {
+  padding: 10px 18px;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.droid__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 14px 10px;
+  padding: 4px 4px 4px 14px;
+  border-radius: 999px;
+  background: #e8e1f2;
+}
+
+.droid__search input {
+  flex: 1;
+  border: 0;
+  background: none;
+  color: #1c1b1f;
+  padding: 8px 4px;
+}
+
+.droid__search input:focus {
+  outline: none;
+}
+
+.droid__list {
+  flex: 1;
+  overflow-y: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0 12px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.droid__task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.droid__task input {
+  width: 18px;
+  height: 18px;
+  accent-color: #6750a4;
+}
+
+.droid__task-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.droid__task-title {
+  font-size: 0.92rem;
+}
+
+.droid__task.is-done .droid__task-title {
+  text-decoration: line-through;
+  color: #79747e;
+}
+
+.droid__task-hint {
+  font-size: 0.7rem;
+  color: #79747e;
+}
+
+.droid__thumb {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #e8def8;
+  font-size: 1.2rem;
+}
+
+.droid__empty {
+  text-align: center;
+  color: #79747e;
+  font-size: 0.88rem;
+  padding: 20px 0;
+}
+
+.droid__fab {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 54px;
+  height: 54px;
+  border: 0;
+  border-radius: 16px;
+  background: #6750a4;
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(103, 80, 164, 0.45);
+}
+
+.droid__sheet {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 18px 16px 16px;
+  border-radius: 24px 24px 0 0;
+  background: #fff;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: sheet-up 0.25s ease both;
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+.droid__sheet h4 {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.droid__sheet input {
+  background: #f4f1fa;
+  color: #1c1b1f;
+  border-color: #cac4d0;
+}
+
+.droid__label {
+  font-size: 0.78rem;
+  color: #49454f;
+}
+
+.droid__photos {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+
+.droid__photos button {
+  aspect-ratio: 1;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: #f4f1fa;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.droid__photos button.is-picked {
+  border-color: #6750a4;
+  background: #e8def8;
+}
+
+.droid__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.droid__text-btn {
+  border: 0;
+  background: none;
+  color: #6750a4;
+  font: 600 0.88rem var(--font-body);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.droid__text-btn--primary {
+  background: #6750a4;
+  color: #fff;
+}
+
+.droid__text-btn--danger {
+  color: #b3261e;
+  margin-right: auto;
+}
+
+/* ---------- .NET MAUI ---------- */
+.maui {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 14px;
+  align-items: start;
+}
+
+.maui__left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.maui__switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.maui__pf {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: 600 0.82rem var(--font-body);
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.maui__pf.is-active {
+  background: #512bd4;
+  color: #fff;
+}
+
+.maui__device {
+  position: relative;
+  overflow: hidden;
+  background: #fafafa;
+  color: #1b1b1f;
+  transition: width 0.35s ease, border-radius 0.35s ease;
+  box-shadow: 0 0 0 8px #0b0c10, 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.maui__device--android,
+.maui__device--ios {
+  width: 270px;
+  min-height: 430px;
+  border-radius: 30px;
+}
+
+.maui__device--ios {
+  background: #f2f2f7;
+}
+
+.maui__device--windows {
+  width: min(100%, 440px);
+  min-height: 330px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px #3a3d46, 0 18px 40px rgba(0, 0, 0, 0.35);
+  background: #f3f3f3;
+}
+
+.maui__notch {
+  width: 90px;
+  height: 20px;
+  margin: 8px auto 0;
+  border-radius: 999px;
+  background: #0b0c10;
+}
+
+.maui__device--android .maui__notch {
+  width: 12px;
+  height: 12px;
+}
+
+.maui__titlebar {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  background: #e6e6e6;
+  color: #333;
+}
+
+.maui__view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+}
+
+.maui__view h4 {
+  font-size: 1.2rem;
+}
+
+.maui__view label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: #555;
+}
+
+.maui__view input,
+.maui__view select {
+  background: #fff;
+  color: #1b1b1f;
+  border-color: #d0d0d7;
+}
+
+.maui__cta {
+  border: 0;
+  border-radius: 10px;
+  padding: 11px;
+  background: #512bd4;
+  color: #fff;
+  font: 600 0.9rem var(--font-body);
+  cursor: pointer;
+}
+
+.maui__device--ios .maui__cta {
+  background: #007aff;
+}
+
+.maui__device--windows .maui__cta {
+  border-radius: 4px;
+  background: #0067c0;
+}
+
+.maui__cta:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.maui__pending {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.maui__toasts {
+  position: absolute;
+  z-index: 2;
+  left: 10px;
+  right: 10px;
+  top: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.maui__device--windows .maui__toasts {
+  top: auto;
+  bottom: 10px;
+  left: auto;
+  width: 220px;
+}
+
+.maui__toast {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 0.8rem;
+  background: rgba(255, 255, 255, 0.96);
+  color: #1b1b1f;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  animation: toast-in 0.3s ease both;
+}
+
+.maui__device--windows .maui__toast {
+  border-radius: 6px;
+  background: #2b2b2b;
+  color: #fff;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.maui__vm {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+  padding: 14px;
+}
+
+.maui__vm-title {
+  font: 600 0.8rem var(--font-mono);
+  color: #a78bfa;
+  margin-bottom: 8px;
+}
+
+.maui__vm pre {
+  margin: 0;
+  font: 0.78rem/1.5 var(--font-mono);
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.maui__vm-note {
+  margin-top: 12px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .maui {
+    grid-template-columns: 1fr;
+  }
+}

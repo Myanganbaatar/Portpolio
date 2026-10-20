@@ -1,0 +1,200 @@
+/* Fixed, full-screen page backdrop (see PageWorld.js). */
+.world {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  animation: world-in 0.8s ease both;
+}
+
+.world > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Darkens the left side and the bottom so text and cards stay readable. */
+.world__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--bg) 72%, transparent) 0%, color-mix(in srgb, var(--bg) 25%, transparent) 55%, transparent 80%),
+    linear-gradient(180deg, transparent 45%, color-mix(in srgb, var(--bg) 45%, transparent) 100%);
+}
+
+/* Light theme: wash the night scenes out so they read as a soft backdrop. */
+:root[data-theme='light'] .world__veil {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--bg) 88%, transparent) 0%, color-mix(in srgb, var(--bg) 62%, transparent) 60%, color-mix(in srgb, var(--bg) 45%, transparent) 100%);
+}
+
+/* The page's own world replaces the generic twinkling stars. */
+body[data-world]::before,
+body[data-world]::after {
+  display: none;
+}
+
+@keyframes world-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------- Shared animations ---------- */
+.world__stars circle {
+  fill: #fff;
+  animation: world-twinkle 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes world-twinkle {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+
+.world__spin {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: world-spin 26s linear infinite;
+}
+
+.world__spin--rev {
+  animation-direction: reverse;
+  animation-duration: 18s;
+}
+
+.world__spin--fast {
+  animation-duration: 12s;
+}
+
+.world__spin--slow {
+  animation-duration: 40s;
+}
+
+@keyframes world-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.world__pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: world-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes world-pulse {
+  50% {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+}
+
+/* City windows flicker on and off. */
+.world__windows rect {
+  animation: world-flicker 5s steps(1) infinite;
+}
+
+@keyframes world-flicker {
+  0%,
+  70% {
+    opacity: 0.85;
+  }
+  71%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+/* Lab scanner line sweeps down. */
+.world__scan {
+  animation: world-scan 6s linear infinite;
+}
+
+@keyframes world-scan {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(900px);
+  }
+}
+
+/* Future city: glowing lines and flying ships. */
+.world__glow line {
+  animation: world-glow 3s ease-in-out infinite;
+}
+
+@keyframes world-glow {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.world__ships rect {
+  animation: world-fly 26s linear infinite;
+}
+
+@keyframes world-fly {
+  to {
+    transform: translateX(1760px);
+  }
+}
+
+/* Realm: lightning strikes with a sky flash. */
+.world__bolt {
+  opacity: 0;
+  animation: world-strike 7s infinite;
+}
+
+.world__bolt--late {
+  animation-delay: 3.4s;
+}
+
+@keyframes world-strike {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+  }
+  89%,
+  92% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.2;
+  }
+}
+
+.world__flash {
+  opacity: 0;
+  animation: world-flash 7s infinite;
+}
+
+@keyframes world-flash {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+  }
+  89% {
+    opacity: 0.18;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world,
+  .world * {
+    animation: none !important;
+  }
+
+  .world__bolt,
+  .world__flash {
+    opacity: 0;
+  }
+}

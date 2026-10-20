@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useSite } from '../context';
 import { ScrollProgress } from './motion';
+import PageWorld, { worldFor } from './PageWorld';
 import { links } from '../content';
 import { CloseIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, MenuIcon, MoonIcon, SunIcon } from './Icons';
 import './Layout.css';
@@ -109,6 +110,13 @@ function Footer() {
 export default function Layout() {
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
+  const world = worldFor(pathname);
+
+  // Lets the stylesheet hide the generic starfield when a page has its own world.
+  useEffect(() => {
+    if (world) document.body.dataset.world = world;
+    else delete document.body.dataset.world;
+  }, [world]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -119,6 +127,7 @@ export default function Layout() {
       <a href="#main" className="skip-link">
         Skip to content
       </a>
+      <PageWorld world={world} />
       <ScrollProgress />
       <Navbar />
       <motion.main

@@ -14,7 +14,7 @@
   width: 100%;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
 }
 
 .skip-link {
@@ -85,7 +85,7 @@
   max-width: var(--maxw);
   height: 100%;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 var(--gutter);
   display: flex;
   align-items: center;
   gap: 24px;
@@ -412,6 +412,32 @@ a.link-chip:hover {
   font-size: 0.95rem;
 }
 
+.project-card__result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.detail-header__result {
+  max-width: 680px;
+  margin-top: 18px;
+  font-size: 1rem;
+}
+
+.project-card__result-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
 .project-card__links {
   display: flex;
   flex-wrap: wrap;
@@ -431,7 +457,7 @@ a.link-chip:hover {
 
 /* ---------- Page header & section title ---------- */
 .page-header {
-  padding: 72px 24px 40px;
+  padding: 72px var(--gutter) 40px;
 }
 
 .page-header--robot {
@@ -483,7 +509,8 @@ a.link-chip:hover {
 }
 
 .section {
-  padding: 56px 0;
+  padding-top: 56px;
+  padding-bottom: 56px;
 }
 
 /* ---------- CTA banner ---------- */
@@ -551,13 +578,8 @@ a.link-chip:hover {
 }
 
 @media (max-width: 600px) {
-  .container,
-  .nav__inner {
-    padding: 0 16px;
-  }
-
   .page-header {
-    padding: 48px 16px 28px;
+    padding: 48px var(--gutter) 28px;
   }
 
   .cta-banner {

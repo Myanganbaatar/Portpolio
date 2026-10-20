@@ -33,6 +33,12 @@ export default function ProjectDetail() {
         </div>
         <h1 className="page-title">{project.title[lang]}</h1>
         <p className="page-lead">{project.desc[lang]}</p>
+        {project.result && (
+          <p className="project-card__result detail-header__result">
+            <span className="project-card__result-label">✓ {p.result}</span>
+            {project.result[lang]}
+          </p>
+        )}
         <div className="detail-header__links">
           {project.live && (
             <a href={project.live} target="_blank" rel="noreferrer" className="btn btn--primary">
