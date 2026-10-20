@@ -1781,3 +1781,22 @@ a.contact-item:hover {
   margin-bottom: 72px;
   color: var(--muted);
 }
+
+/* Home: availability badge sits under the role line. */
+.status-pill--hero {
+  margin-top: 20px;
+}
+
+.space-hero__content > .hero__title:first-child {
+  margin-top: 0;
+}
+
+.status-pill--hero {
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .status-pill--hero {
+    white-space: normal;
+  }
+}

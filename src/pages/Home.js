@@ -75,14 +75,14 @@ export default function Home() {
           </Suspense>
         </div>
         <div className="container space-hero__content">
-          <p className="status-pill reveal">
-            <span className="status-dot" /> {h.status}
-          </p>
-          <h1 className="hero__title reveal reveal-2">
+          <h1 className="hero__title reveal">
             <span className="hero__hello">{h.hello}</span>
             Barsbold <span className="gradient-text">Myanganbaatar</span>
           </h1>
           <p className="hero__role reveal reveal-2">{h.role}</p>
+          <p className="status-pill status-pill--hero reveal reveal-2">
+            <span className="status-dot" /> {h.status}
+          </p>
           <div className="hero__actions reveal reveal-3">
             <Link to="/projects" className="btn btn--primary">
               {h.cta} <ArrowIcon width={16} height={16} />

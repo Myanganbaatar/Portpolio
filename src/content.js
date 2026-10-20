@@ -21,7 +21,7 @@ export const content = {
     hero: {
       hello: 'Bonjour, je suis',
       role: 'Développeur web full-stack · Interfaces React / Next.js et API Node.js',
-      status: 'Je cherche un stage de 16 semaines en développement web, dès mars 2027',
+      status: 'Disponible en stage dès mars 2027 · 16 semaines',
       pitch: "Étudiant en 3ᵉ année de BUT Informatique, je développe des applications web complètes : l'interface en React / Next.js, l'API en Node.js et la base PostgreSQL. En stage chez IT Partner, j'ai mis en production 3 applications, dont le site mongolian-aupair.com.",
       cta: 'Voir mes projets',
       cv: 'Télécharger mon CV',
@@ -120,7 +120,7 @@ export const content = {
     hero: {
       hello: "Hi, I'm",
       role: 'Full-stack web developer · React / Next.js front ends and Node.js APIs',
-      status: 'Looking for a 16-week web development internship from March 2027',
+      status: 'Available for an internship from March 2027 · 16 weeks',
       pitch: 'Third-year Computer Science student. I build complete web applications: the front end in React / Next.js, the API in Node.js and the PostgreSQL database. During my internship at IT Partner I shipped 3 applications to production, including the mongolian-aupair.com website.',
       cta: 'See my projects',
       cv: 'Download my resume',
