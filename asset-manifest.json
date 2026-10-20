@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/Portpolio/static/css/main.543d2016.css",
-    "main.js": "/Portpolio/static/js/main.0d52f23c.js",
+    "main.css": "/Portpolio/static/css/main.4d944343.css",
+    "main.js": "/Portpolio/static/js/main.7106f774.js",
     "static/js/719.786fb4c6.chunk.js": "/Portpolio/static/js/719.786fb4c6.chunk.js",
     "static/js/270.8a0d079b.chunk.js": "/Portpolio/static/js/270.8a0d079b.chunk.js",
     "static/js/453.5c6ddc6a.chunk.js": "/Portpolio/static/js/453.5c6ddc6a.chunk.js",
     "static/js/257.53c65669.chunk.js": "/Portpolio/static/js/257.53c65669.chunk.js",
     "index.html": "/Portpolio/index.html",
-    "main.543d2016.css.map": "/Portpolio/static/css/main.543d2016.css.map",
-    "main.0d52f23c.js.map": "/Portpolio/static/js/main.0d52f23c.js.map",
+    "main.4d944343.css.map": "/Portpolio/static/css/main.4d944343.css.map",
+    "main.7106f774.js.map": "/Portpolio/static/js/main.7106f774.js.map",
     "719.786fb4c6.chunk.js.map": "/Portpolio/static/js/719.786fb4c6.chunk.js.map",
     "270.8a0d079b.chunk.js.map": "/Portpolio/static/js/270.8a0d079b.chunk.js.map",
     "453.5c6ddc6a.chunk.js.map": "/Portpolio/static/js/453.5c6ddc6a.chunk.js.map",
     "257.53c65669.chunk.js.map": "/Portpolio/static/js/257.53c65669.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.543d2016.css",
-    "static/js/main.0d52f23c.js"
+    "static/css/main.4d944343.css",
+    "static/js/main.7106f774.js"
   ]
 }
