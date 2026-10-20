@@ -82,6 +82,9 @@ function Footer() {
             <span className="nav__name">Barsbold Myanganbaatar</span>
           </Link>
           <p className="footer__note">{t.footer} · {new Date().getFullYear()}</p>
+          <a className="footer__source" href={`${links.github}/Portpolio`} target="_blank" rel="noreferrer">
+            <GitHubIcon width={14} height={14} /> {t.footerSource}
+          </a>
         </div>
         <nav className="footer__nav" aria-label="Footer">
           <Link to="/">{u.home}</Link>

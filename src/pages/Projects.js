@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { projects } from '../content';
 import { ArrowIcon, ExternalIcon, GitHubIcon, PlayIcon } from '../components/Icons';
@@ -19,6 +19,28 @@ const DEMOS = [
   { id: 'latice', Demo: LaticeGame },
   { id: 'python', Demo: PythonGames },
 ];
+
+// Filters: project type, then main technology (matched against each project's tags).
+const TYPES = ['all', 'internship', 'university', 'demo'];
+const TECHS = [
+  { key: 'react', label: 'React / Next.js', match: (t) => /^(React|Next\.js)/.test(t) },
+  { key: 'node', label: 'Node.js', match: (t) => t === 'Node.js' || t === 'Express' },
+  { key: 'php', label: 'PHP', match: (t) => t === 'PHP' },
+  { key: 'java', label: 'Java', match: (t) => t === 'Java' || t === 'JavaFX' },
+  { key: 'python', label: 'Python', match: (t) => t === 'Python' },
+  { key: 'db', label: { fr: 'Bases de données', en: 'Databases' }, match: (t) => /PostgreSQL|MariaDB|MongoDB|MySQL/.test(t) },
+  { key: 'docker', label: 'Docker', match: (t) => t === 'Docker' },
+  { key: 'mobile', label: 'Mobile (Kotlin, C#)', match: (t) => /Kotlin|Android|MAUI|C#/.test(t) },
+];
+
+const hasDemo = (id) => DEMOS.some((d) => d.id === id);
+
+function matches(project, type, tech) {
+  if (type === 'demo' && !hasDemo(project.id)) return false;
+  if (type !== 'all' && type !== 'demo' && project.category !== type) return false;
+  const t = TECHS.find((x) => x.key === tech);
+  return !t || project.tags.some(t.match);
+}
 
 function DemoRow({ project, Demo, recreated }) {
   const { t, lang } = useSite();
@@ -85,8 +107,21 @@ export default function Projects() {
   usePageTitle(t.projects.title);
   const fr = lang === 'fr';
 
-  const demoIds = DEMOS.map((d) => d.id);
-  const others = projects.filter((p) => !demoIds.includes(p.id));
+  const [params, setParams] = useSearchParams();
+  const type = TYPES.includes(params.get('type')) ? params.get('type') : 'all';
+  const tech = TECHS.some((x) => x.key === params.get('tech')) ? params.get('tech') : null;
+  const setFilter = (next) => {
+    const merged = { type, tech, ...next };
+    const out = {};
+    if (merged.type !== 'all') out.type = merged.type;
+    if (merged.tech) out.tech = merged.tech;
+    setParams(out, { replace: true });
+  };
+
+  const shown = projects.filter((p) => matches(p, type, tech));
+  const others = shown.filter((p) => !hasDemo(p.id));
+  const demos = DEMOS.filter((d) => shown.some((p) => p.id === d.id));
+  const label = (l) => (typeof l === 'string' ? l : l[lang]);
 
   const lead = fr
     ? 'Des applications en production réalisées pendant mon stage, et des projets universitaires — dont cinq que vous pouvez essayer directement ici.'
@@ -96,27 +131,73 @@ export default function Projects() {
     <>
       <PageHeader eyebrow={t.nav.projects} title={t.projects.title} lead={lead} robot="present" />
 
-      <section className="container projects-section">
-        <div className="section-title">
-          <h2>{fr ? 'Applications réalisées' : 'Apps I built'}</h2>
-        </div>
-        <Stagger className="bento bento--projects">
-          {others.map((p) => (
-            <ProjectCard key={p.id} project={p} />
+      <section className="container project-filters reveal reveal-2" aria-label={fr ? 'Filtrer les projets' : 'Filter projects'}>
+        <div className="filters" role="group" aria-label="Type">
+          {TYPES.map((f) => (
+            <button key={f} className={`filter ${type === f ? 'is-active' : ''}`} aria-pressed={type === f} onClick={() => setFilter({ type: f })}>
+              {t.projects.filters[f]}{' '}
+              <span className="filter__count">{projects.filter((p) => matches(p, f, tech)).length}</span>
+            </button>
           ))}
-        </Stagger>
+        </div>
+        <div className="filters filters--tech" role="group" aria-label={fr ? 'Technologie' : 'Technology'}>
+          <span className="filters__label">{fr ? 'Technologie' : 'Technology'}</span>
+          {TECHS.map((x) => {
+            const n = projects.filter((p) => matches(p, type, x.key)).length;
+            return (
+              <button
+                key={x.key}
+                className={`filter filter--sm ${tech === x.key ? 'is-active' : ''}`}
+                aria-pressed={tech === x.key}
+                disabled={!n && tech !== x.key}
+                onClick={() => setFilter({ tech: tech === x.key ? null : x.key })}
+              >
+                {label(x.label)} <span className="filter__count">{n}</span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="filters__result" aria-live="polite">
+          {fr ? `${shown.length} projet${shown.length > 1 ? 's' : ''} affiché${shown.length > 1 ? 's' : ''}` : `${shown.length} project${shown.length > 1 ? 's' : ''} shown`}
+          {(type !== 'all' || tech) && (
+            <button className="text-link filters__reset" onClick={() => setParams({}, { replace: true })}>
+              {fr ? 'Réinitialiser' : 'Reset'}
+            </button>
+          )}
+        </p>
       </section>
 
-      <section className="container projects-section">
-        <div className="section-title">
-          <h2>{fr ? 'À essayer ici' : 'Try them here'}</h2>
-        </div>
-        <div className="demo-list">
-          {DEMOS.map(({ id, Demo, recreated }) => (
-            <DemoRow key={id} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} />
-          ))}
-        </div>
-      </section>
+      {shown.length === 0 && (
+        <p className="container filters__empty">
+          {fr ? 'Aucun projet ne correspond à ces filtres.' : 'No project matches these filters.'}
+        </p>
+      )}
+
+      {others.length > 0 && (
+        <section className="container projects-section">
+          <div className="section-title">
+            <h2>{fr ? 'Applications réalisées' : 'Apps I built'}</h2>
+          </div>
+          <Stagger key={`${type}-${tech}`} className="bento bento--projects">
+            {others.map((p) => (
+              <ProjectCard key={p.id} project={p} />
+            ))}
+          </Stagger>
+        </section>
+      )}
+
+      {demos.length > 0 && (
+        <section className="container projects-section">
+          <div className="section-title">
+            <h2>{fr ? 'À essayer ici' : 'Try them here'}</h2>
+          </div>
+          <div className="demo-list">
+            {demos.map(({ id, Demo, recreated }) => (
+              <DemoRow key={id} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

@@ -61,7 +61,8 @@ export default function Home() {
   const [flying, setFlying] = useState(false);
   const h = t.hero;
   const fr = lang === 'fr';
-  const cms = projects.find((p) => p.id === 'cms');
+  // The three projects that best show the profile: front end + API + production.
+  const featured = ['cms', 'aupair', 'netflix'].map((id) => projects.find((p) => p.id === id));
   const python = projects.find((p) => p.id === 'python');
   const latice = projects.find((p) => p.id === 'latice');
 
@@ -128,15 +129,27 @@ export default function Home() {
             </div>
           </Tile>
 
-          <Tile className="b-c2 tile--featured" to={`/projects/${cms.id}`}>
-            <span className="tile__label">{u.featured}</span>
-            <div>
-              <h3 className="tile__title">
-                {cms.title[lang]} <ArrowIcon width={18} height={18} />
-              </h3>
-              <p className="tile__muted">{cms.desc[lang]}</p>
+          <Tile className="b-c4 tile--featured">
+            <div className="featured__head">
+              <span className="tile__label">{u.featured}</span>
+              <Link to="/projects" className="text-link">
+                {u.allProjects} <ArrowIcon width={16} height={16} />
+              </Link>
             </div>
-            <TagList items={cms.tags} />
+            <div className="featured__list">
+              {featured.map((p) => (
+                <Link key={p.id} to={`/projects/${p.id}`} className="featured__item">
+                  <span className="featured__icon" aria-hidden="true">
+                    {p.icon}
+                  </span>
+                  <h3 className="tile__title tile__title--sm">
+                    {p.title[lang]} <ArrowIcon width={16} height={16} />
+                  </h3>
+                  <p className="tile__muted">{p.desc[lang]}</p>
+                  <TagList items={p.tags} />
+                </Link>
+              ))}
+            </div>
           </Tile>
 
           <Tile className="b-c2 tile--games">
@@ -156,7 +169,7 @@ export default function Home() {
             </div>
           </Tile>
 
-          <Tile className="b-c4 tile--cta" to="/contact">
+          <Tile className="b-c2 tile--cta" to="/contact">
             <h3 className="tile__title">{u.ctaTitle}</h3>
             <span className="tile__cta">
               {u.ctaButton} <ArrowIcon width={18} height={18} />

@@ -83,7 +83,7 @@ export const content = {
     },
     projects: {
       title: 'Projets',
-      filters: { all: 'Tous', internship: 'Stage', university: 'IUT', demo: 'Démo jouable' },
+      filters: { all: 'Tous', internship: 'Stage', university: 'IUT', demo: 'Avec démo' },
       code: 'Code',
       live: 'Site en ligne',
       play: 'Jouer',
@@ -112,6 +112,7 @@ export const content = {
       cvEn: 'CV (anglais)',
     },
     footer: 'Conçu et développé par Barsbold Myanganbaatar',
+    footerSource: 'Code source de ce site (React)',
   },
 
   en: {
@@ -181,7 +182,7 @@ export const content = {
     },
     projects: {
       title: 'Projects',
-      filters: { all: 'All', internship: 'Internship', university: 'University', demo: 'Playable demo' },
+      filters: { all: 'All', internship: 'Internship', university: 'University', demo: 'With demo' },
       code: 'Code',
       live: 'Live site',
       play: 'Play',
@@ -210,6 +211,7 @@ export const content = {
       cvEn: 'Resume (English)',
     },
     footer: 'Designed and built by Barsbold Myanganbaatar',
+    footerSource: 'Source code of this site (React)',
   },
 };
 
@@ -269,7 +271,7 @@ export const projects = [
       en: 'Complete game delivered by a team of 4, with a web version playable here.',
     },
     tags: ['Java', 'JavaFX', 'MVC', 'Git'],
-    code: 'https://github.com/Myanganbaatar/Jeu-Latice',
+    code: 'https://github.com/Myanganbaatar/SAE-de-Java-jeu-latice-',
   },
   {
     id: 'python', category: 'university', icon: '🎲', demo: 'python',
@@ -301,7 +303,7 @@ export const projects = [
   },
   {
     id: 'netflix', category: 'university', icon: '🎬',
-    title: { fr: 'Étude Netflix', en: 'Netflix study' },
+    title: { fr: 'Location de films (Netflix)', en: 'Movie rentals (Netflix)' },
     desc: {
       fr: 'Plateforme de location de films inspirée de Netflix : catalogue filtrable, panier, locations de 7 jours, API REST Express + MongoDB.',
       en: 'Netflix-inspired movie rental platform: filterable catalogue, cart, 7-day rentals, Express + MongoDB REST API.',
