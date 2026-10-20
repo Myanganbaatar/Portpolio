@@ -198,3 +198,78 @@ body[data-world]::after {
     opacity: 0;
   }
 }
+
+/* ---------- Home: deep space ---------- */
+/* Lighter veil: the home hero text sits on the dark left side already. */
+.world--space .world__veil {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 35%, transparent) 0%, transparent 45%);
+}
+
+.world__nebula {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: world-nebula 40s ease-in-out infinite alternate;
+}
+
+@keyframes world-nebula {
+  to {
+    transform: translate(-30px, 20px) scale(1.06);
+  }
+}
+
+.world__stars--big g {
+  fill: #fff;
+  animation: world-twinkle 2.8s ease-in-out infinite alternate;
+}
+
+.world__meteors {
+  position: absolute;
+  inset: 0;
+}
+
+/* A meteor is a bright head with a fading tail, flying down to the left. */
+.world__meteor {
+  position: absolute;
+  width: 170px;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #fff 0%, rgba(196, 181, 253, 0.8) 12%, rgba(167, 139, 250, 0) 100%);
+  opacity: 0;
+  transform: rotate(-35deg) translateX(0);
+  transform-origin: left center;
+  animation: world-meteor 9s linear infinite;
+}
+
+.world__meteor::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px 3px rgba(196, 181, 253, 0.9);
+}
+
+@keyframes world-meteor {
+  0% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(0);
+  }
+  2% {
+    opacity: 1;
+  }
+  12% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(-900px);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(-35deg) translateX(-900px);
+  }
+}
+
+:root[data-theme='light'] .world__meteor {
+  display: none;
+}
