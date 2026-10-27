@@ -590,13 +590,13 @@
   font: 0.74rem/1.5 var(--font-mono);
 }
 
-@media (max-width: 900px) {
+@container (max-width: 900px) {
   .nfx {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 560px) {
+@container (max-width: 560px) {
   .nfx__cart-layout {
     grid-template-columns: 1fr;
   }

@@ -1347,7 +1347,7 @@ a.contact-item:hover {
 
 /* ---------- Bento on inner pages ---------- */
 .bento--page {
-  margin-bottom: 72px;
+  margin-bottom: 96px;
 }
 
 .bento--page .about__text {
@@ -1604,83 +1604,254 @@ a.contact-item:hover {
 
 /* ---------- Projects: demo rows ---------- */
 .projects-section {
-  margin-bottom: 56px;
+  margin-bottom: 96px;
 }
 
 .demo-list {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
 }
 
+/* Little robot that flies to the last clicked project. */
+.demo-buddy {
+  position: absolute;
+  top: 0;
+  left: -78px;
+  z-index: 4;
+  width: 170px;
+  height: 190px;
+  pointer-events: none;
+  transition: transform 0.7s cubic-bezier(0.25, 1.15, 0.4, 1), opacity 0.4s ease;
+}
+
+.demo-buddy.is-hidden {
+  opacity: 0;
+}
+
+.demo-buddy .robot-slot {
+  width: 100%;
+  height: 100%;
+}
+
+/* On flipped rows the text is on the right: the robot sits there, mirrored. */
+.demo-buddy--flip {
+  left: auto;
+  right: -78px;
+}
+
+.demo-buddy--flip .robot-slot {
+  transform: scaleX(-1);
+}
+
+@media (max-width: 1380px) {
+  .demo-buddy,
+  .demo-buddy--flip {
+    left: auto;
+    right: -6px;
+    top: 0;
+    width: 120px;
+    height: 135px;
+  }
+
+  .demo-buddy .robot-slot {
+    transform: scaleX(-1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-buddy {
+    transition: none;
+  }
+}
+
+/* Variant E: one violet (the site's accent), each block fainter than the previous (--a set inline),
+   text on one side, demo on the other, alternating sides. */
 .demo-row {
+  --a: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.35fr);
+  gap: 44px;
+  align-items: start;
+  padding: 40px;
+  border-radius: 36px;
+  background: hsl(262 55% 30% / var(--a));
+  border: 1px solid hsl(262 85% 72% / calc(var(--a) * 0.45));
+}
+
+[data-theme='light'] .demo-row {
+  background: hsl(262 80% 60% / calc(var(--a) * 0.14));
+  border-color: hsl(262 70% 55% / calc(var(--a) * 0.35));
+}
+
+.demo-row--flip {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.82fr);
+}
+
+.demo-row--flip .demo-row__text {
+  order: 2;
+}
+
+.demo-row__text {
+  position: sticky;
+  top: 96px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 22px;
-  border-radius: 20px;
+  align-items: flex-start;
+  gap: 8px;
 }
 
-.demo-row__info {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 10px 32px;
-  align-items: start;
+.demo-row__num {
+  font: 700 64px/1 var(--font-display, 'Space Grotesk', sans-serif);
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(196, 181, 253, 0.6);
+  margin-bottom: 4px;
 }
 
-.demo-row__head {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  grid-row: span 2;
+[data-theme='light'] .demo-row__num {
+  -webkit-text-stroke-color: rgba(109, 40, 217, 0.45);
 }
 
-.demo-row__head .project-card__title a:hover {
+.demo-row__title {
+  margin: 0 0 6px;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.15;
+}
+
+.demo-row__title a:hover {
   color: var(--accent);
+}
+
+.demo-row__what {
+  margin: 0 0 6px;
+  font-size: 1.08rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.demo-row__h {
+  margin: 10px 0 0;
+  font: 600 0.75rem var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c4b5fd;
+}
+
+[data-theme='light'] .demo-row__h,
+[data-theme='light'] .demo-row__res {
+  color: #6d28d9;
+}
+
+.demo-row__text > p:not(.demo-row__what):not(.demo-row__res) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.demo-row__did {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.demo-row__did li::marker {
+  color: #c4b5fd;
+}
+
+.demo-row__res {
+  margin: 12px 0 4px;
+  font-weight: 600;
+  color: #c4b5fd;
 }
 
 .demo-row__links {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  grid-column: 1 / -1;
-  margin-left: -10px;
+  margin: 4px 0 0 -10px;
 }
 
 .demo-row__stage {
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
+  min-width: 0;
+  container-type: inline-size;
+}
+
+.demo-row__live {
+  overflow-x: auto;
 }
 
 .demo-row__label {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
+  margin: 0 0 12px;
   font: 500 0.75rem var(--font-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--faint);
+  color: var(--muted);
 }
 
-/* The game components carry their own outer margins for the /play page. */
+.demo-row__try {
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px dashed hsl(262 90% 80% / 0.35);
+}
+
+[data-theme='light'] .demo-row__try {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.demo-row__try p {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.demo-row__try ol {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 .demo-row__stage .latice-container {
   max-width: none;
   margin-top: 0;
   margin-bottom: 0;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 980px) {
   .demo-row {
-    padding: 16px;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+    border-radius: 26px;
   }
 
-  .demo-row__info {
+  .demo-row--flip {
     grid-template-columns: 1fr;
   }
 
-  .demo-row__head {
-    grid-row: auto;
+  .demo-row--flip .demo-row__text {
+    order: 0;
+  }
+
+  .demo-row__text {
+    position: static;
+  }
+
+  .demo-row__num {
+    font-size: 48px;
+  }
+}
+
+@media (max-width: 560px) {
+  .demo-row {
+    padding: 18px 14px;
   }
 }
 
@@ -1724,12 +1895,35 @@ a.contact-item:hover {
 }
 
 .filters__reset {
-  border: 0;
-  background: none;
-  padding: 0;
-  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent);
+  font: 600 0.85rem var(--font-body);
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.filters__reset:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.filters__reset:hover svg {
+  transform: rotate(-120deg);
+}
+
+.filters__reset svg {
+  transition: transform 0.3s ease;
+}
+
+.filters__reset:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* ---------- Home: three featured projects ---------- */
@@ -1763,10 +1957,6 @@ a.contact-item:hover {
   transform: translateY(-3px);
 }
 
-.featured__icon {
-  font-size: 1.4rem;
-}
-
 .featured__item .tag-list {
   margin-top: auto;
 }
@@ -1798,5 +1988,212 @@ a.contact-item:hover {
 @media (max-width: 420px) {
   .status-pill--hero {
     white-space: normal;
+  }
+}
+
+/* ---------- Project images ---------- */
+.project-img {
+  position: relative;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.project-img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+/* No screenshot (private company code): coloured panel with the project icon. */
+.project-img--empty {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(80% 120% at 0% 0%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(80% 120% at 100% 100%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 70%),
+    var(--surface-2);
+}
+
+.project-img--empty span {
+  font-size: 2.6rem;
+}
+
+.project-card__img {
+  border-bottom: 1px solid var(--border);
+}
+
+.project-card:hover .project-img img,
+.featured__item:hover .project-img img {
+  transform: scale(1.04);
+}
+
+.featured__img {
+  margin: -16px -16px 4px;
+  border-bottom: 1px solid var(--border);
+  border-radius: 14px 14px 0 0;
+}
+
+.detail-img {
+  max-width: 980px;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Demo rows: screenshot with a play button until the visitor opens the demo. */
+.demo-row__poster {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  background: hsl(262 45% 15%);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+  transform: rotate(-2deg);
+  transition: transform 0.4s;
+}
+
+.demo-row--flip .demo-row__poster {
+  transform: rotate(2deg);
+}
+
+.demo-row:hover .demo-row__poster {
+  transform: rotate(0) scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-row__poster,
+  .demo-row--flip .demo-row__poster,
+  .demo-row:hover .demo-row__poster {
+    transform: none;
+  }
+}
+
+.demo-row__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+}
+
+.demo-row__play:hover {
+  transform: translate(-50%, -52%);
+}
+
+.demo-row__poster .project-img img {
+  filter: brightness(0.8);
+}
+
+/* Inner-page tiles: content starts at the top instead of being pushed apart. */
+.bento--page .tile {
+  justify-content: flex-start;
+}
+
+/* Inner-page tiles share the Projects look: the site's violet, each block a
+   little fainter than the previous one (--a). */
+.bento--page > .tile {
+  --a: 1;
+  padding: 28px;
+  border-radius: 28px;
+  background: hsl(262 55% 30% / var(--a));
+  border-color: hsl(262 85% 72% / calc(var(--a) * 0.45));
+}
+
+.bento--page > .tile:nth-child(2) {
+  --a: 0.8;
+}
+
+.bento--page > .tile:nth-child(3) {
+  --a: 0.64;
+}
+
+.bento--page > .tile:nth-child(4) {
+  --a: 0.5;
+}
+
+.bento--page > .tile:nth-child(5) {
+  --a: 0.4;
+}
+
+.bento--page > .tile:nth-child(6) {
+  --a: 0.32;
+}
+
+.bento--page > .tile:nth-child(n + 7) {
+  --a: 0.26;
+}
+
+.bento--page > .tile:hover {
+  border-color: hsl(262 90% 78% / calc(0.25 + var(--a) * 0.5));
+}
+
+[data-theme='light'] .bento--page > .tile {
+  background: hsl(262 80% 60% / calc(var(--a) * 0.14));
+  border-color: hsl(262 70% 55% / calc(var(--a) * 0.35));
+}
+
+.bento--page .tile__label {
+  color: #c4b5fd;
+}
+
+[data-theme='light'] .bento--page .tile__label {
+  color: #6d28d9;
+}
+
+/* Chips and inner cards sit on the violet instead of grey. */
+.bento--page > .tile .skill-list li,
+.bento--page > .tile .tag {
+  background: rgba(15, 8, 35, 0.35);
+  border-color: hsl(262 85% 80% / 0.22);
+}
+
+[data-theme='light'] .bento--page > .tile .skill-list li,
+[data-theme='light'] .bento--page > .tile .tag {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: hsl(262 70% 55% / 0.25);
+}
+
+@media (max-width: 560px) {
+  .bento--page > .tile {
+    padding: 20px;
+    border-radius: 22px;
+  }
+}
+
+/* Skills: where each group of technologies was actually used. */
+.skill-group__proof {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.skill-group__proof span {
+  display: block;
+  margin-bottom: 2px;
+  font: 500 0.72rem var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.skill-group .skill-list {
+  margin-bottom: 18px;
+}
+
+.skill-group .lang-bars {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+@media (max-width: 760px) {
+  .skill-group .lang-bars {
+    grid-template-columns: 1fr;
   }
 }

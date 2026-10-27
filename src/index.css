@@ -6,7 +6,7 @@
   --border: #272b36;
   --text: #eceef3;
   --muted: #9aa1b3;
-  --faint: #6b7285;
+  --faint: #8a91a3;
   --accent: #a78bfa;
   --accent-2: #22d3ee;
   --accent-ink: #1a0b3a;
@@ -31,7 +31,7 @@
   --border: #e1e1d9;
   --text: #15171c;
   --muted: #5a6072;
-  --faint: #6f7484;
+  --faint: #5c6170;
   --accent: #7c3aed;
   --accent-2: #0891b2;
   --accent-ink: #ffffff;
@@ -167,4 +167,14 @@ img {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* Animations paused by the visitor (navbar button) or by the system setting. */
+[data-motion='off'] *,
+[data-motion='off'] *::before,
+[data-motion='off'] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
 }

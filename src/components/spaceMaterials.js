@@ -168,6 +168,13 @@ export function usePlanetTexture(kind, seed = 1) {
   }, [kind, seed]);
 }
 
+// Same planet texture as a data URL, for 2D use (the rocket page transition).
+export function planetImage(kind, seed = 1) {
+  const key = `${kind}:${seed}`;
+  if (!cache[key]) cache[key] = PLANET_PAINTERS[kind](seed);
+  return cache[key].image.toDataURL('image/jpeg', 0.85);
+}
+
 // Detailed ring with gaps, painted along its radius.
 export function useRingTexture() {
   return useMemo(() => {

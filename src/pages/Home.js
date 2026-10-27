@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useSite, usePageTitle } from '../context';
 import { projects } from '../content';
 import { ArrowIcon, DownloadIcon } from '../components/Icons';
-import { TagList } from '../components/ui';
+import { ProjectImage, TagList } from '../components/ui';
 import { CountUp, Stagger, staggerItem } from '../components/motion';
 import './pages.css';
 
@@ -139,9 +139,7 @@ export default function Home() {
             <div className="featured__list">
               {featured.map((p) => (
                 <Link key={p.id} to={`/projects/${p.id}`} className="featured__item">
-                  <span className="featured__icon" aria-hidden="true">
-                    {p.icon}
-                  </span>
+                  <ProjectImage project={p} className="featured__img" />
                   <h3 className="tile__title tile__title--sm">
                     {p.title[lang]} <ArrowIcon width={16} height={16} />
                   </h3>

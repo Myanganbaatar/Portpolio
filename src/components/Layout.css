@@ -471,6 +471,23 @@ a.link-chip:hover {
 
 .page-header--robot .robot-slot {
   height: 360px;
+  transition: opacity 0.35s ease;
+}
+
+/* While the rocket flies to the page's planet, its robot scene is not there yet;
+   it drops in once the rocket has landed. */
+body[data-flying] .page-header--robot .robot-slot {
+  opacity: 0;
+  transition: none;
+}
+
+/* Projects: wider stage so the projector screen is big enough to read. */
+.page-header--robot:has(.robot-slot--projector) {
+  grid-template-columns: 1fr minmax(0, 600px);
+}
+
+.page-header--robot .robot-slot--projector {
+  height: 400px;
 }
 
 @media (max-width: 920px) {
@@ -485,14 +502,16 @@ a.link-chip:hover {
 }
 
 .page-title {
-  font-size: clamp(2.4rem, 6vw, 4rem);
+  font-size: clamp(2.8rem, 7vw, 5.2rem);
   font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .page-lead {
-  margin-top: 18px;
-  max-width: 680px;
-  font-size: 1.15rem;
+  margin-top: 20px;
+  max-width: 640px;
+  font-size: 1.22rem;
+  line-height: 1.6;
   color: var(--muted);
 }
 
@@ -501,7 +520,7 @@ a.link-chip:hover {
   align-items: flex-end;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 28px;
+  margin-bottom: 36px;
 }
 
 .section-title h2 {
@@ -509,8 +528,8 @@ a.link-chip:hover {
 }
 
 .section {
-  padding-top: 56px;
-  padding-bottom: 56px;
+  padding-top: 88px;
+  padding-bottom: 88px;
 }
 
 /* ---------- CTA banner ---------- */
@@ -631,4 +650,13 @@ a.link-chip:hover {
 
 .footer__source:hover {
   color: var(--accent);
+}
+
+.project-card {
+  overflow: hidden;
+}
+
+/* Pages slide in sideways: never show a horizontal scrollbar while they move. */
+.site {
+  overflow-x: clip;
 }

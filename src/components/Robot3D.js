@@ -2,7 +2,9 @@ import { Component, useEffect, useMemo, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { RoundedBox, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
+import { useStill } from '../context';
 import { Atmosphere, usePlanetTexture, useRingGeometry, useRingTexture } from './spaceMaterials';
+import { LAYOUT, PAGE_PLANET, PLANET_R } from './robotLayout';
 
 /*
  * A small hovering robot built from primitives (no external model to download).
@@ -12,16 +14,6 @@ import { Atmosphere, usePlanetTexture, useRingGeometry, useRingTexture } from '.
 export const PALETTE = {
   dark: { shell: '#e6eaf2', joint: '#2b303c', visor: '#0b0d12', eye: '#22d3ee', accent: '#a78bfa', accent2: '#22d3ee', warm: '#f5c46b', screen: '#0e1117' },
   light: { shell: '#ffffff', joint: '#3a4050', visor: '#151821', eye: '#06b6d4', accent: '#7c3aed', accent2: '#0891b2', warm: '#d98b1e', screen: '#11141b' },
-};
-
-// Each page dresses the robot to match its backdrop (see PageWorld.js): colour
-// overrides plus a few extra pieces. Original designs, no character likenesses.
-const OUTFITS = {
-  globe: { kind: 'city', eyeScale: 1.45, colors: { shell: '#dc2626', joint: '#1e3a8a', visor: '#991b1b', eye: '#f8fafc', accent: '#1d4ed8', accent2: '#60a5fa', warm: '#f87171' } },
-  type: { kind: 'lab', colors: { shell: '#b91c1c', joint: '#ca8a04', visor: '#eab308', eye: '#e0f2fe', accent: '#38bdf8', accent2: '#f59e0b', warm: '#f59e0b' } },
-  present: { kind: 'future', colors: { shell: '#1c1a24', joint: '#3f3f46', visor: '#09090b', eye: '#e9d5ff', accent: '#a855f7', accent2: '#c084fc', warm: '#c084fc' } },
-  juggle: { kind: 'realm', colors: { shell: '#cbd5e1', joint: '#334155', visor: '#1e293b', eye: '#7dd3fc', accent: '#facc15', accent2: '#7dd3fc', warm: '#facc15' } },
-  mail: { kind: 'mystic', colors: { shell: '#1e3a8a', joint: '#78350f', visor: '#0b0d12', eye: '#fdba74', accent: '#f97316', accent2: '#fb923c', warm: '#f59e0b' } },
 };
 
 // Pointer and scroll are tracked on the whole window, not only over the canvas.
@@ -119,7 +111,31 @@ function Monitor({ colors, ...props }) {
   );
 }
 
-export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, outfit }) {
+// Skills page: the robot stacks technology blocks into a tower, which then falls and
+// starts again. BuildTower drives the timeline; the robot's arms read `build`.
+const BUILD_BLOCKS = [
+  ['React', '#61dafb', '#0b2530'],
+  ['Next.js', '#111111', '#ffffff'],
+  ['Node.js', '#68a063', '#ffffff'],
+  ['Symfony', '#1a171b', '#ffffff'],
+  ['NoSQL', '#47a248', '#ffffff'],
+  ['Docker', '#2496ed', '#ffffff'],
+];
+const BUILD_STEP = 1.7; // seconds per block
+const BUILD_HOLD = 1.6; // finished tower stays up
+const BUILD_FALL = 1.6; // collapse
+const BUILD_CYCLE = BUILD_BLOCKS.length * BUILD_STEP + BUILD_HOLD + BUILD_FALL;
+const build = { carrying: false, u: 0 };
+
+// Contact page: the robot throws a paper plane every PLANE_CYCLE seconds.
+const PLANE_CYCLE = 4.6;
+const PLANE_RELEASE = 0.56; // share of the cycle when the plane leaves the hand
+
+// Projects page: the robot clicks a remote and the screen shows the next project.
+const SLIDE_TIME = 3.2;
+const SLIDES = ['cms', 'aupair', 'correcturl', 'latice', 'python', 'questionary', 'netflix', 'kotlin', 'maui'];
+
+export function Robot({ mode, colors, robotRef, rightHandSlot, leftHandSlot = null, bothHandsSlot }) {
   const head = useRef();
   const eyes = useRef();
   const antenna = useRef();
@@ -138,7 +154,7 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
 
     // hover + lean on scroll
     if (body.current) {
-      const bob = mode === 'play' ? Math.sin(t * 5) * 0.05 : Math.sin(t * 2) * 0.07;
+      const bob = mode === 'play' ? Math.sin(t * 5) * 0.05 : mode === 'type' ? Math.sin(t * 2) * 0.012 : Math.sin(t * 2) * 0.07;
       body.current.position.y = 0.05 + bob;
       body.current.rotation.x = damp(body.current.rotation.x, THREE.MathUtils.clamp(input.scrollVel * 0.01, -0.25, 0.25), 4, dt);
       body.current.rotation.z = mode === 'play' ? Math.sin(t * 3) * 0.07 : damp(body.current.rotation.z, -px * 0.06, 3, dt);
@@ -151,8 +167,10 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
     let pitch = -py * 0.3;
     let roll = 0;
     if (mode === 'type') {
-      yaw = 0.15 + px * 0.25;
-      pitch = 0.25 - py * 0.1;
+      // looks at the monitor on its right, glancing down at the keys now and then
+      const glance = t % 5 < 0.9;
+      yaw = glance ? -0.1 : -0.7 + px * 0.08;
+      pitch = glance ? 0.45 : 0.05;
     } else if (mode === 'juggle') {
       pitch = -0.35 - py * 0.1;
       yaw = Math.sin(t * 2.2) * 0.25 + px * 0.2;
@@ -163,6 +181,21 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
       yaw = -0.45 + px * 0.3;
     } else if (mode === 'play') {
       pitch = 0.3 - py * 0.1;
+    } else if (mode === 'projector') {
+      yaw = -0.55 + px * 0.15;
+      pitch = -0.08 - py * 0.1;
+    } else if (mode === 'plane') {
+      const p = (t % PLANE_CYCLE) / PLANE_CYCLE;
+      // follows its plane once thrown
+      yaw = p > PLANE_RELEASE ? -0.5 * Math.min(1, (p - PLANE_RELEASE) * 4) : 0.25 + px * 0.2;
+      pitch = p > PLANE_RELEASE ? -0.35 : 0.15 - py * 0.1;
+    } else if (mode === 'buddy') {
+      yaw = 0.45 + px * 0.2;
+      pitch = -py * 0.2;
+    } else if (mode === 'build') {
+      // look at the block in the hands, then at the top of the tower
+      yaw = build.carrying ? (build.u < 0.4 ? 0.1 : -0.55) + px * 0.1 : px * 0.4;
+      pitch = build.carrying ? (build.u < 0.4 ? 0.35 : -0.1) : -py * 0.3;
     }
     if (head.current) {
       head.current.rotation.y = damp(head.current.rotation.y, yaw, 5, dt);
@@ -190,6 +223,26 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
       case 'present':
         R = [-0.3, 1.45, -0.1];
         break;
+      case 'projector': {
+        // remote pointed at the screen, with a small "click" at each slide change
+        const since = t % SLIDE_TIME;
+        const click = since < 0.25 ? Math.sin((since / 0.25) * Math.PI) * 0.25 : 0;
+        L = [-1.05 - click, -0.75, -0.25];
+        break;
+      }
+      case 'plane': {
+        const p = (t % PLANE_CYCLE) / PLANE_CYCLE;
+        if (p < 0.42) R = [-1.1, 0.25 + Math.sin(t * 3) * 0.05, -0.5]; // admiring the plane
+        else if (p < 0.52) R = [0.5, 1.2, -1.2]; // wind-up
+        else if (p < 0.62) R = [-1.7, 0.35, -0.05]; // throw
+        else R = [-0.2, 0.25, -0.2];
+        if (p > 0.62 && p < 0.9) L = [0, -2.5 - Math.sin(t * 7) * 0.15, 0]; // waves it goodbye
+        break;
+      }
+      case 'buddy':
+        R = [-0.3, 1.45 + Math.sin(t * 3) * 0.08, -0.1];
+        if (t % 4 < 1.4) L = [0, -2.5 - Math.sin(t * 8) * 0.15, 0];
+        break;
       case 'juggle':
         L = [-0.95, 0.15 + Math.sin(t * 4) * 0.15, -0.6 + Math.sin(t * 4) * 0.3];
         R = [-0.95, -0.15 - Math.sin(t * 4) * 0.15, -0.6 - Math.sin(t * 4) * 0.3];
@@ -206,6 +259,17 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
         break;
       case 'globe':
         L = [-0.2, -1.4, -0.1];
+        break;
+      case 'build':
+        if (build.carrying && build.u < 0.4) {
+          // holding the new block in front of the chest
+          L = [-1.0, 0.25, -0.55];
+          R = [-1.0, -0.25, -0.55];
+        } else if (build.carrying) {
+          // reaching out to the tower (on the robot's right, the viewer's left)
+          L = [-0.55, -1.05 - Math.sin(build.u * Math.PI) * 0.25, -0.15];
+          R = [-0.6, -0.1, -0.4];
+        }
         break;
       case 'lost':
         L = [0, -0.7, -1.6];
@@ -295,7 +359,7 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
           <RoundedBox args={[0.8, 0.46, 0.06]} radius={0.12} smoothness={4} position={[0, 0.36, 0.38]}>
             <meshStandardMaterial color={colors.visor} roughness={0.15} metalness={0.6} />
           </RoundedBox>
-          <group ref={eyes} position={[0, 0.38, 0.42]} scale={outfit?.eyeScale || 1}>
+          <group ref={eyes} position={[0, 0.38, 0.42]}>
             {[-0.18, 0.18].map((x) => (
               <mesh key={x} position={[x, 0, 0]}>
                 <capsuleGeometry args={[0.055, 0.08, 4, 12]} />
@@ -318,149 +382,13 @@ export function Robot({ mode, colors, robotRef, rightHandSlot, bothHandsSlot, ou
             <sphereGeometry args={[0.065, 16, 16]} />
             <meshStandardMaterial color={colors.warm} emissive={colors.warm} emissiveIntensity={1.5} toneMapped={false} />
           </mesh>
-          {outfit?.kind === 'realm' && <HelmetWings colors={colors} />}
         </group>
-        <OutfitExtras kind={outfit?.kind} colors={colors} />
-        {arm(-1, lS, lE, null)}
+        {arm(-1, lS, lE, leftHandSlot)}
         {arm(1, rS, rE, rightHandSlot)}
         {bothHandsSlot}
       </group>
     </group>
   );
-}
-
-/* ---------- outfits ---------- */
-
-// Cape hanging behind the torso; it sways a little.
-function Cape({ color, collar }) {
-  const ref = useRef();
-  useFrame(({ clock }) => {
-    if (ref.current) ref.current.rotation.x = 0.12 + Math.sin(clock.elapsedTime * 1.6) * 0.05;
-  });
-  return (
-    <group>
-      <mesh ref={ref} position={[0, 1.12, -0.12]}>
-        <cylinderGeometry args={[0.5, 0.8, 1.35, 32, 1, true, Math.PI / 2, Math.PI]} />
-        <meshStandardMaterial color={color} roughness={0.7} side={THREE.DoubleSide} />
-      </mesh>
-      {collar && (
-        <mesh position={[0, 1.78, -0.08]} rotation={[-0.25, 0, 0]}>
-          <cylinderGeometry args={[0.56, 0.42, 0.42, 32, 1, true, Math.PI / 2 + 0.3, Math.PI - 0.6]} />
-          <meshStandardMaterial color={color} roughness={0.7} side={THREE.DoubleSide} />
-        </mesh>
-      )}
-    </group>
-  );
-}
-
-function HelmetWings({ colors }) {
-  return (
-    <>
-      {[-1, 1].map((s) => (
-        <mesh key={s} position={[s * 0.56, 0.62, 0]} rotation={[0, 0, -s * 0.55]}>
-          <coneGeometry args={[0.1, 0.46, 4]} />
-          <meshStandardMaterial color={colors.accent} metalness={0.7} roughness={0.25} />
-        </mesh>
-      ))}
-    </>
-  );
-}
-
-// Magic circle turning slowly behind the robot.
-function SpinningRing({ color }) {
-  const ref = useRef();
-  useFrame((_, dt) => {
-    if (ref.current) ref.current.rotation.z += dt * 0.8;
-  });
-  return (
-    <group ref={ref} position={[0, 1.6, -0.6]}>
-      <mesh>
-        <torusGeometry args={[1.25, 0.025, 8, 80]} />
-        <meshBasicMaterial color={color} toneMapped={false} />
-      </mesh>
-      {[0, Math.PI / 4].map((a) => (
-        <mesh key={a} rotation={[0, 0, a]}>
-          <torusGeometry args={[1.05, 0.015, 4, 4]} />
-          <meshBasicMaterial color={color} toneMapped={false} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-// Pieces worn on the body for each page's outfit.
-function OutfitExtras({ kind, colors }) {
-  if (kind === 'city') {
-    // Web pattern over the chest light.
-    return (
-      <group position={[0, 1.3, 0.372]}>
-        <mesh>
-          <circleGeometry args={[0.15, 32]} />
-          <meshBasicMaterial color="#0b0b0f" />
-        </mesh>
-        {[0, Math.PI / 4, Math.PI / 2, (3 * Math.PI) / 4].map((a) => (
-          <mesh key={a} rotation={[0, 0, a]} position={[0, 0, 0.002]}>
-            <planeGeometry args={[0.3, 0.012]} />
-            <meshBasicMaterial color="#e5e7eb" />
-          </mesh>
-        ))}
-      </group>
-    );
-  }
-  if (kind === 'lab') {
-    // Glowing chest core with a metal ring around it.
-    return (
-      <group position={[0, 1.3, 0.37]}>
-        <mesh>
-          <torusGeometry args={[0.17, 0.035, 12, 40]} />
-          <meshStandardMaterial color="#94a3b8" metalness={0.8} roughness={0.25} />
-        </mesh>
-        <mesh position={[0, 0, 0.01]}>
-          <circleGeometry args={[0.14, 32]} />
-          <meshBasicMaterial color="#e0f2fe" toneMapped={false} />
-        </mesh>
-        <pointLight color="#7dd3fc" intensity={3} distance={2} />
-      </group>
-    );
-  }
-  if (kind === 'future') {
-    // Silver necklace and glowing lines on the suit.
-    return (
-      <group>
-        <mesh position={[0, 1.72, 0.04]} rotation={[Math.PI / 2 - 0.25, 0, 0]}>
-          <torusGeometry args={[0.3, 0.035, 10, 40]} />
-          <meshStandardMaterial color="#e5e7eb" metalness={0.9} roughness={0.2} />
-        </mesh>
-        {[-0.3, 0.3].map((x) => (
-          <mesh key={x} position={[x, 1.22, 0.37]}>
-            <planeGeometry args={[0.03, 0.62]} />
-            <meshBasicMaterial color={colors.accent2} toneMapped={false} />
-          </mesh>
-        ))}
-      </group>
-    );
-  }
-  if (kind === 'realm') return <Cape color="#b91c1c" />;
-  if (kind === 'mystic') {
-    // High-collared cape, a gold amulet and a magic circle behind.
-    return (
-      <group>
-        <Cape color="#b91c1c" collar />
-        <group position={[0, 1.5, 0.38]}>
-          <mesh>
-            <torusGeometry args={[0.1, 0.025, 10, 30]} />
-            <meshStandardMaterial color="#facc15" metalness={0.8} roughness={0.25} />
-          </mesh>
-          <mesh>
-            <circleGeometry args={[0.07, 24]} />
-            <meshStandardMaterial color="#22c55e" emissive="#22c55e" emissiveIntensity={1.2} toneMapped={false} />
-          </mesh>
-        </group>
-        <SpinningRing color={colors.accent2} />
-      </group>
-    );
-  }
-  return null;
 }
 
 /* ---------- page props ---------- */
@@ -515,24 +443,38 @@ function Controller({ colors }) {
   );
 }
 
+// Desk built in the robot's own frame (it faces +z): the keyboard sits right under
+// its hands and the monitor stands on its right, turned towards the visitor.
 function Desk({ colors }) {
+  const keys = useMemo(() => {
+    const out = [];
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 10; c++) out.push([-0.32 + c * 0.071, 0.66 - 0.07 + r * 0.07]);
+    return out;
+  }, []);
   return (
-    <group position={[-0.55, 0, 1.0]} rotation={[0, 0.45, 0]}>
-      <mesh position={[0, 0.85, 0]}>
-        <boxGeometry args={[2.2, 0.08, 1.0]} />
+    <group>
+      <mesh position={[-0.35, 0.82, 0.9]}>
+        <boxGeometry args={[2.0, 0.06, 0.8]} />
         <meshStandardMaterial color={colors.joint} roughness={0.6} />
       </mesh>
-      {[-1, 1].map((s) => (
-        <mesh key={s} position={[s * 0.98, 0.42, 0]}>
-          <boxGeometry args={[0.07, 0.84, 0.8]} />
+      {[-1.28, 0.58].map((x) => (
+        <mesh key={x} position={[x, 0.2, 0.9]}>
+          <boxGeometry args={[0.06, 1.2, 0.66]} />
           <meshStandardMaterial color={colors.joint} />
         </mesh>
       ))}
-      <Monitor colors={colors} position={[-0.2, 0.06, -0.15]} scale={0.8} />
-      <mesh position={[0.25, 0.9, 0.22]} rotation={[-0.05, 0, 0]}>
-        <boxGeometry args={[0.7, 0.03, 0.22]} />
+      {/* keyboard under the hands */}
+      <mesh position={[0, 0.865, 0.66]}>
+        <boxGeometry args={[0.8, 0.03, 0.26]} />
         <meshStandardMaterial color="#3b4152" />
       </mesh>
+      {keys.map(([x, z], i) => (
+        <mesh key={i} position={[x, 0.885, z]}>
+          <boxGeometry args={[0.055, 0.012, 0.055]} />
+          <meshStandardMaterial color="#1c2029" emissive={colors.accent2} emissiveIntensity={0.18} />
+        </mesh>
+      ))}
+      <Monitor colors={colors} position={[-0.95, 0.06, 1.0]} rotation={[0, 1.3, 0]} scale={0.8} />
     </group>
   );
 }
@@ -577,6 +519,229 @@ function JuggleOrbs({ colors }) {
       <meshStandardMaterial color={c} emissive={c} emissiveIntensity={0.55} flatShading />
     </mesh>
   ));
+}
+
+function usePlaneGeometry() {
+  return useMemo(() => {
+    const g = new THREE.BufferGeometry();
+    // nose, wing tips, centre fold and keel of a folded paper plane
+    const v = [0, 0, 0.36, -0.26, 0.02, -0.2, 0, 0, -0.2, 0.26, 0.02, -0.2, 0, -0.09, -0.2];
+    g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3));
+    g.setIndex([0, 1, 2, 0, 2, 3, 0, 2, 4]);
+    g.computeVertexNormals();
+    return g;
+  }, []);
+}
+
+function HeldPlane() {
+  const geo = usePlaneGeometry();
+  const ref = useRef();
+  useFrame((st) => {
+    if (!ref.current) return;
+    const p = (st.clock.elapsedTime % PLANE_CYCLE) / PLANE_CYCLE;
+    ref.current.visible = p < PLANE_RELEASE;
+  });
+  return (
+    <mesh ref={ref} geometry={geo} position={[0, -0.1, 0.18]} rotation={[0.2, 0, 0]}>
+      <meshStandardMaterial color="#fbfbf7" side={THREE.DoubleSide} roughness={0.7} />
+    </mesh>
+  );
+}
+
+// The thrown plane: loops up and away to the left, leaving a dotted trail.
+function FlyingPlane({ colors }) {
+  const geo = usePlaneGeometry();
+  const plane = useRef();
+  const dots = useRef([]);
+  // up and to the left, then away into the distance (it shrinks instead of leaving the frame)
+  const at = (f) => new THREE.Vector3(0.45 - 2.4 * f, 1.7 + Math.sin(f * Math.PI) * 0.8 + f * 1.1, 0.5 - 3.2 * f * f);
+  useFrame((st) => {
+    const p = (st.clock.elapsedTime % PLANE_CYCLE) / PLANE_CYCLE;
+    const flying = p >= PLANE_RELEASE;
+    const f = flying ? (p - PLANE_RELEASE) / (1 - PLANE_RELEASE) : 0;
+    if (plane.current) {
+      plane.current.visible = flying;
+      plane.current.position.copy(at(f));
+      plane.current.lookAt(at(Math.min(1, f + 0.02)));
+      plane.current.rotateZ(Math.sin(f * 9) * 0.35);
+      plane.current.scale.setScalar(1.1 * (1 - Math.max(0, f - 0.75) * 4));
+    }
+    dots.current.forEach((d, i) => {
+      if (!d) return;
+      const back = f - (i + 1) * 0.025;
+      d.visible = flying && back > 0;
+      if (d.visible) d.position.copy(at(back));
+      d.material.opacity = 0.6 * (1 - i / dots.current.length) * (1 - f * 0.6);
+    });
+  });
+  return (
+    <group>
+      <mesh ref={plane} geometry={geo}>
+        <meshStandardMaterial color="#fbfbf7" side={THREE.DoubleSide} roughness={0.7} emissive="#ffffff" emissiveIntensity={0.15} />
+      </mesh>
+      {Array.from({ length: 12 }, (_, i) => (
+        <mesh key={i} ref={(m) => (dots.current[i] = m)}>
+          <sphereGeometry args={[0.025, 8, 8]} />
+          <meshBasicMaterial color={colors.accent2} transparent opacity={0.5} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function Remote() {
+  return (
+    <group position={[0, -0.12, 0.12]} rotation={[1.3, 0, 0]}>
+      <RoundedBox args={[0.1, 0.3, 0.05]} radius={0.02} smoothness={3}>
+        <meshStandardMaterial color="#2b303c" />
+      </RoundedBox>
+      <mesh position={[0, 0.1, 0.03]}>
+        <circleGeometry args={[0.022, 16]} />
+        <meshStandardMaterial color="#ff6b81" emissive="#ff6b81" emissiveIntensity={1} />
+      </mesh>
+    </group>
+  );
+}
+
+// Big floating screen showing the real project screenshots, one after the other.
+function ProjectorScreen({ colors }) {
+  const textures = useMemo(() => {
+    const loader = new THREE.TextureLoader();
+    return SLIDES.map((id) => {
+      const tx = loader.load(`${process.env.PUBLIC_URL}/images/projects/${id}.jpg`);
+      tx.colorSpace = THREE.SRGBColorSpace;
+      return tx;
+    });
+  }, []);
+  const group = useRef();
+  const mat = useRef();
+  const screen = useRef();
+  useFrame((st) => {
+    const t = st.clock.elapsedTime;
+    const i = Math.floor(t / SLIDE_TIME) % SLIDES.length;
+    const since = t % SLIDE_TIME;
+    if (mat.current && mat.current.map !== textures[i]) {
+      mat.current.map = textures[i];
+      mat.current.needsUpdate = true;
+    }
+    // quick "switch" when the slide changes
+    if (screen.current) screen.current.scale.y = since < 0.18 ? 0.15 + (since / 0.18) * 0.85 : 1;
+    if (group.current) group.current.position.y = 2.15 + Math.sin(t * 1.2) * 0.04;
+  });
+  return (
+    <group ref={group} position={[-3.15, 2.15, 0.3]} rotation={[0, 0, 0]}>
+      <RoundedBox args={[3.9, 2.02, 0.08]} radius={0.05} smoothness={4}>
+        <meshStandardMaterial color={colors.joint} roughness={0.4} metalness={0.4} />
+      </RoundedBox>
+      <mesh ref={screen} position={[0, 0, 0.045]}>
+        <planeGeometry args={[3.74, 1.88]} />
+        <meshBasicMaterial ref={mat} map={textures[0]} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+function useBlockTexture(label, bg, fg) {
+  return useMemo(() => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const g = c.getContext('2d');
+    g.fillStyle = bg;
+    g.fillRect(0, 0, 256, 256);
+    g.strokeStyle = 'rgba(255,255,255,0.18)';
+    g.lineWidth = 10;
+    g.strokeRect(5, 5, 246, 246);
+    g.fillStyle = fg;
+    g.font = `bold ${label.length > 6 ? 54 : 64}px Inter, Segoe UI, sans-serif`;
+    g.textAlign = 'center';
+    g.textBaseline = 'middle';
+    g.fillText(label, 128, 132);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    return tex;
+  }, [label, bg, fg]);
+}
+
+function TechBlock({ label, bg, fg, blockRef }) {
+  const map = useBlockTexture(label, bg, fg);
+  return (
+    <mesh ref={blockRef} scale={0}>
+      <boxGeometry args={[0.42, 0.42, 0.42]} />
+      <meshStandardMaterial map={map} roughness={0.45} metalness={0.1} emissive={bg} emissiveIntensity={0.12} />
+    </mesh>
+  );
+}
+
+const easeInOut = (x) => (x < 0.5 ? 2 * x * x : 1 - (-2 * x + 2) ** 2 / 2);
+
+function BuildTower({ still }) {
+  const refs = useRef([]);
+  const S = 0.42;
+  const base = new THREE.Vector3(-1.1, -0.17, 0.3); // first block centre, left of the robot
+  const hands = new THREE.Vector3(-0.12, 1.12, 0.7); // in front of the robot's chest
+  // random-looking but fixed fall directions
+  const fall = useMemo(() => BUILD_BLOCKS.map((_, i) => [Math.sin(i * 2.3) * 1.2 - 0.4, 1.2 + (i % 3) * 0.5, Math.cos(i * 1.7) * 0.8, (i % 2 ? 1 : -1) * (2 + i)]), []);
+
+  useFrame((state) => {
+    const t = still ? BUILD_BLOCKS.length * BUILD_STEP + 0.01 : state.clock.elapsedTime % BUILD_CYCLE;
+    const buildEnd = BUILD_BLOCKS.length * BUILD_STEP;
+    const k = Math.floor(t / BUILD_STEP);
+    const u = (t % BUILD_STEP) / BUILD_STEP;
+    build.carrying = t < buildEnd;
+    build.u = u;
+
+    refs.current.forEach((m, i) => {
+      if (!m) return;
+      const top = new THREE.Vector3(base.x, base.y + S / 2 + i * S, base.z);
+      if (t >= buildEnd + BUILD_HOLD) {
+        // collapse: fly out, spin, shrink
+        const f = (t - buildEnd - BUILD_HOLD) / BUILD_FALL;
+        const [vx, vy, vz, spin] = fall[i];
+        m.position.set(top.x + vx * f, top.y + vy * f - 3.2 * f * f, top.z + vz * f);
+        m.rotation.set(spin * f, spin * 0.6 * f, spin * 0.4 * f);
+        m.scale.setScalar(Math.max(0, 1 - f * f));
+      } else if (i < k || (still && i <= k)) {
+        // placed: tiny settle wobble right after landing
+        const since = t - (i + 1) * BUILD_STEP;
+        const wob = since > 0 && since < 0.35 ? Math.sin(since * 30) * 0.03 * (1 - since / 0.35) : 0;
+        m.position.copy(top);
+        m.rotation.set(0, 0, wob);
+        m.scale.setScalar(1);
+      } else if (i === k) {
+        if (u < 0.4) {
+          // appears in the hands
+          const a = Math.min(1, u / 0.15);
+          m.position.copy(hands);
+          m.position.y += Math.sin(u * 20) * 0.01;
+          m.rotation.set(0, u * 2, 0);
+          m.scale.setScalar(a);
+        } else {
+          // arc over to the top of the tower
+          const v = easeInOut(Math.min(1, (u - 0.4) / 0.5));
+          m.position.lerpVectors(hands, top, v);
+          m.position.y += Math.sin(v * Math.PI) * 0.6;
+          m.rotation.set(0, (1 - v) * 0.8, 0);
+          m.scale.setScalar(1);
+        }
+      } else {
+        m.scale.setScalar(0);
+      }
+    });
+  });
+
+  return (
+    <group>
+      {/* stone pad under the tower */}
+      <mesh position={[base.x, base.y - 0.04, base.z]}>
+        <cylinderGeometry args={[0.38, 0.42, 0.06, 32]} />
+        <meshStandardMaterial color="#3a3550" roughness={0.9} />
+      </mesh>
+      {BUILD_BLOCKS.map(([label, bg, fg], i) => (
+        <TechBlock key={label} label={label} bg={bg} fg={fg} blockRef={(m) => (refs.current[i] = m)} />
+      ))}
+    </group>
+  );
 }
 
 function latLon(lat, lon, r) {
@@ -670,16 +835,8 @@ function Shadow({ x = 0 }) {
 }
 
 // The planet each page's robot stands on: the one it flew to from the home page.
-const PAGE_PLANET = {
-  globe: { kind: 'terra', seed: 65, glow: '#6fb6ff', clouds: true },
-  type: { kind: 'gas', seed: 130, glow: '#ffc27a' },
-  present: { kind: 'ringed', seed: 104, glow: '#67e8f9', ring: true },
-  juggle: { kind: 'lava', seed: 78, glow: '#ff7a9a', lava: true },
-  mail: { kind: 'ice', seed: 91, glow: '#c4b5fd' },
-  play: { kind: 'gas', seed: 130, glow: '#ffc27a' },
-  lost: { kind: 'moon', seed: 3, glow: '#9aa1b3' },
-};
-const PLANET_R = 2.6;
+
+
 
 function PlanetFloor({ cfg }) {
   const spin = useRef();
@@ -725,22 +882,11 @@ function PlanetFloor({ cfg }) {
   );
 }
 
-const LAYOUT = {
-  hello: { robot: [0.55, 0, 0], rot: -0.15, cam: [0, 1.9, 6.6] },
-  type: { robot: [0.75, 0, 0], rot: -0.75, cam: [0.2, 2.2, 6.4] },
-  present: { robot: [0, 0, 0], rot: 0, cam: [0, 2, 6.8] },
-  juggle: { robot: [0, 0, 0], rot: 0, cam: [0, 2.1, 6.4] },
-  mail: { robot: [0, 0, 0], rot: 0.15, cam: [0, 1.9, 5.8] },
-  play: { robot: [0, 0, 0], rot: 0, cam: [0, 1.9, 5.6] },
-  globe: { robot: [0.65, 0, 0], rot: -0.25, cam: [-0.3, 1.9, 6.4] },
-  lost: { robot: [0, 0, 0], rot: 0, cam: [0, 2.1, 6] },
-};
 
-function Scene({ mode, theme }) {
+
+function Scene({ mode, theme, still }) {
   useWindowInput();
-  const outfit = OUTFITS[mode];
-  const base = PALETTE[theme] || PALETTE.dark;
-  const colors = useMemo(() => (outfit ? { ...base, ...outfit.colors } : base), [base, outfit]);
+  const colors = PALETTE[theme] || PALETTE.dark;
   const L = LAYOUT[mode] || LAYOUT.hello;
   const robot = useRef();
   const { camera } = useThree();
@@ -753,7 +899,7 @@ function Scene({ mode, theme }) {
 
   useFrame((_, dt) => {
     if (!robot.current) return;
-    robot.current.rotation.y = damp(robot.current.rotation.y, L.rot + input.x * 0.25, 2.5, dt);
+    robot.current.rotation.y = damp(robot.current.rotation.y, L.rot + input.x * (mode === 'type' ? 0 : 0.25), 2.5, dt);
   });
 
   return (
@@ -768,18 +914,25 @@ function Scene({ mode, theme }) {
           mode={mode}
           colors={colors}
           robotRef={robot}
-          outfit={outfit}
-          rightHandSlot={mode === 'mail' ? <Envelope colors={colors} /> : null}
+          rightHandSlot={mode === 'mail' ? <Envelope colors={colors} /> : mode === 'plane' ? <HeldPlane /> : null}
+          leftHandSlot={mode === 'projector' ? <Remote /> : null}
           bothHandsSlot={mode === 'play' ? <Controller colors={colors} /> : null}
         />
         <Shadow />
         {planet && <PlanetFloor cfg={planet} />}
         {mode === 'juggle' && <JuggleOrbs colors={colors} />}
+        {mode === 'build' && <BuildTower still={still} />}
+        {mode === 'plane' && <FlyingPlane colors={colors} />}
+        {mode === 'projector' && <ProjectorScreen colors={colors} />}
         {mode === 'lost' && <QuestionMark colors={colors} />}
       </group>
 
       {mode === 'hello' && <Monitor colors={colors} position={[-1.35, 0, -0.6]} rotation={[0, 0.35, 0]} />}
-      {mode === 'type' && <Desk colors={colors} />}
+      {mode === 'type' && (
+        <group position={L.robot} rotation={[0, L.rot, 0]}>
+          <Desk colors={colors} />
+        </group>
+      )}
       {mode === 'present' && <OrbitScreens colors={colors} />}
       {mode === 'globe' && <Globe colors={colors} />}
       <Sparkles count={40} scale={[7, 4, 4]} position={[0, 2, 0]} size={2} speed={0.3} color={colors.accent2} opacity={0.5} />
@@ -798,7 +951,7 @@ class WebGLBoundary extends Component {
 }
 
 export default function RobotStage({ mode = 'hello', theme = 'dark', active = true }) {
-  const still = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const still = useStill();
   return (
     <WebGLBoundary>
       <Canvas
@@ -809,7 +962,7 @@ export default function RobotStage({ mode = 'hello', theme = 'dark', active = tr
         frameloop={active && !still ? 'always' : 'demand'}
         aria-hidden="true"
       >
-        <Scene mode={mode} theme={theme} />
+        <Scene mode={mode} theme={theme} still={still} />
       </Canvas>
     </WebGLBoundary>
   );

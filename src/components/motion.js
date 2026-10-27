@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { animate, motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion';
+import { useStill } from '../context';
 
 const EASE = [0.2, 0.7, 0.2, 1];
 
 // Fades and lifts its content in the first time it scrolls into view.
 export function Reveal({ children, delay = 0, y = 28, as = 'div', className, ...rest }) {
-  const reduce = useReducedMotion();
+  const reduce = useStill();
   const Tag = motion[as];
   return (
     <Tag
@@ -23,7 +24,7 @@ export function Reveal({ children, delay = 0, y = 28, as = 'div', className, ...
 
 // Grid whose children appear one after another.
 export function Stagger({ children, className, step = 0.08 }) {
-  const reduce = useReducedMotion();
+  const reduce = useStill();
   return (
     <motion.div
       className={className}
@@ -45,7 +46,7 @@ export const staggerItem = {
 // Card that tilts in 3D towards the pointer.
 export function TiltCard({ children, className, max = 8, as = 'div', ...rest }) {
   const Tag = motion[as];
-  const reduce = useReducedMotion();
+  const reduce = useStill();
   const x = useMotionValue(0.5);
   const y = useMotionValue(0.5);
   const rotateX = useSpring(useTransform(y, [0, 1], [max, -max]), { stiffness: 220, damping: 20 });
@@ -96,7 +97,7 @@ export function ScrollProgress() {
 export function CountUp({ value }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
-  const reduce = useReducedMotion();
+  const reduce = useStill();
   const target = parseInt(value, 10);
   const suffix = Number.isNaN(target) ? '' : value.slice(String(target).length);
   const [shown, setShown] = useState(Number.isNaN(target) || reduce ? value : `0${suffix}`);

@@ -2,7 +2,7 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { projectDetails, projects } from '../content';
 import { ArrowIcon, ExternalIcon, GitHubIcon, LockIcon, PlayIcon } from '../components/Icons';
-import { CtaBanner, RobotSlot, TagList } from '../components/ui';
+import { CtaBanner, ProjectImage, RobotSlot, TagList } from '../components/ui';
 import './pages.css';
 
 export default function ProjectDetail() {
@@ -62,6 +62,12 @@ export default function ProjectDetail() {
           )}
         </div>
       </header>
+
+      {project.image && (
+        <section className="container">
+          <ProjectImage project={project} className="detail-img reveal reveal-2" />
+        </section>
+      )}
 
       <section className="container detail-body reveal reveal-2">
         <div className="detail-main">

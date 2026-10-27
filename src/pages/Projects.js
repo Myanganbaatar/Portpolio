@@ -1,23 +1,30 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useSite, usePageTitle } from '../context';
 import { projects } from '../content';
+import demoGuides from '../demoGuides';
 import { ArrowIcon, ExternalIcon, GitHubIcon, PlayIcon } from '../components/Icons';
-import { PageHeader, ProjectCard, TagList } from '../components/ui';
+import { PageHeader, ProjectCard, ProjectImage, RobotSlot, TagList } from '../components/ui';
 import { Stagger } from '../components/motion';
 import LaticeGame from '../components/LaticeGame';
 import PythonGames from '../components/PythonGames';
 import NetflixDemo from '../components/NetflixDemo';
-import { MauiDemo, TaskAppDemo } from '../components/ProjectDemos';
+import { MauiDemo, QuestionaryDemo, TaskAppDemo } from '../components/ProjectDemos';
+import { AuPairDemo, CmsDemo, ShortenerDemo } from '../components/InternshipDemos';
 import './pages.css';
 
 // Projects with something to try in the browser. `recreated` marks web
-// re-creations of apps whose original code (Kotlin, C#) cannot run here.
+// re-creations of apps whose original code (private, Kotlin, C#, PHP) cannot run here.
 const DEMOS = [
+  { id: 'cms', Demo: CmsDemo, recreated: true },
+  { id: 'aupair', Demo: AuPairDemo, recreated: true },
+  { id: 'correcturl', Demo: ShortenerDemo, recreated: true },
+  { id: 'latice', Demo: LaticeGame },
+  { id: 'python', Demo: PythonGames },
+  { id: 'questionary', Demo: QuestionaryDemo, recreated: true },
   { id: 'netflix', Demo: NetflixDemo, recreated: true },
   { id: 'kotlin', Demo: TaskAppDemo, recreated: true },
   { id: 'maui', Demo: MauiDemo, recreated: true },
-  { id: 'latice', Demo: LaticeGame },
-  { id: 'python', Demo: PythonGames },
 ];
 
 // Filters: project type, then main technology (matched against each project's tags).
@@ -42,26 +49,49 @@ function matches(project, type, tech) {
   return !t || project.tags.some(t.match);
 }
 
-function DemoRow({ project, Demo, recreated }) {
+// Each block is a little fainter than the previous one (same dark blue).
+const FADE = [1, 0.8, 0.64, 0.5, 0.4, 0.32, 0.26, 0.21, 0.17];
+
+function DemoRow({ project, Demo, recreated, index }) {
   const { t, lang } = useSite();
   const p = t.projects;
   const fr = lang === 'fr';
+  const guide = demoGuides[project.id] && demoGuides[project.id][lang];
+  // The demo only mounts on request: the list stays short and light.
+  const [open, setOpen] = useState(false);
 
   return (
-    <article className="card demo-row reveal">
-      <div className="demo-row__info">
-        <div className="demo-row__head">
-          <span className="project-card__icon" aria-hidden="true">
-            {project.icon}
-          </span>
-          <div>
-            <span className="project-card__cat">{p.filters[project.category]}</span>
-            <h3 className="project-card__title">
-              <Link to={`/projects/${project.id}`}>{project.title[lang]}</Link>
-            </h3>
-          </div>
-        </div>
-        <p className="project-card__desc">{project.desc[lang]}</p>
+    <article
+      id={`demo-${project.id}`}
+      className={`demo-row reveal ${index % 2 ? 'demo-row--flip' : ''}`}
+      style={{ '--a': FADE[Math.min(index, FADE.length - 1)] }}
+    >
+      <div className="demo-row__text">
+        <span className="demo-row__num" aria-hidden="true">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+        <span className="project-card__cat">{p.filters[project.category]}</span>
+        <h3 className="demo-row__title">
+          <Link to={`/projects/${project.id}`}>{project.title[lang]}</Link>
+        </h3>
+
+        {guide ? (
+          <>
+            <p className="demo-row__what">{guide.what}</p>
+            <h4 className="demo-row__h">{fr ? 'À quoi ça sert ?' : 'What is it for?'}</h4>
+            <p>{guide.why}</p>
+            <h4 className="demo-row__h">{fr ? 'Ce que j’ai fait' : 'What I did'}</h4>
+            <ul className="demo-row__did">
+              {guide.did.map((d) => (
+                <li key={d}>{d}</li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="demo-row__what">{project.desc[lang]}</p>
+        )}
+
+        <p className="demo-row__res">✓ {project.result[lang]}</p>
         <TagList items={project.tags} />
         <div className="demo-row__links">
           <Link to={`/projects/${project.id}`} className="link-chip">
@@ -90,15 +120,92 @@ function DemoRow({ project, Demo, recreated }) {
           <span className="status-dot" />{' '}
           {recreated
             ? fr
-              ? 'Démo interactive · recréation web simplifiée de l’application'
-              : 'Interactive demo · simplified web re-creation of the app'
+              ? 'Démo interactive · recréation web de l’application'
+              : 'Interactive demo · web re-creation of the app'
             : fr
               ? 'Démo jouable'
               : 'Playable demo'}
         </p>
-        <Demo />
+        {guide && (
+          <div className="demo-row__try">
+            <p>{fr ? 'Essayez :' : 'Try it:'}</p>
+            <ol>
+              {guide.steps.map((st) => (
+                <li key={st}>{st}</li>
+              ))}
+            </ol>
+          </div>
+        )}
+        {open ? (
+          <div className="demo-row__live">
+            <Demo />
+          </div>
+        ) : (
+          <div className="demo-row__poster">
+            <ProjectImage project={project} />
+            <button className="btn btn--primary demo-row__play" onClick={() => setOpen(true)} aria-label={`${fr ? 'Essayer la démo' : 'Try the demo'} : ${project.title[lang]}`}>
+              <PlayIcon width={16} height={16} /> {fr ? 'Essayer la démo' : 'Try the demo'}
+            </button>
+          </div>
+        )}
       </div>
     </article>
+  );
+}
+
+// A small robot that follows the visitor down the list: it sits beside the project
+// in the middle of the screen, staying in view while that block scrolls by.
+function DemoBuddy({ listRef }) {
+  const [pos, setPos] = useState(null); // { top, flip, shown }
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return undefined;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rows = [...list.querySelectorAll('.demo-row')];
+      const focus = window.innerHeight * 0.4;
+      const box = list.getBoundingClientRect();
+      // only around the list; in between two blocks it keeps following (no reset)
+      const shown = box.top < focus && box.bottom > focus;
+      // the block nearest to the focus line
+      let row = rows[0];
+      let best = Infinity;
+      rows.forEach((r) => {
+        const b = r.getBoundingClientRect();
+        const d = b.top > focus ? b.top - focus : b.bottom < focus ? focus - b.bottom : 0;
+        if (d < best) {
+          best = d;
+          row = r;
+        }
+      });
+      const wanted = 110 - box.top; // keep it near the top of the screen
+      const top = Math.min(Math.max(wanted, row.offsetTop - 64), row.offsetTop + row.offsetHeight - 200);
+      setPos((prev) => ({ top: shown ? top : prev ? prev.top : top, flip: row.classList.contains('demo-row--flip'), shown }));
+    };
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    const ro = new ResizeObserver(onScroll);
+    ro.observe(list);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      ro.disconnect();
+    };
+  }, [listRef]);
+  return (
+    <div
+      className={`demo-buddy ${pos && pos.flip ? 'demo-buddy--flip' : ''} ${pos && pos.shown ? '' : 'is-hidden'}`}
+      style={{ transform: `translateY(${pos ? pos.top : 0}px)` }}
+      aria-hidden="true"
+    >
+      <RobotSlot mode="buddy" />
+    </div>
   );
 }
 
@@ -107,6 +214,7 @@ export default function Projects() {
   usePageTitle(t.projects.title);
   const fr = lang === 'fr';
 
+  const listRef = useRef(null);
   const [params, setParams] = useSearchParams();
   const type = TYPES.includes(params.get('type')) ? params.get('type') : 'all';
   const tech = TECHS.some((x) => x.key === params.get('tech')) ? params.get('tech') : null;
@@ -124,12 +232,12 @@ export default function Projects() {
   const label = (l) => (typeof l === 'string' ? l : l[lang]);
 
   const lead = fr
-    ? 'Des applications en production réalisées pendant mon stage, et des projets universitaires — dont cinq que vous pouvez essayer directement ici.'
-    : 'Production apps built during my internship, and university projects — five of which you can try right here.';
+    ? 'Des applications en production réalisées pendant mon stage, et des projets universitaires — dont neuf que vous pouvez essayer directement ici.'
+    : 'Production apps built during my internship, and university projects — nine of which you can try right here.';
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.projects} title={t.projects.title} lead={lead} robot="present" />
+      <PageHeader eyebrow={t.nav.projects} title={t.projects.title} lead={lead} robot="projector" />
 
       <section className="container project-filters reveal reveal-2" aria-label={fr ? 'Filtrer les projets' : 'Filter projects'}>
         <div className="filters" role="group" aria-label="Type">
@@ -160,8 +268,12 @@ export default function Projects() {
         <p className="filters__result" aria-live="polite">
           {fr ? `${shown.length} projet${shown.length > 1 ? 's' : ''} affiché${shown.length > 1 ? 's' : ''}` : `${shown.length} project${shown.length > 1 ? 's' : ''} shown`}
           {(type !== 'all' || tech) && (
-            <button className="text-link filters__reset" onClick={() => setParams({}, { replace: true })}>
-              {fr ? 'Réinitialiser' : 'Reset'}
+            <button className="filters__reset" onClick={() => setParams({}, { replace: true })}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5" />
+              </svg>
+              {fr ? 'Réinitialiser les filtres' : 'Reset filters'}
             </button>
           )}
         </p>
@@ -191,9 +303,10 @@ export default function Projects() {
           <div className="section-title">
             <h2>{fr ? 'À essayer ici' : 'Try them here'}</h2>
           </div>
-          <div className="demo-list">
-            {demos.map(({ id, Demo, recreated }) => (
-              <DemoRow key={id} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} />
+          <div className="demo-list" ref={listRef}>
+            <DemoBuddy listRef={listRef} />
+            {demos.map(({ id, Demo, recreated }, i) => (
+              <DemoRow key={id} index={i} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} />
             ))}
           </div>
         </section>

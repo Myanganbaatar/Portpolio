@@ -1,0 +1,171 @@
+.flight {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ---------- destination planet, clipped to the page's robot area ---------- */
+.flight__clip {
+  position: fixed;
+  overflow: hidden;
+}
+
+.flight__planet {
+  --glow: #67e8f9;
+  position: absolute;
+  border-radius: 50%;
+  background-color: #1b1f2a;
+  background-size: auto 100%;
+  background-repeat: repeat-x;
+  box-shadow: 0 0 46px 6px color-mix(in srgb, var(--glow) 55%, transparent), inset 30px -40px 80px rgba(0, 0, 0, 0.6);
+  animation:
+    flight-planet 1.7s ease both,
+    flight-spin 18s linear infinite;
+}
+
+/* Projects' planet has a ring, like on the home page. */
+.flight__planet--ring::after {
+  content: '';
+  position: absolute;
+  inset: 34% -32%;
+  border-radius: 50%;
+  border: 10px solid rgba(200, 205, 215, 0.55);
+  transform: rotate(-10deg);
+}
+
+/* Pages without a robot scene: the sun (home) or a small grey moon. */
+.flight__sun {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  margin: -40px 0 0 -65px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fff6c2, #ffcc4d 35%, #ff8a1f 70%, #c2410c);
+  box-shadow: 0 0 70px 18px rgba(255, 170, 60, 0.55);
+  animation: flight-planet 1.7s ease both;
+}
+
+.flight__sun--grey {
+  background: radial-gradient(circle at 35% 30%, #e5e7eb, #9aa1b3 50%, #4b5160);
+  box-shadow: 0 0 40px 6px rgba(154, 161, 179, 0.4);
+}
+
+.flight__label {
+  position: absolute;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(10, 10, 20, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font: 600 0.85rem var(--font-body, system-ui);
+  white-space: nowrap;
+  animation: flight-label 1.3s ease both;
+}
+
+/* ---------- rocket ---------- */
+.flight__rocket {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: clamp(100px, 11vw, 150px);
+  margin: -32px 0 0 -60px;
+  animation: flight-rocket 1.3s cubic-bezier(0.45, 0, 0.35, 1) both;
+  filter: drop-shadow(0 0 14px rgba(167, 139, 250, 0.6));
+}
+
+.flight__rocket svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* flying right-to-left: the rocket faces the other way */
+.flight__rocket--flip svg {
+  transform: scaleX(-1);
+}
+
+.flight__flame {
+  transform-origin: 22px 32px;
+  animation: flight-flame 0.12s ease-in-out infinite alternate;
+}
+
+.flight__flame--in {
+  animation-duration: 0.09s;
+}
+
+@keyframes flight-flame {
+  to {
+    transform: scaleX(1.35);
+  }
+}
+
+@keyframes flight-rocket {
+  0% {
+    transform: translate(var(--x0), var(--y0)) rotate(-30deg) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--x1), var(--y1)) rotate(-8deg) scale(1);
+  }
+  85% {
+    transform: translate(var(--x2), calc(var(--y2) - 40px)) rotate(8deg) scale(0.7);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x2), var(--y2)) rotate(0deg) scale(0.25);
+    opacity: 0;
+  }
+}
+
+@keyframes flight-planet {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  24% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  76% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flight-spin {
+  to {
+    background-position-x: calc(var(--d) * -2);
+  }
+}
+
+@keyframes flight-label {
+  0%,
+  15% {
+    opacity: 0;
+  }
+  30%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flight {
+    display: none;
+  }
+}
+
+[data-motion='off'] .flight {
+  display: none;
+}

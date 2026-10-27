@@ -32,7 +32,7 @@ export default function Contact() {
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.contact} title={c.title} lead={c.text} robot="mail" />
+      <PageHeader eyebrow={t.nav.contact} title={c.title} lead={c.text} robot="plane" />
       <Stagger className="container bento bento--page">
         <motion.div className="tile b-c2 b-r2 contact-main" variants={staggerItem}>
           <span className="contact-main__icon" aria-hidden="true">

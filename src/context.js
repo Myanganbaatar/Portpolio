@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { MotionConfig, useReducedMotion } from 'framer-motion';
 import { content, ui } from './content';
 
 const SiteContext = createContext(null);
@@ -25,6 +26,12 @@ export function SiteProvider({ children }) {
     return readStored('lang', browser === 'fr' ? 'fr' : 'en');
   });
   const [theme, setTheme] = useState(() => readStored('theme', 'dark'));
+  // Visitors can pause every animation (RGAA 13.8). Starts paused when the
+  // system asks for reduced motion.
+  const [motionOn, setMotionOn] = useState(() => {
+    const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return readStored('motion', reduce ? 'off' : 'on') === 'on';
+  });
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -36,20 +43,38 @@ export function SiteProvider({ children }) {
     store('theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    document.documentElement.dataset.motion = motionOn ? 'on' : 'off';
+    store('motion', motionOn ? 'on' : 'off');
+  }, [motionOn]);
+
   const value = {
     lang,
     setLang,
     theme,
     toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
+    motionOn,
+    toggleMotion: () => setMotionOn((m) => !m),
     t: content[lang],
     u: ui[lang],
   };
 
-  return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;
+  return (
+    <SiteContext.Provider value={value}>
+      <MotionConfig reducedMotion={motionOn ? 'user' : 'always'}>{children}</MotionConfig>
+    </SiteContext.Provider>
+  );
 }
 
 export function useSite() {
   return useContext(SiteContext);
+}
+
+// True when animations should not play: system setting or the site's pause button.
+export function useStill() {
+  const system = useReducedMotion();
+  const { motionOn } = useSite();
+  return system || !motionOn;
 }
 
 // Sets the browser tab title for the current page.

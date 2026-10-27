@@ -88,3 +88,10 @@ export const LockIcon = (p) => (
     <path d="M8 11V7a4 4 0 0 1 8 0v4" />
   </svg>
 );
+
+export const PauseIcon = (p) => (
+  <svg {...base} {...p}>
+    <rect x="6" y="5" width="4" height="14" rx="1" />
+    <rect x="14" y="5" width="4" height="14" rx="1" />
+  </svg>
+);

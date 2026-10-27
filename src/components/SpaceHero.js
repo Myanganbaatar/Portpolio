@@ -2,7 +2,9 @@ import { Component, useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import * as THREE from 'three';
+import { useStill } from '../context';
 import { input, PALETTE, Robot, useWindowInput } from './Robot3D';
+import { skipNextFlight } from './RocketFlight';
 import { Atmosphere, Glow, SunSurface, usePlanetTexture, useRingGeometry, useRingTexture } from './spaceMaterials';
 
 /*
@@ -133,32 +135,111 @@ function Sun() {
   );
 }
 
+// Small rocket (nose along +z) with the robot's face in the cockpit window.
+function Rocket({ colors, flame }) {
+  return (
+    <group>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.2, 0.2, 0.8, 24]} />
+        <meshStandardMaterial color="#eef1f7" roughness={0.35} metalness={0.2} />
+      </mesh>
+      <mesh position={[0, 0, 0.58]} rotation={[Math.PI / 2, 0, 0]}>
+        <coneGeometry args={[0.2, 0.36, 24]} />
+        <meshStandardMaterial color={colors.accent} roughness={0.4} />
+      </mesh>
+      {/* cockpit with the robot's visor and eyes */}
+      <mesh position={[0, 0.15, 0.12]}>
+        <sphereGeometry args={[0.12, 20, 20]} />
+        <meshStandardMaterial color="#0b0d12" roughness={0.1} metalness={0.5} />
+      </mesh>
+      {[-0.04, 0.04].map((x) => (
+        <mesh key={x} position={[x, 0.2, 0.2]}>
+          <boxGeometry args={[0.025, 0.05, 0.02]} />
+          <meshStandardMaterial color={colors.eye} emissive={colors.eye} emissiveIntensity={2} />
+        </mesh>
+      ))}
+      {[0, 1, 2].map((i) => (
+        <mesh key={i} position={[Math.cos((i * Math.PI * 2) / 3) * 0.24, Math.sin((i * Math.PI * 2) / 3) * 0.24, -0.32]} rotation={[0, 0, (i * Math.PI * 2) / 3]}>
+          <boxGeometry args={[0.18, 0.03, 0.22]} />
+          <meshStandardMaterial color="#ff5c7a" />
+        </mesh>
+      ))}
+      <mesh ref={flame} position={[0, 0, -0.62]} rotation={[-Math.PI / 2, 0, 0]}>
+        <coneGeometry args={[0.13, 0.42, 16]} />
+        <meshBasicMaterial color="#ffb347" transparent opacity={0.9} />
+      </mesh>
+    </group>
+  );
+}
+
+const FLY_TIME = 1.05; // seconds, the page opens right after (1100 ms)
+
 function Astronaut({ colors, focus, posRef }) {
   const group = useRef();
   const robot = useRef();
+  const rocket = useRef();
+  const flame = useRef();
+  const flyStart = useRef(null);
   const home = useMemo(() => new THREE.Vector3(1.75, 0.35, 0.9), []);
   const target = useMemo(() => new THREE.Vector3(), []);
+  const from = useMemo(() => new THREE.Vector3(), []);
+  const mid = useMemo(() => new THREE.Vector3(), []);
+  const at = (f, out) => {
+    // quadratic bezier from the robot's spot, arcing up, down onto the planet
+    const u = 1 - f;
+    return out.set(
+      u * u * from.x + 2 * u * f * mid.x + f * f * target.x,
+      u * u * from.y + 2 * u * f * mid.y + f * f * target.y,
+      u * u * from.z + 2 * u * f * mid.z + f * f * target.z
+    );
+  };
+  const next = useMemo(() => new THREE.Vector3(), []);
+
   useFrame((s, dt) => {
     const t = s.clock.elapsedTime;
     const planet = focus && posRef.current[focus];
-    if (planet) {
-      const p = PLANETS.find((x) => x.key === focus);
-      target.copy(planet).add(new THREE.Vector3(0, p.size * 0.9, 0));
-    } else {
+    if (!planet) {
+      flyStart.current = null;
       target.copy(home).setY(home.y + Math.sin(t * 1.6) * 0.08);
+      group.current.position.lerp(target, Math.min(1, dt * 3));
+      group.current.visible = true;
+      if (rocket.current) rocket.current.visible = false;
+      if (robot.current) robot.current.rotation.y = damp(robot.current.rotation.y, -0.5 + input.x * 0.4, 3, dt);
+      return;
     }
-    group.current.position.lerp(target, Math.min(1, dt * 3));
-    group.current.scale.setScalar(damp(group.current.scale.x, planet ? 0.16 : 0.42, 4, dt));
-    if (robot.current) robot.current.rotation.y = damp(robot.current.rotation.y, -0.5 + input.x * 0.4, 3, dt);
+    // the robot boards its rocket and flies to the planet
+    if (flyStart.current === null) {
+      flyStart.current = t;
+      from.copy(group.current.position).add(new THREE.Vector3(0, 0.6, 0));
+    }
+    const p = PLANETS.find((x) => x.key === focus);
+    target.copy(planet).add(new THREE.Vector3(0, p.size * 1.1, 0));
+    mid.copy(from).lerp(target, 0.5).add(new THREE.Vector3(0, 1.6, 0));
+    const f = Math.min(1, (t - flyStart.current) / FLY_TIME);
+    const e = f < 0.5 ? 2 * f * f : 1 - (-2 * f + 2) ** 2 / 2;
+    group.current.visible = false;
+    if (rocket.current) {
+      rocket.current.visible = true;
+      at(e, rocket.current.position);
+      rocket.current.lookAt(at(Math.min(1, e + 0.03), next));
+      rocket.current.scale.setScalar(0.55 - e * 0.25);
+    }
+    if (flame.current) flame.current.scale.set(1, 0.8 + Math.sin(t * 40) * 0.25, 1);
   });
+
   return (
-    <group ref={group} scale={0.42}>
-      <Robot mode="hello" colors={colors} robotRef={robot} />
-      <mesh position={[0, 2.2, 0]}>
-        <sphereGeometry args={[0.72, 32, 32]} />
-        <meshStandardMaterial color={colors.accent2} transparent opacity={0.16} roughness={0.05} />
-      </mesh>
-    </group>
+    <>
+      <group ref={group} scale={0.42}>
+        <Robot mode="hello" colors={colors} robotRef={robot} />
+        <mesh position={[0, 2.2, 0]}>
+          <sphereGeometry args={[0.72, 32, 32]} />
+          <meshStandardMaterial color={colors.accent2} transparent opacity={0.16} roughness={0.05} />
+        </mesh>
+      </group>
+      <group ref={rocket} visible={false}>
+        <Rocket colors={colors} flame={flame} />
+      </group>
+    </>
   );
 }
 
@@ -249,7 +330,7 @@ export default function SpaceHero({ theme, labels, onNavigate, onFly, shift = 0 
   const [hovered, setHovered] = useState(null);
   const posRef = useRef({});
   const labelRefs = useRef({});
-  const still = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const still = useStill();
 
   useEffect(() => () => (document.body.style.cursor = ''), []);
 
@@ -291,6 +372,8 @@ export default function SpaceHero({ theme, labels, onNavigate, onFly, shift = 0 
     if (focus) return;
     setFocus(key);
     onFly?.(key);
+    // the rocket ride happens here, so the page transition does not repeat it
+    skipNextFlight();
     setTimeout(() => onNavigate(key), still ? 0 : 1100);
   };
 

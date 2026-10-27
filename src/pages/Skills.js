@@ -4,8 +4,6 @@ import { CtaBanner, PageHeader } from '../components/ui';
 import { Stagger, TiltCard } from '../components/motion';
 import './pages.css';
 
-const ICONS = ['⌨️', '🎨', '🛠️', '📦', '🤝'];
-
 export default function Skills() {
   const { t, lang } = useSite();
   usePageTitle(t.skills.title);
@@ -16,23 +14,26 @@ export default function Skills() {
 
   return (
     <>
-      <PageHeader eyebrow={t.nav.skills} title={t.skills.title} lead={lead} robot="juggle" />
+      <PageHeader eyebrow={t.nav.skills} title={t.skills.title} lead={lead} robot="build" />
       <Stagger className="container bento bento--page">
-        {t.skills.groups.map((g, i) => (
-          <TiltCard key={g.name} max={4} className={`tile skill-group ${i === 0 ? 'b-c2' : ''}`}>
+        {t.skills.groups.map((g) => (
+          <TiltCard key={g.name} max={4} className="tile b-c2 skill-group">
             <h2 className="skill-group__title">
-              <span aria-hidden="true">{ICONS[i]}</span> {g.name}
+              <span aria-hidden="true">{g.icon}</span> {g.name}
             </h2>
             <ul className="skill-list">
               {g.items.map((s) => (
                 <li key={s}>{s}</li>
               ))}
             </ul>
+            <p className="skill-group__proof">
+              <span>{t.skills.usedIn}</span> {g.proof}
+            </p>
           </TiltCard>
         ))}
-        <TiltCard max={4} className="tile b-c2 skill-group">
+        <TiltCard max={4} className="tile b-c4 skill-group">
           <h2 className="skill-group__title">
-            <span aria-hidden="true">🌍</span> {lang === 'fr' ? 'Langues' : 'Languages'}
+            <span aria-hidden="true">🌍</span> {t.skills.spoken}
           </h2>
           <ul className="lang-bars">
             {(lang === 'fr'

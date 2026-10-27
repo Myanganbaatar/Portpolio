@@ -94,12 +94,13 @@ export const content = {
     skills: {
       title: 'Compétences',
       groups: [
-        { name: 'Langages', items: ['JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'C#', 'Kotlin', 'C / C++'] },
-        { name: 'Front-end', items: ['React', 'Next.js', 'Tailwind CSS', 'HTML / CSS', 'JavaFX'] },
-        { name: 'Back-end', items: ['Node.js', 'Express', 'API REST'] },
-        { name: 'Données & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'Docker', 'Nginx', 'Linux', 'Git / GitHub'] },
-        { name: 'Qualités', items: ['Autonomie', 'Travail en équipe', 'Résolution de problèmes', 'Apprentissage rapide', 'Communication'] },
+        { icon: '🎨', name: 'Front-end', items: ['React', 'Next.js', 'Tailwind CSS', 'HTML / CSS'], proof: 'Site Mongolian Au Pair (Next.js), panneau d’administration du CMS, démo de location de films (React).' },
+        { icon: '🛠️', name: 'Back-end', items: ['Node.js', 'Express', 'API REST', 'PHP', 'Symfony'], proof: 'API REST du CMS headless, API Express de la location de films, back-end PHP de Questionary.' },
+        { icon: '📦', name: 'Données & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'NoSQL', 'MongoDB', 'Docker', 'Nginx', 'Linux', 'Git'], proof: 'CMS et correctURL mis en production avec Docker et Nginx sur un serveur Linux.' },
+        { icon: '⌨️', name: 'Langages de programmation', items: ['JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'Kotlin', 'C#'], proof: 'Java pour le jeu Latice, Kotlin et C# pour les applications mobiles, Python pour les mini-jeux.' },
       ],
+      usedIn: 'Utilisé dans',
+      spoken: 'Langues parlées',
     },
     education: {
       title: 'Formation',
@@ -193,12 +194,13 @@ export const content = {
     skills: {
       title: 'Skills',
       groups: [
-        { name: 'Languages', items: ['JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'C#', 'Kotlin', 'C / C++'] },
-        { name: 'Front-end', items: ['React', 'Next.js', 'Tailwind CSS', 'HTML / CSS', 'JavaFX'] },
-        { name: 'Back-end', items: ['Node.js', 'Express', 'REST APIs'] },
-        { name: 'Data & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'Docker', 'Nginx', 'Linux', 'Git / GitHub'] },
-        { name: 'Strengths', items: ['Autonomy', 'Teamwork', 'Problem solving', 'Fast learner', 'Communication'] },
+        { icon: '🎨', name: 'Front end', items: ['React', 'Next.js', 'Tailwind CSS', 'HTML / CSS'], proof: 'Mongolian Au Pair website (Next.js), the CMS admin panel, the movie rental demo (React).' },
+        { icon: '🛠️', name: 'Back end', items: ['Node.js', 'Express', 'REST APIs', 'PHP', 'Symfony'], proof: 'Headless CMS REST API, Express API of the movie rental app, Questionary PHP back end.' },
+        { icon: '📦', name: 'Data & DevOps', items: ['PostgreSQL', 'MySQL / MariaDB', 'NoSQL', 'MongoDB', 'Docker', 'Nginx', 'Linux', 'Git'], proof: 'CMS and correctURL shipped to production with Docker and Nginx on a Linux server.' },
+        { icon: '⌨️', name: 'Programming languages', items: ['JavaScript', 'Java', 'PHP', 'Python', 'SQL', 'Kotlin', 'C#'], proof: 'Java for the Latice game, Kotlin and C# for the mobile apps, Python for the mini-games.' },
       ],
+      usedIn: 'Used in',
+      spoken: 'Spoken languages',
     },
     education: {
       title: 'Education',
@@ -218,6 +220,7 @@ export const content = {
 // Projects: `category` drives the filter; `demo` opens a playable game.
 export const projects = [
   {
+    image: { src: 'images/projects/cms.jpg', alt: { fr: "Démo du CMS headless : Content Manager avec les FAQ du site Au Pair", en: "Headless CMS demo: Content Manager with the Au Pair site FAQ" } },
     id: 'cms', category: 'internship', icon: '🧩',
     title: { fr: 'CMS headless', en: 'Headless CMS' },
     desc: {
@@ -232,6 +235,7 @@ export const projects = [
     private: true,
   },
   {
+    image: { src: 'images/projects/aupair.jpg', alt: { fr: "Page d'accueil du site mongolian-aupair.com : statistiques de l'agence et programmes", en: "mongolian-aupair.com home page: agency statistics and programmes" } },
     id: 'aupair', category: 'internship', icon: '🌍',
     title: { fr: 'Mongolian Au Pair', en: 'Mongolian Au Pair' },
     desc: {
@@ -246,6 +250,7 @@ export const projects = [
     live: 'https://mongolian-aupair.com',
   },
   {
+    image: { src: 'images/projects/correcturl.jpg', alt: { fr: "Démo de correctURL : statistiques de clics d’un lien court", en: "correctURL demo: click statistics of a short link" } },
     id: 'correcturl', category: 'internship', icon: '🔗',
     title: { fr: 'correctURL', en: 'correctURL' },
     desc: {
@@ -260,6 +265,7 @@ export const projects = [
     private: true,
   },
   {
+    image: { src: 'images/projects/latice.jpg', alt: { fr: "Démo du jeu Latice : plateau de jeu contre le robot", en: "Latice game demo: game board against the robot" } },
     id: 'latice', category: 'university', icon: '🐢', demo: 'latice',
     title: { fr: 'Jeu Latice', en: 'Latice board game' },
     desc: {
@@ -274,6 +280,7 @@ export const projects = [
     code: 'https://github.com/Myanganbaatar/SAE-de-Java-jeu-latice-',
   },
   {
+    image: { src: 'images/projects/python.jpg', alt: { fr: "Démo Puissance 4 : grille de jeu", en: "Connect Four demo: game grid" } },
     id: 'python', category: 'university', icon: '🎲', demo: 'python',
     title: { fr: 'Mini-jeux Python', en: 'Python mini-games' },
     desc: {
@@ -288,6 +295,7 @@ export const projects = [
     code: 'https://github.com/Myanganbaatar/SAE-PYTHON',
   },
   {
+    image: { src: 'images/projects/questionary.jpg', alt: { fr: "Démo de Questionary : accueil avec le champ du code PIN", en: "Questionary demo: home page with the PIN code field" } },
     id: 'questionary', category: 'university', icon: '📋',
     title: { fr: 'Questionary', en: 'Questionary' },
     desc: {
@@ -302,6 +310,7 @@ export const projects = [
     code: 'https://github.com/Mdeterne/php-mariadb-Questionary',
   },
   {
+    image: { src: 'images/projects/netflix.jpg', alt: { fr: "Démo de la location de films : catalogue, filtres par genre et journal de l’API", en: "Movie rental demo: catalogue, genre filters and API log" } },
     id: 'netflix', category: 'university', icon: '🎬',
     title: { fr: 'Location de films (Netflix)', en: 'Movie rentals (Netflix)' },
     desc: {
@@ -316,29 +325,31 @@ export const projects = [
     code: 'https://github.com/Myanganbaatar/Netflix',
   },
   {
+    image: { src: 'images/projects/kotlin.jpg', alt: { fr: "Démo du gestionnaire de tâches Android : liste avec priorités, statuts et points", en: "Android task manager demo: list with priorities, statuses and points" } },
     id: 'kotlin', category: 'university', icon: '📱',
     title: { fr: 'Gestionnaire de tâches Android', en: 'Android task manager' },
     desc: {
-      fr: 'Application Android native en Kotlin : ajout et modification de tâches, sélection de photos, recherche.',
-      en: 'Native Android app in Kotlin: add and edit tasks, photo picker, search.',
+      fr: 'Application Android en Kotlin et Jetpack Compose : tâches avec priorité, statut, catégorie et récurrence, filtres, recherche, photos et système de points.',
+      en: 'Android app in Kotlin and Jetpack Compose: tasks with priority, status, category and recurrence, filters, search, photos and a points system.',
     },
     result: {
-      fr: 'Application Android native : création de tâches, photos et recherche.',
-      en: 'Native Android app: task creation, photos and search.',
+      fr: 'Application Android complète : ajout, modification, filtres, recherche et points gagnés en terminant les tâches.',
+      en: 'Complete Android app: add, edit, filters, search and points earned by finishing tasks.',
     },
-    tags: ['Kotlin', 'Android', 'Gradle'],
+    tags: ['Kotlin', 'Android', 'Jetpack Compose'],
     code: 'https://github.com/Myanganbaatar/Projet-Kotlin',
   },
   {
+    image: { src: 'images/projects/maui.jpg', alt: { fr: "Démo .NET MAUI : explorateur de pays avec filtres par continent", en: ".NET MAUI demo: country explorer with continent filters" } },
     id: 'maui', category: 'university', icon: '💠',
-    title: { fr: 'Application .NET MAUI', en: '.NET MAUI app' },
+    title: { fr: 'Explorateur de Pays (.NET MAUI)', en: 'Country explorer (.NET MAUI)' },
     desc: {
-      fr: 'Application multiplateforme en C# avec le pattern MVVM et des notifications locales.',
-      en: 'Cross-platform C# app using the MVVM pattern, with local notifications.',
+      fr: 'Application multiplateforme en C# / .NET MAUI (MVVM) : pays chargés depuis une API REST, filtres par continent, ajout d’éléments avec photo, mode sombre et notifications locales.',
+      en: 'Cross-platform C# / .NET MAUI app (MVVM): countries loaded from a REST API, continent filters, items with photos, dark mode and local notifications.',
     },
     result: {
-      fr: 'Application multiplateforme en MVVM avec notifications locales.',
-      en: 'Cross-platform MVVM app with local notifications.',
+      fr: 'Application à 4 onglets : accueil, profil avec les pays du monde, ajout d’éléments et réglages.',
+      en: 'Four-tab app: home, profile with the world’s countries, adding items and settings.',
     },
     tags: ['C#', '.NET MAUI', 'MVVM'],
     code: 'https://github.com/Myanganbaatar/ProjetMAUI',
@@ -498,10 +509,10 @@ export const projectDetails = {
       en: 'Native Android application built in Kotlin as part of my degree.',
     },
     highlights: {
-      fr: ['Création et modification de tâches.', 'Sélection de photos pour une tâche.', 'Barre de recherche.'],
-      en: ['Create and edit tasks.', 'Attach photos to a task.', 'Search bar.'],
+      fr: ['Interface en Jetpack Compose (Material 3) avec navigation entre écrans.', 'Tâches : priorité, statut, catégorie, récurrence et photo.', 'Filtres par statut et par catégorie, recherche, purge des tâches terminées.', 'Points et rang gagnés en terminant des tâches.'],
+      en: ['Jetpack Compose (Material 3) UI with screen navigation.', 'Tasks: priority, status, category, recurrence and photo.', 'Status and category filters, search, purge of finished tasks.', 'Points and rank earned by finishing tasks.'],
     },
-    stack: ['Kotlin', 'Android', 'Gradle'],
+    stack: ['Kotlin', 'Android', 'Jetpack Compose', 'Material 3', 'Gradle'],
   },
   maui: {
     context: {
@@ -509,8 +520,8 @@ export const projectDetails = {
       en: 'Cross-platform C# / .NET MAUI app built as part of my degree.',
     },
     highlights: {
-      fr: ['Pattern MVVM et interfaces en XAML.', 'Notifications locales.'],
-      en: ['MVVM pattern and XAML views.', 'Local notifications.'],
+      fr: ['Pattern MVVM et interfaces en XAML (Shell à 4 onglets).', 'Appel de l’API REST Countries avec HttpClient, et liste de secours en cas d’erreur.', 'Formulaire d’ajout avec validation et choix d’une photo.', 'Mode sombre et notifications locales enregistrés dans les préférences.'],
+      en: ['MVVM pattern and XAML views (4-tab Shell).', 'REST Countries API called with HttpClient, with a fallback list on error.', 'Add form with validation and photo picking.', 'Dark mode and local notifications saved in preferences.'],
     },
     stack: ['C#', '.NET MAUI', 'XAML', 'MVVM'],
   },
@@ -533,6 +544,9 @@ export const ui = {
     notFound: 'Cette page n’existe pas.',
     backHome: 'Retour à l’accueil',
     theme: 'Changer de thème',
+    motionOff: 'Mettre en pause les animations',
+    motionOn: 'Relancer les animations',
+    skip: 'Aller au contenu',
     menu: 'Menu',
     copy: 'Copier',
     copied: 'Copié !',
@@ -561,6 +575,9 @@ export const ui = {
     notFound: 'This page does not exist.',
     backHome: 'Back to home',
     theme: 'Toggle theme',
+    motionOff: 'Pause animations',
+    motionOn: 'Play animations',
+    skip: 'Skip to content',
     menu: 'Menu',
     copy: 'Copy',
     copied: 'Copied!',

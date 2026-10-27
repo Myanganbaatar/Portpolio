@@ -61,11 +61,30 @@ export function SectionTitle({ eyebrow, title, action }) {
   );
 }
 
+// Project screenshot, or a coloured panel with the project icon when there is none
+// (private company code). Decorative placeholders are hidden from screen readers.
+export function ProjectImage({ project, className = '' }) {
+  const { lang } = useSite();
+  if (project.image) {
+    return (
+      <div className={`project-img ${className}`}>
+        <img src={`${process.env.PUBLIC_URL}/${project.image.src}`} alt={project.image.alt[lang]} loading="lazy" width="698" height="350" />
+      </div>
+    );
+  }
+  return (
+    <div className={`project-img project-img--empty ${className}`} aria-hidden="true">
+      <span>{project.icon}</span>
+    </div>
+  );
+}
+
 export function ProjectCard({ project }) {
   const { lang, t } = useSite();
   const p = t.projects;
   return (
     <TiltCard as="article" className="card project-card">
+      <ProjectImage project={project} className="project-card__img" />
       <Link to={`/projects/${project.id}`} className="project-card__main">
         <div className="project-card__top">
           <span className="project-card__icon" aria-hidden="true">
