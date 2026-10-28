@@ -73,9 +73,9 @@ const demoGuides = {
         'Mettre l’outil en production sur un serveur Linux (Docker, Nginx), avec un blocage des robots.',
       ],
       steps: [
-        'Collez une adresse (ou cliquez sur « Exemple ») puis « Богиносгох » (raccourcir).',
-        'Cliquez sur « Нээх → » (ouvrir) : le compteur de visites augmente.',
-        'Cliquez sur « Аналитик » pour voir les statistiques du lien.',
+        'Collez une adresse (ou cliquez sur « Exemple »), puis sur « Raccourcir ».',
+        'Cliquez sur « Ouvrir → » : le compteur de visites augmente.',
+        'Cliquez sur « Statistiques » pour voir les visites par pays, navigateur et système.',
       ],
     },
     en: {
@@ -87,9 +87,9 @@ const demoGuides = {
         'Run it in production on a Linux server (Docker, Nginx), with bot blocking.',
       ],
       steps: [
-        'Paste an address (or click “Exemple”) then “Богиносгох” (shorten).',
-        'Click “Нээх →” (open): the visit counter goes up.',
-        'Click “Аналитик” to see the link’s statistics.',
+        'Paste an address (or click “Exemple”), then “Raccourcir” (shorten).',
+        'Click “Ouvrir →” (open): the visit counter goes up.',
+        'Click “Statistiques” to see visits by country, browser and system.',
       ],
     },
   },

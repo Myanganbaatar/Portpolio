@@ -1603,7 +1603,7 @@ const randomCode = (len = 6) =>
 
 // Validation of app/api/shorten/route.ts
 function validate(url) {
-  if (!url.trim()) return "URL оруулна уу";
+  if (!url.trim()) return "Veuillez saisir une URL";
   try {
     const parsed = new URL(url.startsWith("http") ? url : "https://" + url);
     const ok =
@@ -1612,9 +1612,9 @@ function validate(url) {
         parsed.hostname,
       ) &&
       (parsed.protocol === "http:" || parsed.protocol === "https:");
-    return ok ? "" : "Invalid URL format";
+    return ok ? "" : "Format d’URL invalide";
   } catch {
-    return "Invalid URL format";
+    return "Format d’URL invalide";
   }
 }
 
@@ -1647,13 +1647,13 @@ function detect() {
 function seedLinks() {
   const base = Date.now() - 3 * 86400000;
   const sample = [
-    ["Chrome", "Android", "Mongolia", "Ulaanbaatar"],
-    ["Safari", "iOS", "Mongolia", "Ulaanbaatar"],
-    ["Chrome", "Windows", "Mongolia", "Darkhan"],
-    ["Chrome", "Android", "Germany", "Berlin"],
-    ["Edge", "Windows", "Mongolia", "Ulaanbaatar"],
-    ["Safari", "iOS", "Austria", "Vienna"],
-    ["Chrome", "Android", "Mongolia", "Erdenet"],
+    ["Chrome", "Android", "Mongolie", "Oulan-Bator"],
+    ["Safari", "iOS", "Mongolie", "Oulan-Bator"],
+    ["Chrome", "Windows", "Mongolie", "Darkhan"],
+    ["Chrome", "Android", "Allemagne", "Berlin"],
+    ["Edge", "Windows", "Mongolie", "Oulan-Bator"],
+    ["Safari", "iOS", "Autriche", "Vienne"],
+    ["Chrome", "Android", "Mongolie", "Erdenet"],
     ["Firefox", "Linux", "France", "Limoges"],
   ];
   return [
@@ -1680,7 +1680,7 @@ function BarList({ visits, keyName }) {
   });
   const items = Object.entries(counts).sort((a, b) => b[1] - a[1]);
   const max = items.length ? items[0][1] : 1;
-  if (!items.length) return <p className="cu__no-data">Мэдээлэл байхгүй</p>;
+  if (!items.length) return <p className="cu__no-data">Aucune donnée</p>;
   return (
     <ul className="cu__bars">
       {items.map(([name, n]) => (
@@ -1766,7 +1766,7 @@ export function ShortenerDemo() {
   };
 
   const link = links.find((l) => l.code === statsCode);
-  const fmt = (d, o) => new Date(d).toLocaleString("mn-MN", o);
+  const fmt = (d, o) => new Date(d).toLocaleString("fr-FR", o);
   const urlBar =
     page === "home" ? "" : page === "links" ? "links" : `stats/${statsCode}`;
 
@@ -1774,9 +1774,9 @@ export function ShortenerDemo() {
     <BrowserFrame url={`${HOST}/${urlBar}`} className="cu-frame">
       <div className="cu">
         <header className="cu__header">
-          <h1>URL Богиносгогч</h1>
+          <h1>Raccourcisseur d’URL</h1>
           {page !== "stats" && (
-            <p>Урт URL-аа богиносгоод цэвэрхэн линк аваарай</p>
+            <p>Raccourcissez vos longues URL et obtenez un lien propre</p>
           )}
         </header>
 
@@ -1786,7 +1786,7 @@ export function ShortenerDemo() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.ctrlKey && e.key === "Enter" && shorten()}
-              placeholder="Урт URL-аа энд буулгаарай..."
+              placeholder="Collez votre longue URL ici…"
               aria-label="URL"
             />
             {error && <p className="cu__err">{error}</p>}
@@ -1796,13 +1796,13 @@ export function ShortenerDemo() {
                 onClick={shorten}
                 disabled={loading}
               >
-                {loading ? "Богиносгож байна..." : "Богиносгох"}
+                {loading ? "Raccourcissement…" : "Raccourcir"}
               </button>
               <button
                 className="cu__btn cu__btn--ghost"
                 onClick={() => setPage("links")}
               >
-                Миний линкүүд →
+                Mes liens →
               </button>
               <button
                 className="cu__btn cu__btn--ghost cu__btn--try"
@@ -1825,20 +1825,20 @@ export function ShortenerDemo() {
                 className="cu__btn cu__btn--primary"
                 onClick={() => setPage("home")}
               >
-                + Шинэ URL богиносгох
+                + Raccourcir une nouvelle URL
               </button>
             </div>
             {links.length === 0 && (
               <div className="cu__card cu__empty">
-                Линк байхгүй байна. "+ Шинэ URL богиносгох" дарж эхлээрэй.
+                Aucun lien. Cliquez sur « + Raccourcir une nouvelle URL » pour commencer.
               </div>
             )}
             {links.map((l) => (
               <div className="cu__card cu__link" key={l.code}>
                 <div className="cu__link-top">
-                  <span className="cu__badge">Богино линк</span>
+                  <span className="cu__badge">Lien court</span>
                   <span className="cu__visits">
-                    {l.visits.length} нэвтэрсэн
+                    {l.visits.length} visites
                   </span>
                 </div>
                 <button
@@ -1854,13 +1854,13 @@ export function ShortenerDemo() {
                     className="cu__btn cu__btn--primary"
                     onClick={() => visit(l.code)}
                   >
-                    Нээх →
+                    Ouvrir →
                   </button>
                   <button
                     className={`cu__copy ${copied === l.code ? "is-copied" : ""}`}
                     onClick={() => copy(l.code)}
                   >
-                    {copied === l.code ? "✓ Хуулагдлаа" : "Хуулах"}
+                    {copied === l.code ? "✓ Copié" : "Copier"}
                   </button>
                   <button
                     className="cu__btn cu__btn--ghost"
@@ -1869,7 +1869,7 @@ export function ShortenerDemo() {
                       setPage("stats");
                     }}
                   >
-                    Аналитик
+                    Statistiques
                   </button>
                   <button
                     className="cu__delete"
@@ -1889,13 +1889,13 @@ export function ShortenerDemo() {
         {page === "stats" && link && (
           <>
             <div className="cu__card">
-              <span className="cu__badge cu__badge--purple">Аналитик</span>
+              <span className="cu__badge cu__badge--purple">Statistiques</span>
               <p className="cu__stats-short">
                 https://{HOST}/{link.code}
               </p>
               <p className="cu__orig">{link.originalUrl}</p>
               <p className="cu__meta">
-                Үүсгэсэн:{" "}
+                Créé le :{" "}
                 {fmt(link.createdAt, {
                   year: "numeric",
                   month: "short",
@@ -1905,14 +1905,14 @@ export function ShortenerDemo() {
             </div>
             <div className="cu__stat-grid">
               {[
-                ["Нийт нэвтрэлт", link.visits.length],
+                ["Visites totales", link.visits.length],
                 [
-                  "Өвөрмөц хэрэглэгч",
+                  "Visiteurs uniques",
                   new Set(link.visits.map((v) => v.browser + v.os + v.city))
                     .size,
                 ],
                 [
-                  "Сүүлийн нэвтрэлт",
+                  "Dernière visite",
                   link.visits.length
                     ? fmt(link.visits[link.visits.length - 1].at, {
                         month: "short",
@@ -1929,9 +1929,9 @@ export function ShortenerDemo() {
             </div>
             <div className="cu__charts">
               {[
-                ["Улс орон", "country"],
-                ["Хөтч", "browser"],
-                ["Үйлдлийн систем", "os"],
+                ["Pays", "country"],
+                ["Navigateur", "browser"],
+                ["Système", "os"],
               ].map(([t, k]) => (
                 <div className="cu__card" key={k}>
                   <h2>{t}</h2>
@@ -1941,16 +1941,16 @@ export function ShortenerDemo() {
             </div>
             {link.visits.length > 0 && (
               <div className="cu__card">
-                <h2>Сүүлийн нэвтрэлтүүд</h2>
+                <h2>Dernières visites</h2>
                 <div className="cu__table-wrap">
                   <table className="cu__table">
                     <thead>
                       <tr>
-                        <th>Цаг</th>
-                        <th>Хөтч</th>
-                        <th>ҮС</th>
-                        <th>Улс</th>
-                        <th>Хот</th>
+                        <th>Date</th>
+                        <th>Navigateur</th>
+                        <th>Système</th>
+                        <th>Pays</th>
+                        <th>Ville</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1980,7 +1980,7 @@ export function ShortenerDemo() {
             )}
             <div className="cu__center">
               <button className="cu__back" onClick={() => setPage("links")}>
-                ← Буцах
+                ← Retour
               </button>
             </div>
           </>
