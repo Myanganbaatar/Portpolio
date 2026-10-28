@@ -26,12 +26,9 @@ export function SiteProvider({ children }) {
     return readStored('lang', browser === 'fr' ? 'fr' : 'en');
   });
   const [theme, setTheme] = useState(() => readStored('theme', 'dark'));
-  // Visitors can pause every animation (RGAA 13.8). Starts paused when the
-  // system asks for reduced motion.
-  const [motionOn, setMotionOn] = useState(() => {
-    const reduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return readStored('motion', reduce ? 'off' : 'on') === 'on';
-  });
+  // Animations always run; the system's "reduce motion" setting is still
+  // respected through MotionConfig, useStill() and the CSS media query.
+  const motionOn = true;
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -44,9 +41,14 @@ export function SiteProvider({ children }) {
   }, [theme]);
 
   useEffect(() => {
-    document.documentElement.dataset.motion = motionOn ? 'on' : 'off';
-    store('motion', motionOn ? 'on' : 'off');
-  }, [motionOn]);
+    document.documentElement.dataset.motion = 'on';
+    // forget an old "paused" choice from the removed pause button
+    try {
+      localStorage.removeItem('motion');
+    } catch {
+      /* storage blocked */
+    }
+  }, []);
 
   const value = {
     lang,
@@ -54,7 +56,6 @@ export function SiteProvider({ children }) {
     theme,
     toggleTheme: () => setTheme((t) => (t === 'dark' ? 'light' : 'dark')),
     motionOn,
-    toggleMotion: () => setMotionOn((m) => !m),
     t: content[lang],
     u: ui[lang],
   };

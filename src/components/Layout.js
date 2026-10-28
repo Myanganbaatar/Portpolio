@@ -6,7 +6,7 @@ import { ScrollProgress } from './motion';
 import PageWorld, { worldFor } from './PageWorld';
 import RocketFlight, { preloadPlanetImages, takeSkipFlight } from './RocketFlight';
 import { links } from '../content';
-import { CloseIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, MenuIcon, MoonIcon, PauseIcon, PlayIcon, SunIcon } from './Icons';
+import { CloseIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MailIcon, MenuIcon, MoonIcon, SunIcon } from './Icons';
 import './Layout.css';
 
 const NAV = ['about', 'experience', 'projects', 'skills', 'contact'];
@@ -20,7 +20,7 @@ function pageIndex(pathname) {
 }
 
 function Navbar() {
-  const { t, u, lang, setLang, theme, toggleTheme, motionOn, toggleMotion } = useSite();
+  const { t, u, lang, setLang, theme, toggleTheme } = useSite();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
@@ -68,9 +68,6 @@ function Navbar() {
               </button>
             ))}
           </div>
-          <button className="icon-btn" onClick={toggleMotion} aria-pressed={!motionOn} aria-label={motionOn ? u.motionOff : u.motionOn} title={motionOn ? u.motionOff : u.motionOn}>
-            {motionOn ? <PauseIcon /> : <PlayIcon />}
-          </button>
           <button className="icon-btn" onClick={toggleTheme} aria-label={u.theme} title={u.theme}>
             {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
           </button>
