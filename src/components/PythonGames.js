@@ -388,48 +388,91 @@ function Puissance4() {
 // =====================
 // ALLUMETTES (Nim Game)
 // =====================
+// Rule of the Python version: players take 1, 2 or 3 matches, whoever takes the last one wins.
 function Allumettes() {
   const [matches, setMatches] = useState(21);
   const [gameOver, setGameOver] = useState(false);
-  const [message, setMessage] = useState('À votre tour! Prenez 1, 2 ou 3 allumettes');
+  const [gameStarted, setGameStarted] = useState(false);
+  const [vsRobot, setVsRobot] = useState(true);
+  const [p1Name, setP1Name] = useState('Joueur 1');
+  const [p2Name, setP2Name] = useState('Joueur 2');
+  const [turn, setTurn] = useState(0); // 0 = player 1, 1 = player 2
+  const [message, setMessage] = useState('');
 
-  const playerTakes = (count) => {
+  const names = [p1Name, p2Name];
+
+  const startGame = (robot) => {
+    setVsRobot(robot);
+    if (robot) {
+      setP1Name('Vous');
+      setP2Name('Robot');
+    }
+    setMatches(21);
+    setGameOver(false);
+    setTurn(0);
+    setMessage(robot ? 'À votre tour ! Prenez 1, 2 ou 3 allumettes' : `À ${robot ? 'vous' : p1Name} de jouer : prenez 1, 2 ou 3 allumettes`);
+    setGameStarted(true);
+  };
+
+  const take = (count) => {
     if (gameOver || count > matches) return;
-
     let remaining = matches - count;
     setMatches(remaining);
 
     if (remaining === 0) {
       setGameOver(true);
-      setMessage('🎉 Le Robot a dû prendre la dernière allumette - Vous avez gagné!');
+      setMessage(vsRobot ? '🎉 Vous avez pris la dernière allumette - Vous avez gagné !' : `🏆 ${names[turn]} a pris la dernière allumette et gagne !`);
       return;
     }
 
-    // AI plays optimally
+    if (!vsRobot) {
+      const next = 1 - turn;
+      setTurn(next);
+      setMessage(`${names[turn]} a pris ${count} allumette(s). À ${names[next]} de jouer !`);
+      return;
+    }
+
+    // The robot plays optimally: it leaves a multiple of 4.
     let aiTakes = remaining % 4;
     if (aiTakes === 0) aiTakes = 1;
-
     remaining -= aiTakes;
     setMatches(remaining);
 
     if (remaining === 0) {
       setGameOver(true);
-      setMessage(`🤖 Le Robot a pris ${aiTakes} allumette(s) - Le Robot a gagné!`);
+      setMessage(`🤖 Le Robot a pris ${aiTakes} allumette(s) - Le Robot a gagné !`);
       return;
     }
-
-    setMessage(`Le Robot a pris ${aiTakes} allumette(s). À votre tour!`);
+    setMessage(`Le Robot a pris ${aiTakes} allumette(s). À votre tour !`);
   };
 
+  const restartMatch = () => startGame(vsRobot);
   const resetGame = () => {
-    setMatches(21);
-    setGameOver(false);
-    setMessage('À votre tour! Prenez 1, 2 ou 3 allumettes');
+    setGameStarted(false);
+    setP1Name('Joueur 1');
+    setP2Name('Joueur 2');
   };
+
+  if (!gameStarted) {
+    return (
+      <div className="game-menu">
+        <h4>🔥 Allumettes - Configurer la partie</h4>
+        <div className="menu-options" style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '300px', margin: '0 auto' }}>
+          <button className="reset-btn" onClick={() => startGame(true)}>🤖 Contre le Robot</button>
+          <div className="pvp-setup" style={{ borderTop: '1px solid #ccc', paddingTop: '10px' }}>
+            <p>Joueur vs Joueur:</p>
+            <input style={{ display: 'block', width: '100%', padding: '8px', marginBottom: '5px' }} type="text" value={p1Name} onChange={(e) => setP1Name(e.target.value)} placeholder="Nom Joueur 1" />
+            <input style={{ display: 'block', width: '100%', padding: '8px', marginBottom: '5px' }} type="text" value={p2Name} onChange={(e) => setP2Name(e.target.value)} placeholder="Nom Joueur 2" />
+            <button className="reset-btn" onClick={() => startGame(false)}>Commencer (2 Joueurs)</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="game-container">
-      <h3>🔥 Allumettes (Jeu de Nim)</h3>
+      <h3>🔥 Allumettes (Jeu de Nim) {vsRobot ? '· contre le Robot' : '· 2 joueurs'}</h3>
       <div className="game-status">{message}</div>
       <div className="matches-display">
         <div className="matches-count">{matches} allumettes restantes</div>
@@ -441,12 +484,15 @@ function Allumettes() {
       </div>
       {!gameOver && (
         <div className="matches-buttons">
-          <button onClick={() => playerTakes(1)} disabled={matches < 1}>Prendre 1</button>
-          <button onClick={() => playerTakes(2)} disabled={matches < 2}>Prendre 2</button>
-          <button onClick={() => playerTakes(3)} disabled={matches < 3}>Prendre 3</button>
+          <button onClick={() => take(1)} disabled={matches < 1}>Prendre 1</button>
+          <button onClick={() => take(2)} disabled={matches < 2}>Prendre 2</button>
+          <button onClick={() => take(3)} disabled={matches < 3}>Prendre 3</button>
         </div>
       )}
-      {gameOver && <button className="reset-btn" onClick={resetGame}>Rejouer</button>}
+      <div className="game-controls">
+        {gameOver && <button className="reset-btn" onClick={restartMatch}>🔄 Rejouer</button>}
+        <button className="reset-btn" onClick={resetGame}>Menu Principal</button>
+      </div>
     </div>
   );
 }
@@ -454,127 +500,194 @@ function Allumettes() {
 // =====================
 // DEVINETTE (Number Guessing)
 // =====================
+// Against the robot: you think of a number and the robot finds it (binary search).
+// Two players: player 1 hides a number, player 2 guesses it.
 function Devinette() {
-  const [gameStarted, setGameStarted] = useState(false);
+  const [mode, setMode] = useState(null); // null = menu, 'robot', 'pvp'
   const [minNum, setMinNum] = useState('');
   const [maxNum, setMaxNum] = useState('');
+  const [p1Name, setP1Name] = useState('Joueur 1');
+  const [p2Name, setP2Name] = useState('Joueur 2');
+  const [secret, setSecret] = useState('');
+  const [hidden, setHidden] = useState(false); // pvp: number chosen and hidden
+  const [guessInput, setGuessInput] = useState('');
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState(null);
-  const [message, setMessage] = useState('Pensez à un nombre et laissez le Robot le deviner!');
+  const [bounds, setBounds] = useState(null); // robot's search interval
+  const [message, setMessage] = useState('');
   const [gameOver, setGameOver] = useState(false);
-  const [initialMin, setInitialMin] = useState(null);
-  const [initialMax, setInitialMax] = useState(null);
 
-  const startGame = () => {
-    const min = parseInt(minNum);
-    const max = parseInt(maxNum);
-
+  const range = () => {
+    const min = parseInt(minNum, 10);
+    const max = parseInt(maxNum, 10);
     if (isNaN(min) || isNaN(max) || min >= max) {
       setMessage('⚠️ Entrez un min et max valides (min < max)');
-      return;
+      return null;
     }
-
-    setInitialMin(min);
-    setInitialMax(max);
-
-    setGuesses([]);
-    setCurrentGuess(Math.floor((min + max) / 2));
-    setMessage(`Je pense que c'est ${Math.floor((min + max) / 2)}. Est-ce correct?`);
-    setGameStarted(true);
-    setGameOver(false);
+    return [min, max];
   };
 
-  const restartMatch = () => {
-      // Restore initial bounds for the algorithm
-      setMinNum(initialMin);
-      setMaxNum(initialMax);
-      setGuesses([]);
-      setCurrentGuess(Math.floor((initialMin + initialMax) / 2));
-      setMessage(`Je pense que c'est ${Math.floor((initialMin + initialMax) / 2)}. Est-ce correct?`);
-      setGameStarted(true);
-      setGameOver(false);
+  // ----- against the robot -----
+  const startRobot = () => {
+    const r = range();
+    if (!r) return;
+    const guess = Math.floor((r[0] + r[1]) / 2);
+    setBounds(r);
+    setGuesses([]);
+    setCurrentGuess(guess);
+    setMessage(`Je pense que c'est ${guess}. Est-ce correct ?`);
+    setGameOver(false);
+    setMode('robot');
   };
 
   const respond = (response) => {
-    let newMin = minNum;
-    let newMax = maxNum;
     const newGuesses = [...guesses, currentGuess];
-
     if (response === 'correct') {
+      setGuesses(newGuesses);
       setGameOver(true);
-      setMessage(`🎉 J'ai deviné en ${newGuesses.length} tentative(s)!`);
+      setMessage(`🎉 J'ai deviné en ${newGuesses.length} tentative(s) !`);
       return;
     }
-
-    if (response === 'higher') {
-      newMin = currentGuess + 1;
-    } else {
-      newMax = currentGuess - 1;
+    const [lo, hi] = response === 'higher' ? [currentGuess + 1, bounds[1]] : [bounds[0], currentGuess - 1];
+    if (lo > hi) {
+      setMessage('🤔 Impossible ! Vérifiez vos réponses.');
+      return;
     }
-
-    const nextGuess = Math.floor((parseInt(newMin) + parseInt(newMax)) / 2);
-    // Note: updating minNum/maxNum here affects the algorithm bounds
-    setMinNum(newMin);
-    setMaxNum(newMax);
+    const next = Math.floor((lo + hi) / 2);
+    setBounds([lo, hi]);
     setGuesses(newGuesses);
-    setCurrentGuess(nextGuess);
-    setMessage(`Je pense que c'est ${nextGuess}. Correct?`);
+    setCurrentGuess(next);
+    setMessage(`Je pense que c'est ${next}. Correct ?`);
+  };
+
+  // ----- two players -----
+  const hideNumber = () => {
+    const r = range();
+    if (!r) return;
+    const n = parseInt(secret, 10);
+    if (isNaN(n) || n < r[0] || n > r[1]) {
+      setMessage(`⚠️ ${p1Name}, choisissez un nombre entre ${r[0]} et ${r[1]}`);
+      return;
+    }
+    setHidden(true);
+    setGuesses([]);
+    setGameOver(false);
+    setMessage(`${p2Name}, devinez le nombre de ${p1Name} (entre ${r[0]} et ${r[1]}) !`);
+  };
+
+  const guessPvp = (e) => {
+    e.preventDefault();
+    const g = parseInt(guessInput, 10);
+    if (isNaN(g)) return;
+    const n = parseInt(secret, 10);
+    const newGuesses = [...guesses, g];
+    setGuesses(newGuesses);
+    setGuessInput('');
+    if (g === n) {
+      setGameOver(true);
+      setMessage(`🏆 ${p2Name} a trouvé ${n} en ${newGuesses.length} tentative(s) !`);
+    } else {
+      setMessage(g < n ? `⬆️ Plus grand que ${g}` : `⬇️ Plus petit que ${g}`);
+    }
   };
 
   const resetGame = () => {
-    setGameStarted(false);
-    // Clear inputs or keep them? Usually resetting means clearing everything.
-    setMinNum('');
-    setMaxNum('');
-    setInitialMin(null);
-    setInitialMax(null);
+    setMode(null);
+    setSecret('');
+    setHidden(false);
+    setGuessInput('');
     setGuesses([]);
     setCurrentGuess(null);
-    setMessage('Pensez à un nombre et laissez le Robot le deviner!');
+    setBounds(null);
+    setMessage('');
     setGameOver(false);
   };
 
+  const rangeInputs = (
+    <>
+      <input type="number" placeholder="Nombre minimum" value={minNum} onChange={(e) => setMinNum(e.target.value)} />
+      <input type="number" placeholder="Nombre maximum" value={maxNum} onChange={(e) => setMaxNum(e.target.value)} />
+    </>
+  );
+
+  if (mode === null) {
+    return (
+      <div className="game-menu">
+        <h4>🎯 Devinette - Configurer la partie</h4>
+        {message && <div className="game-status">{message}</div>}
+        <div className="menu-options" style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '320px', margin: '0 auto' }}>
+          <div className="devinette-setup">{rangeInputs}</div>
+          <button className="reset-btn" onClick={startRobot}>🤖 Contre le Robot (il devine votre nombre)</button>
+          <div className="pvp-setup" style={{ borderTop: '1px solid #ccc', paddingTop: '10px' }}>
+            <p>Joueur vs Joueur:</p>
+            <input style={{ display: 'block', width: '100%', padding: '8px', marginBottom: '5px' }} type="text" value={p1Name} onChange={(e) => setP1Name(e.target.value)} placeholder="Joueur qui cache le nombre" />
+            <input style={{ display: 'block', width: '100%', padding: '8px', marginBottom: '5px' }} type="text" value={p2Name} onChange={(e) => setP2Name(e.target.value)} placeholder="Joueur qui devine" />
+            <button
+              className="reset-btn"
+              onClick={() => {
+                if (!range()) return;
+                setMessage(`${p1Name}, choisissez un nombre secret (${p2Name} ne regarde pas !)`);
+                setMode('pvp');
+              }}
+            >
+              Commencer (2 Joueurs)
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="game-container">
-      <h3>🎯 Devinette (Le robot devine)</h3>
+      <h3>🎯 Devinette {mode === 'robot' ? '· le Robot devine' : '· 2 joueurs'}</h3>
       <div className="game-status">{message}</div>
 
-      {!gameStarted ? (
-        <div className="devinette-setup">
-          <input
-            type="number"
-            placeholder="Nombre minimum"
-            value={minNum}
-            onChange={(e) => setMinNum(e.target.value)}
-          />
-          <input
-            type="number"
-            placeholder="Nombre maximum"
-            value={maxNum}
-            onChange={(e) => setMaxNum(e.target.value)}
-          />
-          <button onClick={startGame} className="start-btn">Commencer</button>
-        </div>
-      ) : (
+      {mode === 'robot' && !gameOver && (
         <div className="devinette-buttons">
-          <button onClick={() => respond('correct')} className="guess-btn correct">
-            ✅ Correct!
-          </button>
-          <button onClick={() => respond('higher')} className="guess-btn higher">
-            ⬆️ Plus haut
-          </button>
-          <button onClick={() => respond('lower')} className="guess-btn lower">
-            ⬇️ Plus bas
-          </button>
+          <button onClick={() => respond('correct')} className="guess-btn correct">✅ Correct!</button>
+          <button onClick={() => respond('higher')} className="guess-btn higher">⬆️ Plus haut</button>
+          <button onClick={() => respond('lower')} className="guess-btn lower">⬇️ Plus bas</button>
         </div>
       )}
 
-      {gameOver && (
-          <div className="game-controls">
-            <button className="reset-btn" onClick={restartMatch}>🔄 Rejouer (Même intervalle)</button>
-            <button className="reset-btn" onClick={resetGame}>Menu Principal</button>
-          </div>
+      {mode === 'pvp' && !hidden && (
+        <div className="devinette-setup">
+          <input type="password" inputMode="numeric" placeholder={`Nombre secret de ${p1Name}`} value={secret} onChange={(e) => setSecret(e.target.value)} />
+          <button onClick={hideNumber} className="start-btn">Cacher le nombre</button>
+        </div>
       )}
+
+      {mode === 'pvp' && hidden && !gameOver && (
+        <form className="devinette-setup" onSubmit={guessPvp}>
+          <input type="number" placeholder={`Proposition de ${p2Name}`} value={guessInput} onChange={(e) => setGuessInput(e.target.value)} autoFocus />
+          <button type="submit" className="start-btn">Proposer</button>
+        </form>
+      )}
+
+      {guesses.length > 0 && <p className="games-intro">Tentatives : {guesses.join(', ')}</p>}
+
+      <div className="game-controls">
+        {gameOver && mode === 'robot' && <button className="reset-btn" onClick={startRobot}>🔄 Rejouer (Même intervalle)</button>}
+        {gameOver && mode === 'pvp' && (
+          <button
+            className="reset-btn"
+            onClick={() => {
+              // swap roles: the guesser now hides a number
+              setP1Name(p2Name);
+              setP2Name(p1Name);
+              setSecret('');
+              setHidden(false);
+              setGuesses([]);
+              setGameOver(false);
+              setMessage(`${p2Name}, choisissez un nombre secret (${p1Name} ne regarde pas !)`);
+            }}
+          >
+            🔄 Rejouer (rôles inversés)
+          </button>
+        )}
+        <button className="reset-btn" onClick={resetGame}>Menu Principal</button>
+      </div>
     </div>
   );
 }
