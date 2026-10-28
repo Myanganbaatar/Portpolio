@@ -1690,8 +1690,36 @@ a.contact-item:hover {
   grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.82fr);
 }
 
+/* Full-width row (CMS + live site): text on top, demo below at full width. */
+.demo-row--wide,
+.demo-row--wide.demo-row--flip {
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.demo-row--wide .demo-row__text {
+  position: static;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .demo-row--wide .demo-row__text {
+    display: flex;
+  }
+}
+
 .demo-row--flip .demo-row__text {
   order: 2;
+}
+
+.demo-row__col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 }
 
 .demo-row__text {

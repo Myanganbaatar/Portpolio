@@ -1,4 +1,11 @@
-import { useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { useSite } from "../context";
 import AUPAIR from "./aupairData";
 import "./InternshipDemos.css";
@@ -41,6 +48,18 @@ const FIELD_TYPES = [
 
 // Collections used by mongolian-aupair.com (lib/api.ts of the site).
 const SEED_TYPES = [
+  {
+    uid: "site-setting",
+    name: "Site Setting",
+    plural: "site-setting",
+    single: true,
+    fields: [
+      { name: "hero_title", type: "string", required: true },
+      { name: "hero_subtitle", type: "string" },
+      { name: "hero_description", type: "text" },
+      { name: "hero_cta_text", type: "string" },
+    ],
+  },
   {
     uid: "page",
     name: "Page",
@@ -96,9 +115,25 @@ function seedEntries() {
   const entry = (attrs) => {
     const t = now();
     id += 1;
-    return { id, attrs, createdAt: t, updatedAt: t, publishedAt: t };
+    return {
+      id,
+      attrs,
+      live: attrs,
+      createdAt: t,
+      updatedAt: t,
+      publishedAt: t,
+    };
   };
+  const site = AUPAIR.site;
   const entries = {
+    "site-setting": [
+      entry({
+        hero_title: site.hero_title,
+        hero_subtitle: site.hero_subtitle,
+        hero_description: site.hero_description,
+        hero_cta_text: site.hero_cta_text,
+      }),
+    ],
     page: [],
     "program-benefit": [],
     "faq-item": [],
@@ -139,12 +174,14 @@ function seedEntries() {
   return { entries, nextId: id + 1 };
 }
 
-function createStore() {
-  const seeded = seedEntries();
+function createStore(types, seed) {
+  const seeded = seed();
   let state = {
-    types: SEED_TYPES,
+    types,
     entries: seeded.entries,
     nextId: seeded.nextId,
+    // what the live preview should show after a publish: { uid, key, slug, question, n }
+    focus: { uid: null, key: null, slug: null, question: null, n: 0 },
   };
   const listeners = new Set();
   return {
@@ -160,17 +197,90 @@ function createStore() {
   };
 }
 
-const cms = createStore();
+// Content of the CMS demo: a small fictional café website, in French, easy to try.
+const CAFE_TYPES = [
+  {
+    uid: "site-setting",
+    name: "Site Setting",
+    plural: "site-setting",
+    single: true,
+    fields: [
+      { name: "title", type: "string", required: true },
+      { name: "subtitle", type: "string" },
+      { name: "opening_hours", type: "string" },
+      { name: "button_text", type: "string" },
+    ],
+  },
+  {
+    uid: "product",
+    name: "Product",
+    plural: "products",
+    fields: [
+      { name: "name", type: "string", required: true },
+      { name: "price", type: "float" },
+      { name: "description", type: "text" },
+    ],
+  },
+  {
+    uid: "faq-item",
+    name: "FAQ Item",
+    plural: "faq-items",
+    fields: [
+      { name: "question", type: "string", required: true },
+      { name: "answer", type: "richtext" },
+    ],
+  },
+];
+
+function seedCafe() {
+  let id = 0;
+  const entry = (attrs) => {
+    const t = now();
+    id += 1;
+    return { id, attrs, live: attrs, createdAt: t, updatedAt: t, publishedAt: t };
+  };
+  return {
+    entries: {
+      "site-setting": [
+        entry({
+          title: "Le café du coin, fait maison",
+          subtitle: "Pâtisseries du jour et café torréfié à Limoges.",
+          opening_hours: "Du mardi au dimanche · 8 h – 18 h",
+          button_text: "Voir la carte",
+        }),
+      ],
+      product: [
+        entry({ name: "Croissant", price: 1.4, description: "Pur beurre, cuit le matin." }),
+        entry({ name: "Café crème", price: 2.8, description: "Avec du lait de la ferme." }),
+        entry({ name: "Tarte aux pommes", price: 3.5, description: "Pommes du Limousin." }),
+        entry({ name: "Chocolat chaud", price: 3.2, description: "Chocolat noir et chantilly." }),
+      ],
+      "faq-item": [
+        entry({ question: "Peut-on réserver une table ?", answer: "Oui, par téléphone ou directement au comptoir." }),
+        entry({ question: "Avez-vous des options sans gluten ?", answer: "Oui, une tarte sans gluten chaque jour." }),
+        entry({ question: "Acceptez-vous la carte bancaire ?", answer: "Oui, à partir de 1 €." }),
+      ],
+    },
+    nextId: id + 1,
+  };
+}
+
+const cms = createStore(CAFE_TYPES, seedCafe);
 const useCms = () => useSyncExternalStore(cms.subscribe, cms.get);
+
+// The Au Pair site demo keeps its own data (real texts of the site).
+const aupair = createStore(SEED_TYPES, seedEntries);
+const useAuPair = () => useSyncExternalStore(aupair.subscribe, aupair.get);
 
 // GET /api/:pluralName — same { data, meta } shape as backend/src/utils/response.ts.
 function apiList(state, type, preview) {
   const rows = state.entries[type.uid].filter((e) => preview || e.publishedAt);
+  const pick = (e) => (preview ? e.attrs : e.live);
   return {
     data: rows.map((e) => ({
       id: e.id,
       attributes: {
-        ...e.attrs,
+        ...pick(e),
         createdAt: e.createdAt,
         updatedAt: e.updatedAt,
         publishedAt: e.publishedAt,
@@ -367,6 +477,7 @@ function EntryEditor({ type, entry, onBack, toast }) {
   const editable = type.fields;
   const first = type.fields[0];
 
+  // publish: true = publish the form, false = unpublish, undefined = save the draft
   const save = (publish) => {
     const missing = type.fields.find(
       (f) => f.required && !String(attrs[f.name] ?? "").trim(),
@@ -391,6 +502,12 @@ function EntryEditor({ type, entry, onBack, toast }) {
                 updatedAt: t,
                 publishedAt:
                   publish === undefined ? e.publishedAt : publish ? t : null,
+                live:
+                  publish === undefined
+                    ? e.live
+                    : publish
+                      ? { ...attrs }
+                      : null,
               }
             : e,
         );
@@ -404,11 +521,28 @@ function EntryEditor({ type, entry, onBack, toast }) {
             createdAt: t,
             updatedAt: t,
             publishedAt: publish ? t : null,
+            live: publish ? { ...attrs } : null,
           },
         ];
         nextId += 1;
       }
-      return { ...s, nextId, entries: { ...s.entries, [type.uid]: next } };
+      // tell the live preview where to look
+      const focus =
+        publish === undefined
+          ? s.focus
+          : {
+              uid: type.uid,
+              key: attrs[type.fields[0].name],
+              slug: null,
+              question: null,
+              n: s.focus.n + 1,
+            };
+      return {
+        ...s,
+        nextId,
+        focus,
+        entries: { ...s.entries, [type.uid]: next },
+      };
     });
     toast(
       publish === true
@@ -424,12 +558,17 @@ function EntryEditor({ type, entry, onBack, toast }) {
     ? state.entries[type.uid].find((e) => e.id === entry.id)
     : null;
   const published = current && current.publishedAt;
+  // published, but the form differs from what the site shows
+  const modified =
+    published && JSON.stringify(attrs) !== JSON.stringify(current.live);
 
   return (
     <div className="cms__page">
-      <button className="cms__back" onClick={() => onBack()}>
-        <Icon name="back" size={15} /> Back
-      </button>
+      {!type.single && (
+        <button className="cms__back" onClick={() => onBack()}>
+          <Icon name="back" size={15} /> Back
+        </button>
+      )}
       <div className="cms__head">
         <div>
           <h2>
@@ -440,8 +579,10 @@ function EntryEditor({ type, entry, onBack, toast }) {
           <p className="cms__muted">
             {type.name} · API ID <code>{type.uid}</code>
             {entry && (
-              <span className={`cms__badge ${published ? "is-pub" : ""}`}>
-                {published ? "Published" : "Draft"}
+              <span
+                className={`cms__badge ${modified ? "is-mod" : published ? "is-pub" : ""}`}
+              >
+                {modified ? "Modified" : published ? "Published" : "Draft"}
               </span>
             )}
           </p>
@@ -453,9 +594,18 @@ function EntryEditor({ type, entry, onBack, toast }) {
           >
             Save
           </button>
-          <button className="cms__btn" onClick={() => save(!published)}>
-            {published ? "Unpublish" : "Publish"}
-          </button>
+          {published && !modified ? (
+            <button
+              className="cms__btn cms__btn--ghost"
+              onClick={() => save(false)}
+            >
+              Unpublish
+            </button>
+          ) : (
+            <button className="cms__btn" onClick={() => save(true)}>
+              Publish
+            </button>
+          )}
         </div>
       </div>
       {error && <p className="cms__error">{error}</p>}
@@ -466,7 +616,7 @@ function EntryEditor({ type, entry, onBack, toast }) {
             key={f.name}
             field={f}
             value={attrs[f.name]}
-            pages={state.entries.page}
+            pages={state.entries.page || []}
             onChange={(v) => setAttrs((a) => ({ ...a, [f.name]: v }))}
           />
         ))}
@@ -477,7 +627,7 @@ function EntryEditor({ type, entry, onBack, toast }) {
 
 function ContentManager({ toast }) {
   const state = useCms();
-  const [uid, setUid] = useState("faq-item");
+  const [uid, setUid] = useState("site-setting");
   const [editing, setEditing] = useState(null); // null | 'new' | entry id
   const [query, setQuery] = useState("");
   const type = state.types.find((t) => t.uid === uid) || state.types[0];
@@ -489,116 +639,156 @@ function ContentManager({ toast }) {
       .includes(query.toLowerCase()),
   );
 
-  if (editing) {
-    return (
+  // a single type (Site Setting) has one entry: it opens straight in the editor
+  const single = type.single ? rows[0] : null;
+  const editor =
+    single || editing ? (
       <EntryEditor
-        key={`${type.uid}-${editing}`}
+        key={`${type.uid}-${single ? single.id : editing}`}
         type={type}
-        entry={editing === "new" ? null : rows.find((e) => e.id === editing)}
+        entry={
+          single ||
+          (editing === "new" ? null : rows.find((e) => e.id === editing))
+        }
         toast={toast}
         onBack={(createdId) => setEditing(createdId || null)}
       />
-    );
-  }
+    ) : null;
+  const status = (e) =>
+    !e.publishedAt
+      ? ["Draft", ""]
+      : JSON.stringify(e.attrs) !== JSON.stringify(e.live)
+        ? ["Modified", "is-mod"]
+        : ["Published", "is-pub"];
 
   return (
     <div className="cms__split">
       <aside className="cms__types">
-        <p className="cms__nav-label">Collection Types</p>
-        {state.types.map((t) => (
-          <button
-            key={t.uid}
-            className={t.uid === type.uid ? "is-active" : ""}
-            onClick={() => setUid(t.uid)}
-          >
-            {t.name}
-            <span>{(state.entries[t.uid] || []).length}</span>
-          </button>
+        {[
+          ["Single Types", state.types.filter((t) => t.single)],
+          ["Collection Types", state.types.filter((t) => !t.single)],
+        ].map(([title, list]) => (
+          <div key={title}>
+            <p className="cms__nav-label">{title}</p>
+            {list.map((t) => (
+              <button
+                key={t.uid}
+                className={t.uid === type.uid ? "is-active" : ""}
+                onClick={() => {
+                  setUid(t.uid);
+                  setEditing(null);
+                }}
+              >
+                {t.name}
+                {!t.single && (
+                  <span>{(state.entries[t.uid] || []).length}</span>
+                )}
+              </button>
+            ))}
+          </div>
         ))}
       </aside>
-      <div className="cms__page">
-        <div className="cms__head">
-          <div>
-            <h2>{type.name}</h2>
-            <p className="cms__muted">
-              {rows.length} entries · <code>GET /api/{type.plural}</code>
-            </p>
+      {/* narrow CMS (next to the live preview): the types become a dropdown */}
+      <label className="cms__type-bar">
+        <span>Content type</span>
+        <select
+          value={type.uid}
+          onChange={(e) => {
+            setUid(e.target.value);
+            setEditing(null);
+          }}
+        >
+          {state.types.map((t) => (
+            <option key={t.uid} value={t.uid}>
+              {t.name}
+              {t.single ? " (single)" : ""}
+            </option>
+          ))}
+        </select>
+      </label>
+      {editor || (
+        <div className="cms__page">
+          <div className="cms__head">
+            <div>
+              <h2>{type.name}</h2>
+              <p className="cms__muted">
+                {rows.length} entries · <code>GET /api/{type.plural}</code>
+              </p>
+            </div>
+            <button className="cms__btn" onClick={() => setEditing("new")}>
+              <Icon name="plus" size={15} /> Create new entry
+            </button>
           </div>
-          <button className="cms__btn" onClick={() => setEditing("new")}>
-            <Icon name="plus" size={15} /> Create new entry
-          </button>
-        </div>
-        <input
-          className="cms__search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search…"
-          aria-label="Search entries"
-        />
-        <div className="cms__card cms__table-wrap">
-          {shown.length === 0 ? (
-            <p className="cms__empty">No entries yet</p>
-          ) : (
-            <table className="cms__table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>{first}</th>
-                  <th>Status</th>
-                  <th>Updated at</th>
-                  <th aria-label="Actions" />
-                </tr>
-              </thead>
-              <tbody>
-                {shown.map((e) => (
-                  <tr key={e.id} onClick={() => setEditing(e.id)}>
-                    <td className="cms__muted">{e.id}</td>
-                    <td className="cms__cell-main">
-                      {String(e.attrs[first] ?? "—")}
-                    </td>
-                    <td>
-                      <span
-                        className={`cms__badge ${e.publishedAt ? "is-pub" : ""}`}
-                      >
-                        {e.publishedAt ? "Published" : "Draft"}
-                      </span>
-                    </td>
-                    <td className="cms__muted">
-                      {new Date(e.updatedAt).toLocaleString("fr-FR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </td>
-                    <td>
-                      <button
-                        className="cms__icon-btn"
-                        aria-label="Delete this entry"
-                        onClick={(ev) => {
-                          ev.stopPropagation();
-                          cms.set((s) => ({
-                            ...s,
-                            entries: {
-                              ...s.entries,
-                              [type.uid]: s.entries[type.uid].filter(
-                                (x) => x.id !== e.id,
-                              ),
-                            },
-                          }));
-                          toast("Deleted");
-                        }}
-                      >
-                        <Icon name="trash" size={15} />
-                      </button>
-                    </td>
+          <input
+            className="cms__search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search…"
+            aria-label="Search entries"
+          />
+          <div className="cms__card cms__table-wrap">
+            {shown.length === 0 ? (
+              <p className="cms__empty">No entries yet</p>
+            ) : (
+              <table className="cms__table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>{first}</th>
+                    <th>Status</th>
+                    <th>Updated at</th>
+                    <th aria-label="Actions" />
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {shown.map((e) => (
+                    <tr key={e.id} onClick={() => setEditing(e.id)}>
+                      <td className="cms__muted">{e.id}</td>
+                      <td className="cms__cell-main">
+                        {String(e.attrs[first] ?? "—")}
+                      </td>
+                      <td>
+                        <span className={`cms__badge ${status(e)[1]}`}>
+                          {status(e)[0]}
+                        </span>
+                      </td>
+                      <td className="cms__muted">
+                        {new Date(e.updatedAt).toLocaleString("fr-FR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
+                      <td>
+                        <button
+                          className="cms__icon-btn"
+                          aria-label="Delete this entry"
+                          onClick={(ev) => {
+                            ev.stopPropagation();
+                            cms.set((s) => ({
+                              ...s,
+                              entries: {
+                                ...s.entries,
+                                [type.uid]: s.entries[type.uid].filter(
+                                  (x) => x.id !== e.id,
+                                ),
+                              },
+                            }));
+                            toast("Deleted");
+                          }}
+                        >
+                          <Icon name="trash" size={15} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -864,6 +1054,113 @@ function ApiReference({ initial }) {
   );
 }
 
+// A small client website, scaled down next to the CMS: it only shows published data.
+const PREVIEW_W = 700;
+const euro = (n) =>
+  n === null || n === undefined || n === ""
+    ? ""
+    : `${Number(n).toFixed(2).replace(".", ",")} €`;
+
+function CafeSite() {
+  const state = useCms();
+  const { focus } = state;
+  const scroller = useRef(null);
+  const live = (uid) =>
+    state.entries[uid].filter((e) => e.publishedAt).map((e) => e.live);
+  const site = live("site-setting")[0] || {};
+  const products = live("product");
+  const faq = live("faq-item");
+  const flash = (uid, key) =>
+    focus.n > 0 && focus.uid === uid && (key === undefined || focus.key === key)
+      ? "cafe__flash"
+      : "";
+
+  // scroll to what was just published
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el || !focus.n) return;
+    const target = el.querySelector(".cafe__flash");
+    el.scrollTop = target && focus.uid !== "site-setting" ? target.offsetTop - 70 : 0;
+  }, [focus]);
+
+  return (
+    <BrowserFrame url="localhost:3001 · site du client" className="cafe-frame">
+      <div className="cafe" ref={scroller}>
+        <header className="cafe__nav">
+          <b>☕ Café Lumière</b>
+          <span>Carte · FAQ · Contact</span>
+        </header>
+        <section key={`h-${focus.n}`} className={`cafe__hero ${flash("site-setting")}`}>
+          <h1>{site.title || "—"}</h1>
+          {site.subtitle && <p>{site.subtitle}</p>}
+          {site.opening_hours && <p className="cafe__hours">🕗 {site.opening_hours}</p>}
+          {site.button_text && <span className="cafe__btn">{site.button_text}</span>}
+        </section>
+        <section className="cafe__section">
+          <h2>Notre carte</h2>
+          {products.length === 0 && <p className="cafe__empty">Aucun produit publié.</p>}
+          <ul className="cafe__menu">
+            {products.map((p) => (
+              <li key={`${p.name}-${focus.n}`} className={flash("product", p.name)}>
+                <div>
+                  <b>{p.name}</b>
+                  {p.description && <small>{p.description}</small>}
+                </div>
+                <span>{euro(p.price)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="cafe__section">
+          <h2>Questions fréquentes</h2>
+          {faq.length === 0 && <p className="cafe__empty">Aucune question publiée.</p>}
+          {faq.map((f) => (
+            <details
+              key={`${f.question}-${focus.n}`}
+              className={`cafe__faq ${flash("faq-item", f.question)}`}
+              open={Boolean(flash("faq-item", f.question))}
+            >
+              <summary>{f.question}</summary>
+              <p>{f.answer}</p>
+            </details>
+          ))}
+        </section>
+        <footer className="cafe__footer">Café Lumière · site de démonstration</footer>
+      </div>
+    </BrowserFrame>
+  );
+}
+
+function SitePreview({ fr }) {
+  const box = useRef(null);
+  const [k, setK] = useState(0.55);
+  useLayoutEffect(() => {
+    const el = box.current;
+    if (!el) return undefined;
+    const fit = () => setK(el.clientWidth / PREVIEW_W);
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div className="cms-preview">
+      <p className="cms-preview__label">
+        <span className="cms-preview__dot" />
+        {fr ? "Site du client · données publiées" : "Client website · published data"}
+      </p>
+      <div className="cms-preview__box" ref={box} style={{ height: 640 * k }}>
+        <div
+          className="cms-preview__scale"
+          style={{ width: PREVIEW_W, transform: `scale(${k})` }}
+        >
+          <CafeSite />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CmsDemo() {
   const [page, setPage] = useState("content-manager");
   const [apiType, setApiType] = useState(null);
@@ -879,78 +1176,82 @@ export function CmsDemo() {
   const { lang } = useSite();
   const label = NAV.flatMap((s) => s.items).find((i) => i.key === page).label;
 
+  const fr = lang === "fr";
   return (
     <>
-      <BrowserFrame url={`localhost:3000/${page}`} className="cms-frame">
-        <div className="cms">
-          <aside className="cms__sidebar">
-            <div className="cms__brand">
-              <span>S</span>
-              <div>
-                <b>Strapi Clone</b>
-                <small>Workspace · au-pair</small>
-              </div>
-            </div>
-            <nav aria-label="CMS">
-              {NAV.map((s) => (
-                <div key={s.label}>
-                  <p className="cms__nav-label">{s.label}</p>
-                  {s.items.map((it) => (
-                    <button
-                      key={it.key}
-                      className={page === it.key ? "is-active" : ""}
-                      disabled={it.off}
-                      title={it.off ? "Not included in the demo" : undefined}
-                      onClick={() => {
-                        setApiType(null);
-                        setPage(it.key);
-                      }}
-                    >
-                      <Icon name={it.icon} />{" "}
-                      <span className="cms__nav-text">{it.label}</span>
-                    </button>
-                  ))}
+
+      <div className="cms-split">
+        <BrowserFrame url={`localhost:3000/${page}`} className="cms-frame">
+          <div className="cms">
+            <aside className="cms__sidebar">
+              <div className="cms__brand">
+                <span>S</span>
+                <div>
+                  <b>Strapi Clone</b>
+                  <small>Workspace · au-pair</small>
                 </div>
-              ))}
-            </nav>
-            <div className="cms__user">
-              <span>BM</span>
-              <div>
-                <b>Barsbold M.</b>
-                <small>Super Admin</small>
               </div>
+              <nav aria-label="CMS">
+                {NAV.map((s) => (
+                  <div key={s.label}>
+                    <p className="cms__nav-label">{s.label}</p>
+                    {s.items
+                      .filter((it) => !it.off)
+                      .map((it) => (
+                        <button
+                          key={it.key}
+                          className={page === it.key ? "is-active" : ""}
+                          disabled={it.off}
+                          title={
+                            it.off ? "Not included in the demo" : undefined
+                          }
+                          onClick={() => {
+                            setApiType(null);
+                            setPage(it.key);
+                          }}
+                        >
+                          <Icon name={it.icon} />{" "}
+                          <span className="cms__nav-text">{it.label}</span>
+                        </button>
+                      ))}
+                  </div>
+                ))}
+              </nav>
+              <div className="cms__user">
+                <span>BM</span>
+                <div>
+                  <b>Barsbold M.</b>
+                  <small>Super Admin</small>
+                </div>
+              </div>
+            </aside>
+            <div className="cms__main">
+              <header className="cms__topbar">
+                <span className="cms__muted">Strapi Clone /</span> {label}
+              </header>
+              {page === "content-manager" && <ContentManager toast={toast} />}
+              {page === "content-types" && (
+                <ContentTypeBuilder
+                  toast={toast}
+                  openApi={(uid) => {
+                    setApiType(uid);
+                    setPage("api-reference");
+                  }}
+                />
+              )}
+              {page === "api-reference" && (
+                <ApiReference key={apiType || "api"} initial={apiType} />
+              )}
             </div>
-          </aside>
-          <div className="cms__main">
-            <header className="cms__topbar">
-              <span className="cms__muted">Strapi Clone /</span> {label}
-            </header>
-            {page === "content-manager" && <ContentManager toast={toast} />}
-            {page === "content-types" && (
-              <ContentTypeBuilder
-                toast={toast}
-                openApi={(uid) => {
-                  setApiType(uid);
-                  setPage("api-reference");
-                }}
-              />
-            )}
-            {page === "api-reference" && (
-              <ApiReference key={apiType || "api"} initial={apiType} />
+            {toastMsg && (
+              <div className="cms__toast" role="status">
+                ✓ {toastMsg}
+              </div>
             )}
           </div>
-          {toastMsg && (
-            <div className="cms__toast" role="status">
-              ✓ {toastMsg}
-            </div>
-          )}
-        </div>
-      </BrowserFrame>
-      <p className="demo-tip">
-        {lang === "fr"
-          ? "Astuce : modifiez, publiez ou dépubliez une FAQ ici, puis ouvrez la démo Au Pair juste en dessous — le site lit les mêmes données, comme en production via l’API REST."
-          : "Tip: edit, publish or unpublish an FAQ here, then open the Au Pair demo just below — the site reads the same data, as it does in production through the REST API."}
-      </p>
+        </BrowserFrame>
+        <SitePreview fr={fr} />
+      </div>
     </>
   );
 }
@@ -967,10 +1268,12 @@ const CONTACT_PROGRAMS = [
   "Гадаадын их дээд сургууль коллеж",
 ];
 
-function FaqItem({ q, a }) {
-  const [open, setOpen] = useState(false);
+function FaqItem({ q, a, flash = false }) {
+  const [open, setOpen] = useState(flash);
   return (
-    <div className={`ap__faq ${open ? "is-open" : ""}`}>
+    <div
+      className={`ap__faq ${open ? "is-open" : ""} ${flash ? "is-flash" : ""}`}
+    >
       <button onClick={() => setOpen((o) => !o)} aria-expanded={open}>
         {q}
         <span aria-hidden="true">{open ? "−" : "+"}</span>
@@ -1066,14 +1369,18 @@ function ContactForm() {
   );
 }
 
-export function AuPairDemo() {
-  const state = useCms();
+export function AuPairDemo({ follow = false }) {
+  const state = useAuPair();
   const [slug, setSlug] = useState(null);
   const [menu, setMenu] = useState(false);
-  const s = AUPAIR.site;
+  const scroller = useRef(null);
+  // hero texts come from the published Site Setting entry
+  const setting = state.entries["site-setting"][0];
+  const s = { ...AUPAIR.site, ...((setting && setting.live) || {}) };
+  const { focus } = state;
 
   const live = (uid) =>
-    state.entries[uid].filter((e) => e.publishedAt).map((e) => e.attrs);
+    state.entries[uid].filter((e) => e.publishedAt).map((e) => e.live);
   const pages = live("page")
     .filter((p) => p.is_active)
     .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
@@ -1093,16 +1400,28 @@ export function AuPairDemo() {
   const open = (p) => {
     setSlug(p);
     setMenu(false);
-    const el = document.getElementById("ap-scroll");
-    if (el) el.scrollTop = 0;
+    if (scroller.current) scroller.current.scrollTop = 0;
   };
+
+  // in the preview next to the CMS: jump to what was just published
+  useEffect(() => {
+    if (!follow || !focus.n) return;
+    setSlug(focus.slug);
+    setMenu(false);
+    const el = scroller.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      const target = focus.question && el.querySelector(".ap__faq.is-flash");
+      el.scrollTop = target ? target.offsetTop - 80 : 0;
+    });
+  }, [follow, focus]);
 
   return (
     <BrowserFrame
       url={`mongolian-aupair.com/${slug || ""}`}
       className="ap-frame"
     >
-      <div className="ap" id="ap-scroll">
+      <div className={`ap ${follow ? "ap--preview" : ""}`} ref={scroller}>
         <header className="ap__nav">
           <button className="ap__logo" onClick={() => open(null)}>
             Extratour
@@ -1141,7 +1460,12 @@ export function AuPairDemo() {
             <section className="ap__hero">
               <div>
                 <p className="ap__eyebrow">{s.hero_subtitle}</p>
-                <h1>{s.hero_title}</h1>
+                <h1
+                  key={`t-${focus.n}`}
+                  className={follow && focus.n ? "ap__flash" : ""}
+                >
+                  {s.hero_title}
+                </h1>
                 <p>{s.hero_description}</p>
                 <button
                   className="ap__btn"
@@ -1244,7 +1568,12 @@ export function AuPairDemo() {
                 <p className="ap__muted">—</p>
               ) : (
                 faq.map((f) => (
-                  <FaqItem key={f.question} q={f.question} a={f.answer} />
+                  <FaqItem
+                    key={`${f.question}-${focus.n}`}
+                    q={f.question}
+                    a={f.answer}
+                    flash={follow && focus.question === f.question}
+                  />
                 ))
               )}
             </section>

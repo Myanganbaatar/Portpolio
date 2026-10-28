@@ -1526,6 +1526,14 @@ td .cms__badge {
     display: none;
   }
 
+  .cms__types {
+    display: none !important;
+  }
+
+  .cms__type-bar {
+    display: flex !important;
+  }
+
   .cms__types button {
     width: auto;
     flex-shrink: 0;
@@ -1570,4 +1578,282 @@ td .cms__badge {
   background: var(--surface, rgba(255, 255, 255, 0.04));
   color: var(--muted, #9aa1b2);
   font-size: 0.88rem;
+}
+
+/* ===== CMS + live preview (the CMS row is full width) ===== */
+.cms-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 0 0 14px;
+  padding: 12px 18px 12px 36px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px dashed hsl(262 90% 80% / 0.35);
+  font-weight: 600;
+}
+
+.cms-guide li::marker {
+  color: #c4b5fd;
+  font-weight: 700;
+}
+
+[data-theme='light'] .cms-guide {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.cms-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.cms-split .cms__sidebar {
+  width: 178px;
+}
+
+.cms-split .cms__types {
+  width: 140px;
+}
+
+.cms__main {
+  container-type: inline-size;
+}
+
+@container (max-width: 520px) {
+  .cms__form {
+    grid-template-columns: 1fr;
+  }
+
+  .cms__table th:nth-child(4),
+  .cms__table td:nth-child(4) {
+    display: none;
+  }
+}
+
+.cms__badge.is-mod {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.cms-preview__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  font: 600 0.75rem var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #86efac;
+}
+
+.cms-preview__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.cms-preview__box {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.cms-preview__scale {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+.ap--preview {
+  height: 600px;
+}
+
+/* what just changed on the site lights up for a moment */
+.ap__flash,
+.ap__faq.is-flash {
+  animation: ap-flash 1.6s ease;
+}
+
+@keyframes ap-flash {
+  0%,
+  40% {
+    background: rgba(250, 204, 21, 0.45);
+    box-shadow: 0 0 0 6px rgba(250, 204, 21, 0.45);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 0 rgba(250, 204, 21, 0);
+  }
+}
+
+@container (max-width: 900px) {
+  .cms-split {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cms__type-bar {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c-muted);
+}
+
+.cms__type-bar select {
+  min-height: 32px;
+  padding: 4px 10px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--c-ink);
+  font-weight: 600;
+}
+
+/* ===== Café Lumière: the small client site shown next to the CMS ===== */
+.cafe {
+  height: 600px;
+  overflow-y: auto;
+  background: #fffaf3;
+  color: #3b2a1e;
+  font: 15px/1.55 Georgia, 'Times New Roman', serif;
+  color-scheme: light;
+  text-align: left;
+}
+
+.cafe h1,
+.cafe h2 {
+  margin: 0;
+  color: #3b2a1e;
+  font-family: inherit;
+  letter-spacing: normal;
+}
+
+.cafe__nav {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 26px;
+  background: #3b2a1e;
+  color: #f6e7d3;
+  font: 600 14px Inter, system-ui, sans-serif;
+}
+
+.cafe__nav b {
+  font: 700 18px Georgia, serif;
+}
+
+.cafe__hero {
+  padding: 46px 30px 40px;
+  background: radial-gradient(circle at 85% 20%, #f3d9b1, transparent 45%), #f7e9d4;
+  text-align: center;
+}
+
+.cafe__hero h1 {
+  font-size: 34px;
+  line-height: 1.15;
+}
+
+.cafe__hero p {
+  margin: 10px 0 0;
+  font-size: 17px;
+}
+
+.cafe__hours {
+  font: 600 14px Inter, system-ui, sans-serif !important;
+  color: #8a5a35;
+}
+
+.cafe__btn {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 10px 24px;
+  border-radius: 999px;
+  background: #b5651d;
+  color: #fff;
+  font: 700 14px Inter, system-ui, sans-serif;
+}
+
+.cafe__section {
+  padding: 28px 30px;
+}
+
+.cafe__section h2 {
+  margin-bottom: 14px;
+  font-size: 24px;
+}
+
+.cafe__menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cafe__menu li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 8px;
+  border-bottom: 1px dashed #d8c3a5;
+  border-radius: 6px;
+}
+
+.cafe__menu b {
+  display: block;
+  font-size: 17px;
+}
+
+.cafe__menu small {
+  color: #8a6a50;
+  font-size: 14px;
+}
+
+.cafe__menu span {
+  font: 700 16px Inter, system-ui, sans-serif;
+  color: #b5651d;
+  white-space: nowrap;
+}
+
+.cafe__faq {
+  margin-bottom: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(59, 42, 30, 0.12);
+}
+
+.cafe__faq summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.cafe__faq p {
+  margin: 8px 0 0;
+}
+
+.cafe__empty {
+  color: #a08770;
+  font-style: italic;
+}
+
+.cafe__footer {
+  padding: 16px;
+  background: #3b2a1e;
+  color: #d8c3a5;
+  font: 13px Inter, system-ui, sans-serif;
+  text-align: center;
+}
+
+.cafe__flash {
+  animation: ap-flash 1.8s ease;
 }

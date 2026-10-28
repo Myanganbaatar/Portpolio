@@ -16,7 +16,7 @@ import './pages.css';
 // Projects with something to try in the browser. `recreated` marks web
 // re-creations of apps whose original code (private, Kotlin, C#, PHP) cannot run here.
 const DEMOS = [
-  { id: 'cms', Demo: CmsDemo, recreated: true },
+  { id: 'cms', Demo: CmsDemo, recreated: true, wide: true },
   { id: 'aupair', Demo: AuPairDemo, recreated: true },
   { id: 'correcturl', Demo: ShortenerDemo, recreated: true },
   { id: 'latice', Demo: LaticeGame },
@@ -52,7 +52,7 @@ function matches(project, type, tech) {
 // Each block is a little fainter than the previous one (same dark blue).
 const FADE = [1, 0.8, 0.64, 0.5, 0.4, 0.32, 0.26, 0.21, 0.17];
 
-function DemoRow({ project, Demo, recreated, index }) {
+function DemoRow({ project, Demo, recreated, index, wide }) {
   const { t, lang } = useSite();
   const p = t.projects;
   const fr = lang === 'fr';
@@ -63,10 +63,11 @@ function DemoRow({ project, Demo, recreated, index }) {
   return (
     <article
       id={`demo-${project.id}`}
-      className={`demo-row reveal ${index % 2 ? 'demo-row--flip' : ''}`}
+      className={`demo-row reveal ${index % 2 ? 'demo-row--flip' : ''} ${wide && open ? 'demo-row--wide' : ''}`}
       style={{ '--a': FADE[Math.min(index, FADE.length - 1)] }}
     >
       <div className="demo-row__text">
+        <div className="demo-row__col">
         <span className="demo-row__num" aria-hidden="true">
           {String(index + 1).padStart(2, '0')}
         </span>
@@ -80,6 +81,16 @@ function DemoRow({ project, Demo, recreated, index }) {
             <p className="demo-row__what">{guide.what}</p>
             <h4 className="demo-row__h">{fr ? 'À quoi ça sert ?' : 'What is it for?'}</h4>
             <p>{guide.why}</p>
+          </>
+        ) : (
+          <p className="demo-row__what">{project.desc[lang]}</p>
+        )}
+        </div>
+
+        {/* second column on the wide row */}
+        <div className="demo-row__col">
+        {guide && (
+          <>
             <h4 className="demo-row__h">{fr ? 'Ce que j’ai fait' : 'What I did'}</h4>
             <ul className="demo-row__did">
               {guide.did.map((d) => (
@@ -87,10 +98,7 @@ function DemoRow({ project, Demo, recreated, index }) {
               ))}
             </ul>
           </>
-        ) : (
-          <p className="demo-row__what">{project.desc[lang]}</p>
         )}
-
         <p className="demo-row__res">✓ {project.result[lang]}</p>
         <TagList items={project.tags} />
         <div className="demo-row__links">
@@ -112,6 +120,7 @@ function DemoRow({ project, Demo, recreated, index }) {
               <ExternalIcon width={15} height={15} /> {p.live}
             </a>
           )}
+        </div>
         </div>
       </div>
 
@@ -305,8 +314,8 @@ export default function Projects() {
           </div>
           <div className="demo-list" ref={listRef}>
             <DemoBuddy listRef={listRef} />
-            {demos.map(({ id, Demo, recreated }, i) => (
-              <DemoRow key={id} index={i} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} />
+            {demos.map(({ id, Demo, recreated, wide }, i) => (
+              <DemoRow key={id} index={i} project={projects.find((p) => p.id === id)} Demo={Demo} recreated={recreated} wide={wide} />
             ))}
           </div>
         </section>

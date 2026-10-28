@@ -13,9 +13,9 @@ const demoGuides = {
         'Gérer les brouillons et la publication, les rôles et les médias.',
       ],
       steps: [
-        'Cliquez sur une question de la FAQ et modifiez-la.',
-        'Appuyez sur « Unpublish » puis « Publish » : la ligne change de statut.',
-        'Ouvrez « API Reference » : seules les entrées publiées sont envoyées au site.',
+        'Changez le titre (« title »), puis cliquez sur « Publish » : le site du café se met à jour.',
+        'Changez-le encore et cliquez seulement sur « Save » : c’est un brouillon, le site ne change pas.',
+        'Choisissez « Product », changez un prix ou ajoutez un produit, puis publiez.',
       ],
     },
     en: {
@@ -27,9 +27,9 @@ const demoGuides = {
         'Handle drafts and publishing, roles and media.',
       ],
       steps: [
-        'Click an FAQ question and edit it.',
-        'Press “Unpublish” then “Publish”: the row changes status.',
-        'Open “API Reference”: only published entries are sent to the website.',
+        'Change the title (“title”), then click “Publish”: the café website updates.',
+        'Change it again and only click “Save”: it is a draft, the site does not change.',
+        'Pick “Product”, change a price or add a product, then publish.',
       ],
     },
   },
@@ -43,9 +43,9 @@ const demoGuides = {
         'Mettre en ligne le site sur mongolian-aupair.com.',
       ],
       steps: [
-        'Ouvrez un programme, puis une question de la FAQ.',
-        'Dans la démo CMS au-dessus, dépubliez cette question.',
-        'Revenez ici : la question a disparu du site, sans aucune ligne de code.',
+        'Ouvrez le menu « Зуучлалийн хөтөлбөрүүд » (programmes) et choisissez un programme.',
+        'Ouvrez une question de la FAQ : le texte vient du CMS.',
+        'En bas, essayez le formulaire d’inscription (rien n’est envoyé).',
       ],
     },
     en: {
@@ -57,9 +57,9 @@ const demoGuides = {
         'Put the website online at mongolian-aupair.com.',
       ],
       steps: [
-        'Open a programme, then an FAQ question.',
-        'In the CMS demo above, unpublish that question.',
-        'Come back here: the question is gone from the website, without a line of code.',
+        'Open the “Зуучлалийн хөтөлбөрүүд” (programmes) menu and pick a programme.',
+        'Open an FAQ question: the text comes from the CMS.',
+        'At the bottom, try the sign-up form (nothing is sent).',
       ],
     },
   },
